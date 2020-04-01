@@ -3,41 +3,45 @@
 ### **Make class for _serialization_**
 ```C++
 // In first make the class serializable
-class Data : public QJsonMarshaler
+class User : public QJsonMarshaler
 {
 public:
-  Data()
+  User()
   {
     // Define data members to be serialized
-    setJsonProperty(&count, "count");
-    setJsonProperty(&nameOjCluster, "name");
-    setJsonProperty(&isActual, "actual");
+    setJsonProperty(name, "name");
+    setJsonProperty(age, "age");
+    setJsonProperty(employed, "employed");
+    setArrayJsonProperty(skills, "skills")
   }
   
 private:
-  int count{0};
-  QString nameOfCluster;
-  bool isActual{0};
+  QString name;
+  int age{0};
+  bool epmloyed{false};
+  std::vector<QString> skills; 
 }
 ```
 ### **_Marshaling_ procedure based on _defined_ object properties**
 ```C++
 ...
-Data cluster;
-cluster.count = 0;
-cluster.nameOfCluster = "bigger";
-cluster.isActual = true;
-QJsonObject clusterJson = cluster.Marshal();
-// json in clusterJson object => {"count": 0,"name": "bigger","actual": true}
+User u;
+u.name = "Bob";
+u.age = 20;
+u.employed = true;
+skills.push_back("Computer Scince");
+skills.push_back("Foreign languages");
+QJsonObject userJson = u.Marshal();
+// json in userJson object => {"name": "Bob","age": 20,"employed": true, "skills": ["Computer Science", "Foreign languages"]}
 ```
 
 ### **_Unmarshaling_ procedure based on _defined_ object properties**
 ```C++
 ...
-QJsonObject clusterJson; // {"count": 0,"name": "bigger","actual": true} <= json in clusterJson object
-Data cluster;
-cluster.Unmarshal(obj)
-// cluster values is count = 0, nameOfCluster = "bigger", isActual = true.
+QJsonObject userJson; // {"name": "Bob","age": 20,"employed": true, "skills": ["Computer Science", "Foreign languages"]} <= json in userJson object
+User u;
+u.Unmarshal(userJson)
+// variables of object now contains => name = "Bob", age = 20, employed = true, skills[0] = "Computer Science", skills[1] = "Foreign languages"
 ```
 
 

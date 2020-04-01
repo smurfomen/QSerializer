@@ -1,7 +1,8 @@
 #ifndef QJSONMARSHALER_H
 #define QJSONMARSHALER_H
 #include <qjsonkeeper.h>
-#include <vector>
+#include <uniquekeeper.h>
+#include <arraykeeper.h>
 #include "qjsonmarshalerlib_global.h"
 /**
  * @brief QJsonMarshaler представляет собой входную точку библиотеки.
@@ -33,9 +34,15 @@ public:
 
 
     template<typename T>
-    void setJsonProperty(T *pMember, QString annotation)
+    void setJsonProperty(T &pMember, QString annotation)
     {
-        propertyes.push_back(getIJ(pMember,annotation));
+        propertyes.push_back(new UniquePropertyKeeper<T>(&pMember, annotation));
+    }
+
+    template<typename A>
+    void setArrayJsonProperty(std::vector<A> &pArray, QString annotation)
+    {
+        propertyes.push_back(new ArrayPropertyKeeper<A>(&pArray, annotation));
     }
 
     QJsonObject Marshal();

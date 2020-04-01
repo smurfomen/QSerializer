@@ -1,6 +1,6 @@
 #include "qjsonmarshaler.h"
 #include <map>
-
+#include <QDebug>
 QJsonMarshaler::QJsonMarshaler(){
 
 }
@@ -48,12 +48,12 @@ void QJsonMarshaler::UnmarshalDocument(QJsonDocument doc)
 
 QJsonObject QJsonMarshaler::Marshal()
 {
-    QJsonObject obj;
+    QVariantMap map;
     for(PropertyKeeper * item : propertyes)
     {
-        obj.insert(item->getValue().first, item->getValue().second);
+        map.insert(item->getValue().first, item->getValue().second);
     }
-    return obj;
+    return QJsonObject::fromVariantMap(map);
 }
 
 void QJsonMarshaler::Unmarshal(QJsonObject obj)
@@ -63,7 +63,9 @@ void QJsonMarshaler::Unmarshal(QJsonObject obj)
         QString key = item->getValue().first;
         QJsonValue val = obj.value(key);
         if(val.isNull())
+        {
             continue;
+        }
         item->setValue(val);
     }
 }

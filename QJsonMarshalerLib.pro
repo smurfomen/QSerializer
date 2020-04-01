@@ -27,9 +27,11 @@ SOURCES += \
         qjsonmarshaler.cpp
 
 HEADERS += \
+        arraykeeper.h \
         qjsonkeeper.h \
         qjsonmarshaler.h \
-        qjsonmarshalerlib_global.h 
+        qjsonmarshalerlib_global.h  \
+        uniquekeeper.h
 
 unix {
     target.path = /usr/lib

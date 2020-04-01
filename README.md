@@ -12,7 +12,7 @@ public:
     setJsonProperty(name, "name");
     setJsonProperty(age, "age");
     setJsonProperty(employed, "employed");
-    setArrayJsonProperty(skills, "skills")
+    setArrayJsonProperty(skills, "skills");
   }
   
 private:

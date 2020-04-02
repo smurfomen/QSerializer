@@ -1,6 +1,7 @@
-#ifndef QJSONKEEPER_H
-#define QJSONKEEPER_H
+#ifndef PROPERTYKEEPER_H
+#define PROPERTYKEEPER_H
 
+#include <QJsonArray>
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -37,7 +38,4 @@ private:
 
 
 
-
-
-
-#endif // QJSONKEEPER_H
+#endif // PROPERTYKEEPER_H

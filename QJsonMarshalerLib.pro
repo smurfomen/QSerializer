@@ -23,15 +23,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        qjsonkeeper.cpp \
         qjsonmarshaler.cpp
 
 HEADERS += \
-        arraykeeper.h \
-        qjsonkeeper.h \
+        arraykeepers.h \
+        propertykeeper.h \
         qjsonmarshaler.h \
-        qjsonmarshalerlib_global.h  \
-        uniquekeeper.h
+        qjsonmarshalerlib_global.h \
+        simplekeepers.h
 
 unix {
     target.path = /usr/lib

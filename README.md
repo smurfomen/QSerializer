@@ -26,11 +26,11 @@ public:
   
   QString name;
   int age{0};
-  bool epmloyed{false};
+  bool employed{false};
   std::vector<QString> skills; 
-}
+};
 ```
-### You can mark serializable fields of object using macro Q_PROPERTY and inheriting from QOject
+### You can mark serializable fields of object using macro Q_PROPERTY and inheriting from QObject
  Q_PROPERTY should include atribute USER with value equal true
  Q_OBJECT macro should be included on your class to declare for moc-generator this type as a QObject
 ```C++
@@ -49,20 +49,15 @@ public:
  
   QString name;
   int age{0};
-  bool epmloyed{false};
+  bool employed{false};
   std::vector<QString> skills; 
-}
+};
 ```
 ## **Marshaling**
 ### In case with inherit QJsonMarshaler
 ```C++
 ...
 User u;
-u.name = "Bob";
-u.age = 20;
-u.employed = true;
-skills.push_back("Computer Scince");
-skills.push_back("Foreign languages");
 QJsonObject userJson = u.Marshal();
 ```
 ### In case with Q_PROPERTY
@@ -82,13 +77,13 @@ u.Unmarshal(userJson);
 ```C++
 ...
 QJsonObject userJson;
-User * u = QJsonObject::Unmarshal<User>(userJson);
+User * u = QJsonMarshaler::Unmarshal<User>(userJson);
 ```
 ### In case with Q_PROPERTY if you need to modify an existing object
 ```C++
 ...
 QJsonObject userJson;
-QJsonObject::Unmarshal(&u, userJson);
+QJsonMarshaler::Unmarshal(&u, userJson);
 ```
 
 

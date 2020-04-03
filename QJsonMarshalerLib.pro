@@ -49,8 +49,8 @@ CONFIG += debug_and_release
 build_all
 
 CONFIG(debug, debug|release){
-OBJECTS_DIR = debug
+DESTDIR = debug
 } else {
-OBJECTS_DIR = release
+DESTDIR = release
 }
 

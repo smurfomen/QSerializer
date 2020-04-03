@@ -32,7 +32,25 @@ HEADERS += \
         qjsonmarshalerlib_global.h \
         simplekeepers.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
+unix: {
+
+    CONFIG (debug, debug|release) {
+        TARGET = QJsonMarshalerLibd
+    } else {
+        TARGET = QJsonMarshalerLib
+    }
+} else {
+    TARGET = $$qtLibraryTarget(QJsonMarshaler)
 }
+
+VERSION = 0.1.3
+
+CONFIG += debug_and_release
+build_all
+
+CONFIG(debug, debug|release){
+OBJECTS_DIR = debug
+} else {
+OBJECTS_DIR = release
+}
+

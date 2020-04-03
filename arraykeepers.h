@@ -44,7 +44,7 @@ private:
 };
 
 
-template<typename T>
+template<typename A>
 class QMetaArrayKeeper : public PropertyKeeper
 {
 public:
@@ -59,7 +59,7 @@ public:
         QJsonValue result;
         QJsonArray resultArr;
         QVariant var = prop.read(obj);
-        std::vector<T> values = var.value<std::vector<T>>();
+        std::vector<A> values = var.value<std::vector<A>>();
         for(auto item : values)
         {
             resultArr.push_back(QJsonValue::fromVariant(QVariant(item)));
@@ -73,11 +73,11 @@ public:
     void setValue(QJsonValue val)
     {
         QJsonArray arr = val.toArray();
-        std::vector<T> v;
+        std::vector<A> v;
         for(auto item :arr)
         {
             QVariant var(item);
-            v.push_back(var.value<T>());
+            v.push_back(var.value<A>());
         }
         prop.write(obj, QVariant::fromValue(v));
     }

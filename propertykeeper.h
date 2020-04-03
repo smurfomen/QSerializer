@@ -20,12 +20,11 @@ class MarshalExeption
 public:
     enum Type
     {
-        NotFoundMarshallingElement,
+        NotFoundElement,
+        FailQObjectCast,
         UndefinedType
     };
-    MarshalExeption(Type t) : err(t){
-
-    }
+    MarshalExeption(Type t) : err(t) { }
 
     QString what()
     {

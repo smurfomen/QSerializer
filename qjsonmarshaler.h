@@ -38,9 +38,12 @@ public:
     template<typename T>
     static T * Unmarshal(QJsonObject json)
     {
-        T * tObj = new T();
-        QJsonMarshaler::Unmarshal(tObj, json);
-        return tObj;
+        QObject * qobj = new T();
+        T * targetObj = qobject_cast<T*>(qobj);
+        if(targetObj == nullptr)
+            throw (MarshalExeption(MarshalExeption::FailQObjectCast));
+        QJsonMarshaler::Unmarshal(targetObj, json);
+        return targetObj;
     }
 
     // производит анмаршалинг объекта JSON и устанавливает подходящие поля объекту QObject

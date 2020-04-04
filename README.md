@@ -1,7 +1,15 @@
 # This repo for Qt/C++ Json Marshaling based on QtCore
-## Workflow on _Qt/C++_
-## **Mark serialization fields**
-#### You can inherit from QJsonMarshaler and gain access to property setting functions
+
+## Installation
+First of all, you need to assemble a project. The easiest way to do this is with QtCreator. An external library can be added from the project tree in QtCreator.
+
+Next, you need to specify the path to the library binaries from the compiled directory with the .so extension files and header files.
+Binary and object files will be located in the appropriate folder (debug or release) in the assembly directory.
+Header files are at the root of the QJsonMarshalerLib repository directory.
+
+# Workflow on _Qt/C++_
+## Mark serialization fields
+### You can inherit from QJsonMarshaler and gain access to property setting functions
 ```C++
 // In first make the class serializable
 class User : public QJsonMarshaler
@@ -18,13 +26,13 @@ public:
   
   QString name;
   int age{0};
-  bool epmloyed{false};
+  bool employed{false};
   std::vector<QString> skills; 
-}
+};
 ```
-#### You can mark serializable fields of object using macro Q_PROPERTY and inheriting from QOject
- * Q_PROPERTY should include atribute USER with value equal true
- * Q_OBJECT macro should be included on your class to declare for moc-generator this type as a QObject
+### You can mark serializable fields of object using macro Q_PROPERTY and inheriting from QObject
+ Q_PROPERTY should include atribute USER with value equal true
+ Q_OBJECT macro should be included on your class to declare for moc-generator this type as a QObject
 ```C++
 // In first make the class serializable
 class User : public QObject
@@ -41,46 +49,41 @@ public:
  
   QString name;
   int age{0};
-  bool epmloyed{false};
+  bool employed{false};
   std::vector<QString> skills; 
-}
+};
 ```
 ## **Marshaling**
-#### In case with inherit QJsonMarshaler
+### In case with inherit QJsonMarshaler
 ```C++
 ...
 User u;
-u.name = "Bob";
-u.age = 20;
-u.employed = true;
-skills.push_back("Computer Scince");
-skills.push_back("Foreign languages");
 QJsonObject userJson = u.Marshal();
 ```
-#### In case with Q_PROPERTY
+### In case with Q_PROPERTY
 ```C++
 QJsonObject userJson = QJsonMarshaler::Marshal(&u);
 ```
 
 ## **Unmarshaling**
-#### In case with inherit QJsonMarshaler
+### In case with inherit QJsonMarshaler
 ```C++
 ...
 QJsonObject userJson;
 User u;
 u.Unmarshal(userJson);
 ```
-#### In case with Q_PROPERTY if you need to get a new serialized object
+### In case with Q_PROPERTY if you need to get a new serialized object
 ```C++
 ...
 QJsonObject userJson;
-User * u = QJsonObject::Unmarshal<User>(userJson);
+User * u = QJsonMarshaler::Unmarshal<User>(userJson);
 ```
-#### In case with Q_PROPERTY if you need to modify an existing object
+### In case with Q_PROPERTY if you need to modify an existing object
 ```C++
 ...
 QJsonObject userJson;
-QJsonObject::Unmarshal(&u, userJson);
+QJsonMarshaler::Unmarshal(&u, userJson);
 ```
 
 

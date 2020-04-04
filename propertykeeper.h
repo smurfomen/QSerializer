@@ -5,6 +5,8 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonDocument>
+
+// предоставляет интерфейс для доступа к полю и связанной с ним JSON аннотацией
 class PropertyKeeper
 {
 public:
@@ -14,7 +16,7 @@ public:
 };
 
 
-
+// класс исключения
 class MarshalExeption
 {
 public:

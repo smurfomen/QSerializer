@@ -47,7 +47,8 @@ void QJsonMarshaler::UnmarshalDocument(QJsonDocument doc)
 
 void QJsonMarshaler::Unmarshal(QObject *obj, QJsonObject json)
 {
-    std::vector<PropertyKeeper*> keepers = getMetaKeepersCollection(obj);
+    KeepersFactory factory;
+    std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(obj);
 
     QStringList keys = json.keys();
     for(QString &key : keys)
@@ -64,7 +65,8 @@ void QJsonMarshaler::Unmarshal(QObject *obj, QJsonObject json)
 
 QJsonObject QJsonMarshaler::Marshal(QObject *obj)
 {
-    std::vector<PropertyKeeper*> keepers = getMetaKeepersCollection(obj);
+    KeepersFactory factory;
+    std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(obj);
 
     QJsonObject json;
     for(auto keeper : keepers)
@@ -86,34 +88,6 @@ QJsonObject QJsonMarshaler::Marshal()
     return QJsonObject::fromVariantMap(map);
 }
 
-PropertyKeeper *QJsonMarshaler::getMetaKeeper(QObject *obj, QMetaProperty prop)
-{
-    int t_id = QMetaType::type(prop.typeName());
-    if( t_id == qMetaTypeId<std::vector<int>>())
-        return new QMetaArrayKeeper<int>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<QString>>())
-        return new QMetaArrayKeeper<QString>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<double>>())
-        return new QMetaArrayKeeper<double>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<bool>>())
-        return new QMetaArrayKeeper<bool>(obj, prop);
-
-    return new QMetaSimpleKeeper(obj,prop);
-}
-
-std::vector<PropertyKeeper *> QJsonMarshaler::getMetaKeepersCollection(QObject *obj)
-{
-    std::vector<PropertyKeeper*> keepers;
-    for(int i = 0; i < obj->metaObject()->propertyCount(); i++)
-    {
-        if(obj->metaObject()->property(i).isUser(obj))
-            keepers.push_back(getMetaKeeper(obj, obj->metaObject()->property(i)));
-    }
-    return keepers;
-}
 
 void QJsonMarshaler::Unmarshal(QJsonObject json)
 {

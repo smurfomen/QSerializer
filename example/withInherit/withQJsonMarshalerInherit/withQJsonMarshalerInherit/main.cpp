@@ -1,13 +1,11 @@
 #include <QCoreApplication>
-#include <QFile>
-#include <QJsonDocument>
-#include <qjsonmarshalerlib_global.h>
-#include <qjsonmarshaler.h>
 #include "employee.h"
+#include <QFile>
+
 const QString USER_JSON_FILE_NAME = "user_data.json";
 
-void writeEmployeeToJsonFile(Employee * e);
-Employee * readEmployeeFromJsonFile();
+void writeEmployeeToJsonFile(Employee &e);
+void readEmployeeFromJsonFile(Employee &e);
 
 int main(int argc, char *argv[])
 {
@@ -15,16 +13,17 @@ int main(int argc, char *argv[])
 
     Employee employee;
 
-    writeEmployeeToJsonFile(&employee);
+    writeEmployeeToJsonFile(employee);
 
-    Employee * employee2 = readEmployeeFromJsonFile();
+    Employee employee2;
+    readEmployeeFromJsonFile(employee);
 
     return a.exec();
 }
 
-void writeEmployeeToJsonFile(Employee * e)
+void writeEmployeeToJsonFile(Employee &e)
 {
-    QJsonObject jsonUser =  QJsonMarshaler::Marshal(e);
+    QJsonObject jsonUser = e.Marshal();
     QJsonDocument document(jsonUser);
     QFile file(USER_JSON_FILE_NAME);
     if(file.exists())
@@ -36,15 +35,13 @@ void writeEmployeeToJsonFile(Employee * e)
     }
 }
 
-Employee * readEmployeeFromJsonFile()
+void readEmployeeFromJsonFile(Employee &e)
 {
     QFile file (USER_JSON_FILE_NAME);
     if(file.open(QIODevice::ReadOnly))
     {
         QJsonObject jsonObj = QJsonDocument::fromJson(file.readAll()).object();
         file.close();
-        return QJsonMarshaler::Unmarshal<Employee>(jsonObj);
+        e.Unmarshal(jsonObj);
     }
-    throw -1;
 }
-

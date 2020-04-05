@@ -5,7 +5,9 @@ First of all, you need to assemble a project. The easiest way to do this is with
 
 Next, you need to specify the path to the library binaries from the compiled directory with the .so extension files and header files.
 Binary and object files will be located in the appropriate folder (debug or release) in the assembly directory.
-Header files are at the root of the QJsonMarshalerLib repository directory.
+Header files are at dir src of the QJsonMarshalerLib repository directory.
+
+Demos for using QJsonMarshalerLib are in the examples folder. There are also collected binaries of the examples/build library. Examples of output JSON files can be found in the root of the examples.
 
 # Workflow on _Qt/C++_
 ## Mark serialization fields

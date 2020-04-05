@@ -2,7 +2,7 @@
 #include "employee.h"
 #include <QFile>
 
-const QString USER_JSON_FILE_NAME = "user_data.json";
+const QString EMPLOYEE_FILE = "employeeOutput.json";
 
 void writeEmployeeToJsonFile(Employee &e);
 void readEmployeeFromJsonFile(Employee &e);
@@ -25,7 +25,7 @@ void writeEmployeeToJsonFile(Employee &e)
 {
     QJsonObject jsonUser = e.Marshal();
     QJsonDocument document(jsonUser);
-    QFile file(USER_JSON_FILE_NAME);
+    QFile file(EMPLOYEE_FILE);
     if(file.exists())
         file.remove();
     if(file.open(QIODevice::WriteOnly))
@@ -37,7 +37,7 @@ void writeEmployeeToJsonFile(Employee &e)
 
 void readEmployeeFromJsonFile(Employee &e)
 {
-    QFile file (USER_JSON_FILE_NAME);
+    QFile file (EMPLOYEE_FILE);
     if(file.open(QIODevice::ReadOnly))
     {
         QJsonObject jsonObj = QJsonDocument::fromJson(file.readAll()).object();

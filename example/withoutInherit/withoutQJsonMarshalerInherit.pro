@@ -25,13 +25,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     employee.h
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../build/release/release/ -lQJsonMarshalerLib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../build/release/debug/ -lQJsonMarshalerLib
-else:unix: LIBS += -L$$PWD/../../build/release/ -lQJsonMarshalerLib
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build/release/release/ -lQJsonMarshalerLib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/release/debug/ -lQJsonMarshalerLib
+else:unix: LIBS += -L$$PWD/../build/release/ -lQJsonMarshalerLib
 
-INCLUDEPATH += $$PWD/../../../src
-DEPENDPATH += $$PWD/../../../src
+INCLUDEPATH += $$PWD/../../src
+DEPENDPATH += $$PWD/../../src
 
 MOC_DIR += ./moc
 OBJECTS_DIR += ./objects
-

@@ -1,18 +1,23 @@
-# This repo for Qt/C++ Json Marshaling based on QtCore
+# QJsonMarshaler library 
+This project is designed to convert data from an object view to JSON and from JSON to an object view in the Qt / C ++ ecosystem. C ++ classes by default do not have the required meta-object information for serializing class fields, but Qt is equipped with its own highly efficient meta-object system.
+An important feature of the library is the ability to specify serializable fields of the class without having to serialize the entire class. This is convenient because you do not need to create separate structures or classes for serialization.
 
 ## Installation
-First of all, you need to assemble a project. The easiest way to do this is with QtCreator. An external library can be added from the project tree in QtCreator.
+Download repository
+```bash
+$ git clone https://github.com/smurfomen/QJsonMarshalerLib
+$ cd QJsonMarshalerLib
+```
+Open file QJsonMarshalerLib.pro with QtCreator and build project. Binaries will be in the build folder after building, divided into folders "debug" and "release". To connect the library to your project, right-click on your project> select "Add Library"> "External Library" and in the window that opens, specify the path to the .so file from the "release" folder. Header files are located in the src folder from the root of the repository.
 
-Next, you need to specify the path to the library binaries from the compiled directory with the .so extension files and header files.
-Binary and object files will be located in the appropriate folder (debug or release) in the assembly directory.
-Header files are at dir src of the QJsonMarshalerLib repository directory.
+Demo-projects for using QJsonMarshalerLib locate are in the examples folder. There are also collected binaries of the examples/build library. Examples of output JSON files can be found in the root of the examples.
 
-Demos for using QJsonMarshalerLib are in the examples folder. There are also collected binaries of the examples/build library. Examples of output JSON files can be found in the root of the examples.
-
-# Workflow on _Qt/C++_
+## Workflow
 ## Mark serialization fields
 ### You can inherit from QJsonMarshaler and gain access to property setting functions
 ```C++
+#include <qjsonmarshaler.h>
+
 // In first make the class serializable
 class User : public QJsonMarshaler
 {

@@ -28,7 +28,7 @@ public:
         score = 82.23;
         phoneNumbers.push_back("+12345678989");
         phoneNumbers.push_back("+98765432121");
-        for(int i = 0; i < 30; i++)
+        for(int i = 0; i < 5; i++)
             workShedule.push_back(i);
         onVacation = true;
     }

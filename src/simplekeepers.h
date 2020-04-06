@@ -41,32 +41,48 @@ protected:
 };
 
 
-/// \brief хранитель обычного поля (не массива) QMetaProperty у указанного QObject
-class QMetaSimpleKeeper : public PropertyKeeper
+/// \brief простой хранитель массивов типа А с жесткой привязкой к массиву объекта по указателю
+template<typename A>
+class SimpleArrayKeeper : public PropertyKeeper
 {
 public:
-    QMetaSimpleKeeper(QObject * obj, QMetaProperty prop)
+    SimpleArrayKeeper(std::vector<A> * parr, QString pName)
     {
-        this->linkedObj = obj;
-        this->prop = prop;
+        this->key = pName;
+        this->linkedArray = parr;
     }
 
-    /// \brief вернуть пару из ключа и JSON значения из указанной QMetaProperty связанного объекта
+    /// \brief вернуть пару из ключа и JSON массива по связанному указателю
     std::pair<QString, QJsonValue> getValue()
     {
-        QJsonValue result = QJsonValue::fromVariant(prop.read(linkedObj));
-        return std::make_pair(QString(prop.name()), result);
+        QJsonArray arr;
+        for(int i = 0; i< linkedArray->size(); i++)
+        {
+            QVariant var;
+            var.setValue(linkedArray->at(i));
+            arr.push_back(QJsonValue::fromVariant(var));
+        }
+        return std::make_pair(key,QJsonValue(arr));
     }
 
-    /// \brief задать новое значение для связанной с хранимой QMetaProperty поля связанного объекта из JSON
+    /// \brief перенаполнение связанного указателем массива из JSON
     void setValue(QJsonValue val)
     {
-        prop.write(linkedObj, QVariant(val));
+        QJsonArray array = val.toArray();
+        if(array.isEmpty())
+            return;
+
+        linkedArray->clear();
+        for(QJsonValue item : array)
+        {
+            linkedArray->push_back(item.toVariant().value<A>());
+        }
     }
 
 private:
-    QObject * linkedObj;
-    QMetaProperty prop;
+    QString key;
+    std::vector<A> * linkedArray;
+
 };
 
 

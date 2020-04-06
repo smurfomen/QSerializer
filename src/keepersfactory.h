@@ -1,7 +1,7 @@
 #ifndef KEEPERSFACTORY_H
 #define KEEPERSFACTORY_H
 #include <simplekeepers.h>
-#include <arraykeepers.h>
+#include <metakeepers.h>
 #include <propertykeeper.h>
 
 /// \brief фабрика интерфейсов класса PropertyKeeper
@@ -22,10 +22,10 @@ public:
         return new SimpleArrayKeeper<A>(lArray, annotation);
     }
 
-    /// \brief возвращает хранитель QMeta хранитель для указанной QMetaProperty объекта
+    /// \brief возвращает Meta хранитель для указанной QMetaProperty объекта
     PropertyKeeper * getKeeper(QObject * obj, QMetaProperty prop);
 
-    /// \brief возвращает полный список QMeta хранителей для объекта по указанным у него QMetaProperty
+    /// \brief возвращает полный список Meta хранителей для объекта по указанным у него QMetaProperty
     std::vector<PropertyKeeper*> getKeepersForObject(QObject *obj);
 };
 

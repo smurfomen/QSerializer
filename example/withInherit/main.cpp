@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #include "employee.h"
 #include <QFile>
-
+#include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
 
 void writeEmployeeToJsonFile(Employee &e);
@@ -16,7 +16,9 @@ int main(int argc, char *argv[])
     writeEmployeeToJsonFile(employee);
 
     Employee employee2;
-    readEmployeeFromJsonFile(employee);
+    readEmployeeFromJsonFile(employee2);
+
+    qDebug()<<QString(QJsonDocument(employee2.Marshal()).toJson()).toStdString().c_str();
 
     return a.exec();
 }

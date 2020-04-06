@@ -24,11 +24,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         keepersfactory.cpp \
+        metakeepers.cpp \
         qjsonmarshaler.cpp
 
 HEADERS += \
-        arraykeepers.h \
         keepersfactory.h \
+        metakeepers.h \
         propertykeeper.h \
         qjsonmarshaler.h \
         qjsonmarshalerlib_global.h \

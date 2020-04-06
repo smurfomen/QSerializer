@@ -2,6 +2,45 @@
 #define EMPLOYEE_H
 #include <QObject>
 #include <vector>
+
+class Skill : public QObject
+{
+    Q_OBJECT
+
+    // set Json propertyes (mark ' USER true ' necessarily !!!)
+    Q_PROPERTY(double score MEMBER score USER true)
+    Q_PROPERTY(QString description MEMBER description USER true)
+public:
+    Skill(QString describtion, double score)
+    {
+        this->score = score;
+        this->description = describtion;
+    }
+
+    double score;
+    QString description;
+};
+
+class SPECIAL : public QObject
+{
+    Q_OBJECT
+
+    // set Json propertyes (mark ' USER true ' necessarily !!!)
+    Q_PROPERTY(Skill* strong MEMBER strong USER true)
+    Q_PROPERTY(Skill* agility MEMBER agility USER true)
+public:
+
+    SPECIAL()
+    {
+        strong = new Skill("STRONG", 8.88);
+        agility = new Skill("AGILITY", 5.67);
+    }
+
+    Skill * strong;
+    Skill * agility;
+};
+
+
 class Employee : public QObject
 {
     Q_OBJECT
@@ -14,6 +53,7 @@ class Employee : public QObject
     Q_PROPERTY(double score MEMBER score USER true)
     Q_PROPERTY(std::vector<QString> phone MEMBER phone USER true)
     Q_PROPERTY(std::vector<int> shedule MEMBER shedule USER true)
+    Q_PROPERTY(SPECIAL* skill MEMBER skill USER true)
 
 public:
     Employee()
@@ -25,9 +65,10 @@ public:
         score = 82.23;
         phone.push_back("+12345678989");
         phone.push_back("+98765432121");
-        for(int i = 0; i < 30; i++)
+        for(int i = 0; i < 5; i++)
             shedule.push_back(i);
         vacation = true;
+        skill = new SPECIAL();
     }
 
     QString name;
@@ -37,6 +78,7 @@ public:
     double score{0.0};
     std::vector<QString> phone;
     std::vector<int> shedule;
+    SPECIAL* skill;
 };
 
 #endif // EMPLOYEE_H

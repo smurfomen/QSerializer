@@ -48,6 +48,7 @@ void QJsonMarshaler::UnmarshalDocument(QJsonDocument doc)
 void QJsonMarshaler::Unmarshal(QObject *obj, QJsonObject json)
 {
     KeepersFactory factory;
+    // точка для рекурсии
     std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(obj);
 
     QStringList keys = json.keys();

@@ -24,6 +24,47 @@ public:
     }
 
 protected:
+
+    /// \brief накачивает переданный объект переданным JSONом
+    void fillObjectFromJson(QObject * qo, QJsonObject jsonObject)
+    {
+        /// перебор всех ключей у переданного JSON и всех хранителей у объекта, если нашли хранителя с подходящим ключом - отдаем значение по ключу в найденный хранитель
+        /// дальше он сам разберется что ему с ним делать, в зависимости от типа хранителя за прослойкой интерфейса
+        QStringList keys = jsonObject.keys();
+        std::vector<PropertyKeeper*> metaKeepers = getMetaKeepers(qo);
+        for(QString & key : keys)
+        {
+            for(int i = 0; i < metaKeepers.size(); i++)
+            {
+                PropertyKeeper * keeper = metaKeepers.at(i);
+                QString keeperKey = keeper->getValue().first;
+                if(key == keeperKey)
+                {
+                    keeper->setValue(jsonObject.value(key));
+                    metaKeepers.erase(metaKeepers.begin()+i);
+                }
+            }
+        }
+    }
+
+    /// \brief выкачивает JSON из переданного объекта
+    QJsonObject getJsonFromObject(QObject * qo)
+    {
+        /// взять коллекцию простых хранителей, хранящих в себе элементарные данные и взять у каждого хранителя его ключ и JSON значение
+        /// составить из этих значений объект.
+        /// внутри коллекции хранителей может быть любой хранитель (как элементарный так и хранитель вложенного объекта)
+        /// сбор информации будет продолжаться до тех пор, пока не упрется в последние элементарные хранители самых глубоковложенных объектов
+        /// и так же JSON значения (QJsonValue) будут возвращаться и сливаться в объекты до тех пор, пока не вернутся в корень для возврата вернут сформированного JSON объекта
+        QJsonObject json;
+        std::vector<PropertyKeeper*> keepers = getMetaKeepers(qo);
+        for(PropertyKeeper * keeper : keepers)
+        {
+            std::pair<QString, QJsonValue> keeperValue = keeper->getValue();
+            json.insert(keeperValue.first, keeperValue.second);
+        }
+        return json;
+    }
+
     QObject * linkedObj;
     QMetaProperty prop;
 };
@@ -48,7 +89,6 @@ public:
 };
 
 
-
 /// \brief хранитель массивов типа А для поля QMetaProperty у указанного QObject
 template<typename A>
 class QMetaArrayKeeper : public MetaPropertyKeeper
@@ -71,11 +111,11 @@ public:
     }
 
     /// \brief изменение значения поля из JSON по переданному QJsonValue
-    void setValue(QJsonValue val) override
+    void setValue(QJsonValue json) override
     {
         /// переводим значение в массив и наполняем вектор типа А, с которым был создан хранитель значениями из JSON массива
         /// в конце записываем в хранимое свойство связанного объекта этот вектор
-        QJsonArray arr = val.toArray();
+        QJsonArray arr = json.toArray();
         std::vector<A> v;
         for(auto item :arr)
         {
@@ -99,42 +139,72 @@ public:
     /// \brief возвращает пару из имени хранимого поля и упакованного в QJsonValue объекта JSON
     std::pair<QString, QJsonValue> getValue() override
     {
-        /// взять коллекцию простых хранителей, хранящих в себе элементарные данные и взять у каждого хранителя его ключ и JSON значение
-        /// составить из этих значений объект.
-        /// внутри коллекции хранителей может быть точно такой же хранитель (QMetaObjectKeeper), которых хранит в себе еще один вложенный объект и т.д.
-        /// сбор информации будет продолжаться до тех пор, пока не упрется в последние элементарные хранители самых глубоковложенных объектов
-        /// и так же JSON значения (QJsonValue) будут возвращаться и сливаться в объекты до тех пор, пока не вернутся в корень для возврата вернут сформированного JSON объекта
-        std::vector<PropertyKeeper*> keepers = getMetaKeepers(linkedObj);
-        QJsonObject result;
-        for(auto keeper : keepers)
-        {
-            std::pair<QString, QJsonValue> keeperValue = keeper->getValue();
-            result.insert(keeperValue.first, keeperValue.second);
-        }
+        QJsonObject result = getJsonFromObject(linkedObj);
         return std::make_pair(prop.name(),QJsonValue(result));
     }
 
     /// \brief изменение значения хранимого объекта по переданному QJsonValue, в который упакован объект
-    void setValue(QJsonValue val) override
+    void setValue(QJsonValue json) override
     {
-        /// перебор всех ключей и всех хранителей, если нашли хранителя с подходящим ключом - отдаем значение по ключу в найденный хранитель
-        /// дальше он сам разберется что ему с ним делать, в зависимости от типа хранителя за прослойкой интерфейса
-        QJsonObject jsonObject = val.toObject();
-        QStringList keys = jsonObject.keys();
-        std::vector<PropertyKeeper*> keepers = getMetaKeepers(linkedObj);
 
-        for(auto jsonKey : keys)
-        {
-            for(auto keeper : keepers)
-            {
-                QString keeperKey = keeper->getValue().first;
-                if(jsonKey == keeperKey)
-                {
-                    keeper->setValue(jsonObject.value(jsonKey));
-                }
-            }
-        }
+        QJsonObject jsonObject = json.toObject();
+        fillObjectFromJson(linkedObj, jsonObject);
     }
 };
+
+
+/// \brief хранитель массивов типа QObject или базового от него
+class QMetaObjectArrayKeeper : public MetaPropertyKeeper
+{
+public:
+    QMetaObjectArrayKeeper(QObject * obj, QMetaProperty prop) : MetaPropertyKeeper(obj, prop){ }
+    /// \brief возвращает пару из имени хранимого поля и упакованного в QJsonValue массива объектов
+    std::pair<QString, QJsonValue> getValue() override
+    {
+        QJsonArray result;
+        QVariant property = prop.read(linkedObj);
+        std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+
+        if(objects->size() != 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr)
+        {
+            for(QObject * qo : *objects)
+                result.push_back(getJsonFromObject(qo));
+        }
+
+        return std::make_pair(QString(prop.name()), QJsonValue(result));
+    }
+
+    /// \brief изменение значения хранимого массива объектов по переданному JSON массиву обернутому в QJsonValue
+    void setValue(QJsonValue json) override
+    {
+        QJsonArray jsonArray = json.toArray();
+        QVariant property = prop.read(linkedObj);
+
+        std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+
+        for(int i = 0; i < jsonArray.size() && i < objects->size(); i ++)
+        {
+            fillObjectFromJson(objects->at(i),jsonArray.at(i).toObject());
+        }
+
+
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif // ARRAYKEEPERS_H

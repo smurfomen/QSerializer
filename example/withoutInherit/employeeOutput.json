@@ -14,15 +14,26 @@
         3,
         4
     ],
-    "skill": {
-        "agility": {
-            "description": "AGILITY",
-            "score": 5.67
-        },
-        "strong": {
-            "description": "STRONG",
-            "score": 8.88
-        }
+    "special": {
+        "skills": [
+            {
+                "description": "STRONG",
+                "score": 8.88
+            },
+            {
+                "description": "AGILITY",
+                "score": 5.67
+            },
+            {
+                "description": "LUCK",
+                "score": 3.78
+            },
+            {
+                "description": "INTELLIGENCE",
+                "score": 7.09
+            }
+        ],
+        "total_score": 25.42
     },
     "vacation": true
 }

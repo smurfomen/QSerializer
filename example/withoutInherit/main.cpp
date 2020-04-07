@@ -5,7 +5,6 @@
 #include <qjsonmarshaler.h>
 #include "employee.h"
 #include <QDebug>
-#include <type_traits>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
 
 void writeEmployeeToJsonFile(Employee * e);
@@ -21,13 +20,16 @@ int main(int argc, char *argv[])
 
     Employee * employee2 = readEmployeeFromJsonFile();
 
-    qDebug()<<QString(QJsonDocument(QJsonMarshaler::Marshal(employee2)).toJson()).toStdString().c_str();
+    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QJsonMarshaler::Marshal(employee2)).toJson()).toStdString().c_str();
+    exit(0);
     return a.exec();
 }
 
 void writeEmployeeToJsonFile(Employee * e)
 {
     QJsonObject jsonUser =  QJsonMarshaler::Marshal(e);
+    qDebug()<<"EMPLOYEE 1"<<QString(QJsonDocument(jsonUser).toJson()).toStdString().c_str();
+
     QJsonDocument document(jsonUser);
     QFile file(EMPLOYEE_FILE);
     if(file.exists())

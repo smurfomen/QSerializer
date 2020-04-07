@@ -81,12 +81,18 @@ QJsonObject QJsonMarshaler::Marshal(QObject *obj)
 
 QJsonObject QJsonMarshaler::Marshal()
 {
-    QVariantMap map;
+//    QVariantMap map;
+//    for(PropertyKeeper * item : propertyes)
+//    {
+//        map.insert(item->getValue().first, item->getValue().second);
+//    }
+//    return QJsonObject::fromVariantMap(map);
+    QJsonObject o;
     for(PropertyKeeper * item : propertyes)
     {
-        map.insert(item->getValue().first, item->getValue().second);
+        o.insert(item->getValue().first, item->getValue().second);
     }
-    return QJsonObject::fromVariantMap(map);
+    return o;
 }
 
 

@@ -17,6 +17,7 @@ public:
         this->description = describtion;
     }
 
+private:
     double score;
     QString description;
 };
@@ -26,19 +27,17 @@ class SPECIAL : public QObject
     Q_OBJECT
 
     // set Json propertyes (mark ' USER true ' necessarily !!!)
-    Q_PROPERTY(Skill* strong MEMBER strong USER true)
-    Q_PROPERTY(Skill* agility MEMBER agility USER true)
+    Q_PROPERTY(std::vector<Skill*> skills MEMBER skills USER true)
+    Q_PROPERTY(double total_score MEMBER total_score USER true)
+
 public:
 
-    SPECIAL()
-    {
-        strong = new Skill("STRONG", 8.88);
-        agility = new Skill("AGILITY", 5.67);
-    }
+    SPECIAL() { }
 
-    Skill * strong;
-    Skill * agility;
+    std::vector<Skill*> skills;
+    double total_score{0.0};
 };
+Q_DECLARE_METATYPE(std::vector<Skill*>)
 
 
 class Employee : public QObject
@@ -53,7 +52,7 @@ class Employee : public QObject
     Q_PROPERTY(double score MEMBER score USER true)
     Q_PROPERTY(std::vector<QString> phone MEMBER phone USER true)
     Q_PROPERTY(std::vector<int> shedule MEMBER shedule USER true)
-    Q_PROPERTY(SPECIAL* skill MEMBER skill USER true)
+    Q_PROPERTY(SPECIAL* special MEMBER special USER true)
 
 public:
     Employee()
@@ -68,9 +67,19 @@ public:
         for(int i = 0; i < 5; i++)
             shedule.push_back(i);
         vacation = true;
-        skill = new SPECIAL();
+        special = new SPECIAL();
+
+        special->skills.push_back(new Skill("STRONG", 8.88));
+        special->total_score += 8.88;
+        special->skills.push_back(new Skill("AGILITY", 5.67));
+        special->total_score += 5.67;
+        special->skills.push_back(new Skill("LUCK", 3.78));
+        special->total_score += 3.78;
+        special->skills.push_back(new Skill("INTELLIGENCE", 7.09));
+        special->total_score += 7.09;
     }
 
+private:
     QString name;
     QString email;
     int age{0};
@@ -78,7 +87,8 @@ public:
     double score{0.0};
     std::vector<QString> phone;
     std::vector<int> shedule;
-    SPECIAL* skill;
+    SPECIAL* special;
 };
+
 
 #endif // EMPLOYEE_H

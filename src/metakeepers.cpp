@@ -1,5 +1,4 @@
 #include <metakeepers.h>
-#include <simplekeepers.h>
 PropertyKeeper *getMetaKeeper(QObject *obj, QMetaProperty prop)
 {
     /// JSON поддерживает такие типы данных как int, string, bool, double

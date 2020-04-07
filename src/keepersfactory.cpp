@@ -7,7 +7,6 @@ PropertyKeeper *KeepersFactory::getKeeper(QObject *obj, QMetaProperty prop)
 }
 
 
-
 std::vector<PropertyKeeper *> KeepersFactory::getKeepersForObject(QObject *obj)
 {
     return getMetaKeepers(obj);

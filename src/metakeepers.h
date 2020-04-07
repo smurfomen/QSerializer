@@ -5,7 +5,6 @@
 #include <QMetaProperty>
 #include <QMetaType>
 #include <QVariant>
-#include <type_traits>
 
 /// \brief возвращает один из Meta хранителей, подходящих для переданного свойства связанного объекта, обернутый в базовый интерфейс хранителя
 PropertyKeeper * getMetaKeeper(QObject *obj, QMetaProperty prop);
@@ -22,7 +21,6 @@ public:
         this->linkedObj = obj;
         this->prop = prop;
     }
-
 protected:
 
     /// \brief накачивает переданный объект переданным JSONом
@@ -186,8 +184,6 @@ public:
         {
             fillObjectFromJson(objects->at(i),jsonArray.at(i).toObject());
         }
-
-
     }
 };
 

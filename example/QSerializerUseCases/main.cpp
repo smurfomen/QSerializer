@@ -1,8 +1,8 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QJsonDocument>
-#include <qjsonmarshalerlib_global.h>
-#include <qjsonmarshaler.h>
+#include <qserializerlib_global.h>
+#include <qserializer.h>
 #include "employee.h"
 #include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
@@ -20,14 +20,14 @@ int main(int argc, char *argv[])
 
     Employee * employee2 = readEmployeeFromJsonFile();
 
-    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QJsonMarshaler::Marshal(employee2)).toJson()).toStdString().c_str();
+    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QSerializer::toJson(employee2)).toJson()).toStdString().c_str();
     exit(0);
     return a.exec();
 }
 
 void writeEmployeeToJsonFile(Employee * e)
 {
-    QJsonObject jsonUser =  QJsonMarshaler::Marshal(e);
+    QJsonObject jsonUser =  QSerializer::toJson(e);
     qDebug()<<"EMPLOYEE 1"<<QString(QJsonDocument(jsonUser).toJson()).toStdString().c_str();
 
     QJsonDocument document(jsonUser);
@@ -48,7 +48,7 @@ Employee * readEmployeeFromJsonFile()
     {
         QJsonObject jsonObj = QJsonDocument::fromJson(file.readAll()).object();
         file.close();
-        return QJsonMarshaler::Unmarshal<Employee>(jsonObj);
+        return QSerializer::fromJson<Employee>(jsonObj);
     }
     throw -1;
 }

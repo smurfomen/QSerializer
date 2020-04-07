@@ -1,6 +1,5 @@
 #ifndef KEEPERSFACTORY_H
 #define KEEPERSFACTORY_H
-#include <simplekeepers.h>
 #include <metakeepers.h>
 #include <propertykeeper.h>
 
@@ -8,20 +7,6 @@
 class KeepersFactory
 {
 public:
-    /// \brief возвращает простой хранитель для указанного поля
-    template<typename T>
-    PropertyKeeper * getKeeper(T * lField, QString annotation)
-    {
-        return new SimpleKeeper<T>(lField, annotation);
-    }
-
-    /// \brief возвращает простой хранитель массивов для указанного поля
-    template<typename A>
-    PropertyKeeper * getKeeper(std::vector<A> *lArray, QString annotation)
-    {
-        return new SimpleArrayKeeper<A>(lArray, annotation);
-    }
-
     /// \brief возвращает Meta хранитель для указанной QMetaProperty объекта
     PropertyKeeper * getKeeper(QObject * obj, QMetaProperty prop);
 

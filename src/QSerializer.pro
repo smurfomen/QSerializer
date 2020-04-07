@@ -4,12 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       -= core
+QT       += core
 
-TARGET = QJsonMarshalerLib
+TARGET = QSerializer
 TEMPLATE = lib
 
-DEFINES += QJSONMARSHALERLIB_LIBRARY
+DEFINES += QSERIALIZER_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -25,25 +25,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         keepersfactory.cpp \
         metakeepers.cpp \
-        qjsonmarshaler.cpp
+        qserializer.cpp
 
 HEADERS += \
         keepersfactory.h \
         metakeepers.h \
         propertykeeper.h \
-        qjsonmarshaler.h \
-        qjsonmarshalerlib_global.h \
-        simplekeepers.h
+        qserializer.h \
+        qserializerlib_global.h
 
 unix: {
 
     CONFIG (debug, debug|release) {
-        TARGET = QJsonMarshalerLibd
+        TARGET = QSerializerd
     } else {
-        TARGET = QJsonMarshalerLib
+        TARGET = QSerializer
     }
 } else {
-    TARGET = $$qtLibraryTarget(QJsonMarshaler)
+    TARGET = $$qtLibraryTarget(QSerializer)
 }
 
 VERSION = 0.1.3

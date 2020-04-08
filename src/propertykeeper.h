@@ -1,5 +1,6 @@
 #ifndef PROPERTYKEEPER_H
 #define PROPERTYKEEPER_H
+#include <qserializerlib_global.h>
 
 #include <QJsonArray>
 #include <QJsonValue>
@@ -14,29 +15,5 @@ public:
     virtual std::pair<QString, QJsonValue> getValue() = 0;
     virtual void setValue(QJsonValue) = 0;
 };
-
-
-// класс исключения
-class MarshalExeption
-{
-public:
-    enum Type
-    {
-        NotFoundElement,
-        FailQObjectCast,
-        UndefinedType
-    };
-    MarshalExeption(Type t) : err(t) { }
-
-    QString what()
-    {
-        return  "";
-    }
-
-private:
-    Type err;
-};
-
-
 
 #endif // PROPERTYKEEPER_H

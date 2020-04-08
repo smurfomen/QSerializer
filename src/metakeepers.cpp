@@ -8,7 +8,7 @@ PropertyKeeper *getMetaKeeper(QObject *obj, QMetaProperty prop)
     QObject * castobj = qvariant_cast<QObject *>(prop.read(obj));
     if(castobj)
         return new QMetaObjectKeeper(castobj,prop);
-    ///
+
     int t_id = QMetaType::type(prop.typeName());
     if( t_id == qMetaTypeId<std::vector<int>>())
         return new QMetaArrayKeeper<int>(obj, prop);

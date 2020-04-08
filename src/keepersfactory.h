@@ -1,5 +1,7 @@
 #ifndef KEEPERSFACTORY_H
 #define KEEPERSFACTORY_H
+#include <qserializerlib_global.h>
+
 #include <metakeepers.h>
 #include <propertykeeper.h>
 

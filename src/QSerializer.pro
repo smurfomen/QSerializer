@@ -25,14 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         keepersfactory.cpp \
         metakeepers.cpp \
-        qserializer.cpp
+        qserializer.cpp \
+        serializerexception.cpp
 
 HEADERS += \
         keepersfactory.h \
         metakeepers.h \
         propertykeeper.h \
         qserializer.h \
-        qserializerlib_global.h
+        qserializerlib_global.h \
+        serializerexception.h
 
 unix: {
 
@@ -45,10 +47,9 @@ unix: {
     TARGET = $$qtLibraryTarget(QSerializer)
 }
 
-VERSION = 0.1.3
+VERSION = 1.0.0
 
-CONFIG += debug_and_release
-build_all
+CONFIG += debug_and_release build_all
 
 CONFIG(debug, debug|release){
 DESTDIR = debug

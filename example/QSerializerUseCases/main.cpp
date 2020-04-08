@@ -1,8 +1,9 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QJsonDocument>
-#include <qserializerlib_global.h>
+
 #include <qserializer.h>
+
 #include "employee.h"
 #include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
@@ -13,7 +14,6 @@ Employee * readEmployeeFromJsonFile();
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
     Employee employee;
 
     writeEmployeeToJsonFile(&employee);
@@ -50,6 +50,6 @@ Employee * readEmployeeFromJsonFile()
         file.close();
         return QSerializer::fromJson<Employee>(jsonObj);
     }
-    throw -1;
+    throw std::exception();
 }
 

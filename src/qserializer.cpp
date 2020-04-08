@@ -1,8 +1,6 @@
 #include "qserializer.h"
 #include <map>
-QSerializer::QSerializer(){
-
-}
+#include <keepersfactory.h>
 
 void QSerializer::fromJson(QObject *obj, QJsonObject json)
 {

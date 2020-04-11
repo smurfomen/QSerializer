@@ -1,9 +1,13 @@
 #ifndef QJSONMARSHALER_H
 #define QJSONMARSHALER_H
 #include <qserializerlib_global.h>
+#include <serializerexception.h>
+
 #include <QObject>
 #include <QJsonObject>
-#include <serializerexception.h>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+
 
 namespace QSerializer {
     /// \brief производит сериализацию JSON в переданный QObject согласно имеющейся у объекта метаинформации
@@ -22,6 +26,10 @@ namespace QSerializer {
 
     /// \brief производит сериализацию QObject в JSON по имеющейся у объекта метаинформации
     QSERIALIZER_EXPORT QJsonObject toJson(QObject * obj);
+
+    QSERIALIZER_EXPORT QDomDocument toXml(QObject * obj);
+
+    QSERIALIZER_EXPORT void fromXml(QObject * obj, QDomNode &xml);
 }
 
 

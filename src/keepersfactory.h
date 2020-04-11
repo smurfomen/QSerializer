@@ -9,11 +9,16 @@
 class KeepersFactory
 {
 public:
+    ~KeepersFactory();
+
     /// \brief возвращает Meta хранитель для указанной QMetaProperty объекта
     PropertyKeeper * getKeeper(QObject * obj, QMetaProperty prop);
 
     /// \brief возвращает полный список Meta хранителей для объекта по указанным у него QMetaProperty
     std::vector<PropertyKeeper*> getKeepersForObject(QObject *obj);
+
+private:
+    std::vector<PropertyKeeper*> t_keepers;
 };
 
 #endif // KEEPERSFACTORY_H

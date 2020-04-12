@@ -1,127 +1,180 @@
 #include <metakeepers.h>
 #include <keepersfactory.h>
-PropertyKeeper *getMetaKeeper(QObject *obj, QMetaProperty prop)
+#include <qserializer.h>
+
+
+
+std::pair<QString, QJsonValue> QMetaSimpleKeeper::toJson()
 {
-    /// JSON поддерживает такие типы данных как int, string, bool, double
-    /// соответственно если сериализуемое свойство не представляет собой один из этих типов или массив из этих типов, то это вложенный объект
-    /// такой объект нужно разобрать на составляющие, это делается в QMetaObjectKeeper.
-    /// В конце концов любой объект состоит либо из элементарных типов либо из таких же объектов
-    QObject * castobj = qvariant_cast<QObject *>(prop.read(obj));
-    if(castobj)
-        return new QMetaObjectKeeper(castobj,prop);
-
-    int t_id = QMetaType::type(prop.typeName());
-    if( t_id == qMetaTypeId<std::vector<int>>())
-        return new QMetaArrayKeeper<int>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<QString>>())
-        return new QMetaArrayKeeper<QString>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<double>>())
-        return new QMetaArrayKeeper<double>(obj, prop);
-
-    else if(t_id == qMetaTypeId<std::vector<bool>>())
-        return new QMetaArrayKeeper<bool>(obj, prop);
-
-    else if (QString(prop.typeName()).contains("std::vector<"))
-        return new QMetaObjectArrayKeeper(obj, prop);
-
-    return new QMetaSimpleKeeper(obj,prop);
+    QJsonValue result = QJsonValue::fromVariant(prop.read(linkedObj));
+    return std::make_pair(QString(prop.name()), result);
 }
 
-
-
-std::vector<PropertyKeeper *> getMetaKeepers(QObject *obj)
+void QMetaSimpleKeeper::fromJson(const QJsonValue &val)
 {
-    std::vector<PropertyKeeper*> keepers;
-    for(int i = 0; i < obj->metaObject()->propertyCount(); i++)
+    prop.write(linkedObj, QVariant(val));
+}
+
+std::pair<QString, QDomNode> QMetaSimpleKeeper::toXml()
+{
+    QDomDocument doc;
+    QDomElement element = doc.createElement(prop.name());
+    element.setAttribute("type",prop.typeName());
+    QDomText valueOfProp = doc.createTextNode(prop.read(linkedObj).toString());
+    element.appendChild(valueOfProp);
+    doc.appendChild(element);
+    return  std::make_pair(QString(prop.name()), QDomNode(doc));
+}
+
+void QMetaSimpleKeeper::fromXml(const QDomNode &node)
+{
+    if(!node.isNull() && node.isElement())
     {
-        if(obj->metaObject()->property(i).isUser(obj))
-            keepers.push_back(getMetaKeeper(obj, obj->metaObject()->property(i)));
+        QDomElement domElement = node.toElement();
+        if(domElement.tagName() == prop.name())
+            prop.write(linkedObj, QVariant(domElement.text()));
     }
-    return keepers;
 }
 
 
 
-void MetaObjectKeeper::fillObjectFromJson(QObject *qo, const QJsonValue & json)
+
+
+
+
+
+
+
+
+std::pair<QString, QJsonValue> QMetaObjectKeeper::toJson()
+{
+    QJsonObject result = QSerializer::toJson(linkedObj);;
+    return std::make_pair(prop.name(),QJsonValue(result));
+}
+
+void QMetaObjectKeeper::fromJson(const QJsonValue &json)
 {
     if(!json.isObject())
         throw QSException(JsonObjectExpected);
 
-    /// перебор всех ключей у переданного JSON и всех хранителей у объекта, если нашли хранителя с подходящим ключом - отдаем значение по ключу в найденный хранитель
-    /// дальше он сам разберется что ему с ним делать, в зависимости от типа хранителя за прослойкой интерфейса
-    QJsonObject jsonObject = json.toObject();
-    QStringList keys = jsonObject.keys();
-    KeepersFactory factory;
-    std::vector<PropertyKeeper*> metaKeepers = factory.getKeepersForObject(qo);
-    for(QString & key : keys)
+    QSerializer::fromJson(linkedObj, json.toObject());
+}
+
+std::pair<QString, QDomNode> QMetaObjectKeeper::toXml()
+{
+    return std::make_pair(QString(prop.name()), QSerializer::toXml(linkedObj));
+}
+
+void QMetaObjectKeeper::fromXml(const QDomNode &node)
+{
+    QSerializer::fromXml(linkedObj, node);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::pair<QString, QJsonValue> QMetaObjectArrayKeeper::toJson()
+{
+    return std::make_pair(QString(prop.name()), makeJson());
+}
+
+void QMetaObjectArrayKeeper::fromJson(const QJsonValue &json)
+{
+    if(!json.isArray())
+        throw QSException(JsonArrayExpected);
+
+    QJsonArray jsonArray = json.toArray();
+    fillArray(jsonArray);
+}
+
+std::pair<QString, QDomNode> QMetaObjectArrayKeeper::toXml()
+{
+    return std::make_pair(QString(prop.name()), makeXml());
+}
+
+void QMetaObjectArrayKeeper::fromXml(const QDomNode &node)
+{
+    QDomNodeList nodesList = node.childNodes();
+    fillArray(nodesList);
+}
+
+void QMetaObjectArrayKeeper::fillArray(const QJsonArray &jsonArray)
+{
+    QVariant property = prop.read(linkedObj);
+    std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+
+    if(objects != nullptr && (objects->size() == 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr))
     {
-        for(int i = 0; i < metaKeepers.size(); i++)
+        for(int i = 0; i < jsonArray.size(); i ++)
         {
-            PropertyKeeper * keeper = metaKeepers.at(i);
-            QString keeperKey = keeper->toJson().first;
-            if(key == keeperKey)
-            {
-                keeper->fromJson(jsonObject.value(key));
-                metaKeepers.erase(metaKeepers.begin()+i);
-            }
+            if(!jsonArray.at(i).isObject())
+                throw QSException(JsonObjectExpected);
+
+            QSerializer::fromJson(objects->at(i), jsonArray.at(i).toObject());
         }
     }
+    else
+        throw QSException(InvalidQObject);
 }
 
-void MetaObjectKeeper::fillObjectFromXml(QObject *qo, const QDomNode & xml)
+void QMetaObjectArrayKeeper::fillArray(const QDomNodeList &nodeList)
 {
-    KeepersFactory factory;
-    std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(qo);
-    QDomDocument doc = xml.toDocument();
-    QDomNode node = doc.firstChild().firstChild();
-    while(!node.isNull())
+    QVariant property = prop.read(linkedObj);
+    std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+
+    if(objects != nullptr && (objects->size() == 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr))
     {
-        QDomElement element = node.toDocument().documentElement();
-        for(int i = 0; i < keepers.size(); i++)
-        {
-            PropertyKeeper * keeper = keepers.at(i);
-            if(element.tagName() == keeper->toXml().first)
-            {
-                keeper->fromXml(element);
-                keepers.erase(keepers.begin()+i);
-                break;
-            }
-        }
-        node = node.nextSibling();
+        for(int i = 0; i < nodeList.size() && i < objects->size(); i++)
+            QSerializer::fromXml(objects->at(i), nodeList.at(i));
     }
+    else
+        throw QSException(InvalidQObject);;
 }
 
-QJsonObject MetaObjectKeeper::getJsonFromObject(QObject *qo)
+QJsonValue QMetaObjectArrayKeeper::makeJson()
 {
-    /// взять коллекцию простых хранителей, хранящих в себе элементарные данные и взять у каждого хранителя его ключ и JSON значение
-    /// составить из этих значений объект.
-    /// внутри коллекции хранителей может быть любой хранитель (как элементарный так и хранитель вложенного объекта)
-    /// сбор информации будет продолжаться до тех пор, пока не упрется в последние элементарные хранители самых глубоковложенных объектов
-    /// и так же JSON значения (QJsonValue) будут возвращаться и сливаться в объекты до тех пор, пока не вернутся в корень для возврата вернут сформированного JSON объекта
-    QJsonObject json;
-    KeepersFactory factory;
-    std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(qo);
-    for(PropertyKeeper * keeper : keepers)
+    QJsonArray result;
+    QVariant property = prop.read(linkedObj);
+    std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+
+    if(objects != nullptr && (objects->size() == 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr))
     {
-        std::pair<QString, QJsonValue> keeperValue = keeper->toJson();
-        json.insert(keeperValue.first, keeperValue.second);
+        for(QObject * qo : *objects)
+            result.push_back(QSerializer::toJson(qo));
     }
-    return json;
+    else
+        throw QSException(InvalidQObject);
+    return QJsonValue(result);
 }
 
-QDomNode MetaObjectKeeper::getXmlFromObject(QObject *qo)
+QDomNode QMetaObjectArrayKeeper::makeXml()
 {
     QDomDocument doc;
     QDomElement element = doc.createElement(prop.name());
-    KeepersFactory factory;
-    std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(qo);
-    for(PropertyKeeper * keeper : keepers)
+    element.setAttribute("type", "array");
+    QVariant property = prop.read(linkedObj);
+    std::vector<QObject*> * arrayObjects = static_cast<std::vector<QObject*>*>(property.data());
+
+    if(arrayObjects != nullptr && (arrayObjects->size() == 0 || qobject_cast<QObject*>(arrayObjects->at(0)) != nullptr))
     {
-        std::pair<QString, QDomNode> keeperValue = keeper->toXml();
-        element.appendChild(keeperValue.second);
+        for(QObject * qo : *arrayObjects)
+            element.appendChild(QSerializer::toXml(qo));
     }
+    else
+        throw QSException(InvalidQObject);
+
     doc.appendChild(element);
     return QDomNode(doc);
 }

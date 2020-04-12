@@ -2,7 +2,7 @@
 #include <map>
 #include <keepersfactory.h>
 
-void QSerializer::fromJson(QObject *obj, QJsonObject json)
+void QSerializer::fromJson(QObject *obj, const QJsonObject & json)
 {
     KeepersFactory factory;
     std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(obj);
@@ -52,7 +52,7 @@ QDomDocument QSerializer::toXml(QObject *obj)
 }
 
 
-void QSerializer::fromXml(QObject * obj, QDomNode & doc)
+void QSerializer::fromXml(QObject * obj, const QDomNode & doc)
 {
     KeepersFactory factory;
     std::vector<PropertyKeeper*> keepers = factory.getKeepersForObject(obj);

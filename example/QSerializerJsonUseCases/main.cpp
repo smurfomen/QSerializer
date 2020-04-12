@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
     Employee * employee2 = readEmployeeFromJsonFile();
 
     qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QSerializer::toJson(employee2)).toJson()).toStdString().c_str();
-    exit(0);
-    return a.exec();
+    return 0;
 }
 
 void writeEmployeeToJsonFile(Employee * e)

@@ -1,5 +1,20 @@
 #include <keepersfactory.h>
 
+    const std::vector<int> simple_t =
+    {
+        qMetaTypeId<int>(),
+        qMetaTypeId<bool>(),
+        qMetaTypeId<double>(),
+        qMetaTypeId<QString>(),
+    };
+
+    const std::vector<int> array_of_simple_t =
+    {
+        qMetaTypeId<std::vector<int>>(),
+        qMetaTypeId<std::vector<bool>>(),
+        qMetaTypeId<std::vector<double>>(),
+        qMetaTypeId<std::vector<QString>>(),
+    };
 
 KeepersFactory::~KeepersFactory(){
 
@@ -33,27 +48,38 @@ PropertyKeeper *KeepersFactory::getMetaKeeper(QObject *obj, QMetaProperty prop)
     /// соответственно если сериализуемое свойство не представляет собой один из этих типов или массив из этих типов, то это вложенный объект
     /// такой объект нужно разобрать на составляющие, это делается в QMetaObjectKeeper.
     /// В конце концов любой объект состоит либо из элементарных типов либо из таких же объектов
-    QObject * castobj = qvariant_cast<QObject *>(prop.read(obj));
-    if(castobj)
-        return new QMetaObjectKeeper(castobj,prop);
-
     int t_id = QMetaType::type(prop.typeName());
-    if( t_id == qMetaTypeId<std::vector<int>>())
-        return new QMetaArrayKeeper<int>(obj, prop);
+    if(std::find(simple_t.begin(), simple_t.end(), t_id) != simple_t.end())
+        return new QMetaSimpleKeeper(obj,prop);
+    else if (std::find(array_of_simple_t.begin(),array_of_simple_t.end(), t_id) != array_of_simple_t.end())
+    {
+        if( t_id == qMetaTypeId<std::vector<int>>())
+            return new QMetaArrayKeeper<int>(obj, prop);
 
-    else if(t_id == qMetaTypeId<std::vector<QString>>())
-        return new QMetaArrayKeeper<QString>(obj, prop);
+        else if(t_id == qMetaTypeId<std::vector<QString>>())
+            return new QMetaArrayKeeper<QString>(obj, prop);
 
-    else if(t_id == qMetaTypeId<std::vector<double>>())
-        return new QMetaArrayKeeper<double>(obj, prop);
+        else if(t_id == qMetaTypeId<std::vector<double>>())
+            return new QMetaArrayKeeper<double>(obj, prop);
 
-    else if(t_id == qMetaTypeId<std::vector<bool>>())
-        return new QMetaArrayKeeper<bool>(obj, prop);
-
-    else if (QString(prop.typeName()).contains("std::vector<"))
-        return new QMetaObjectArrayKeeper(obj, prop);
-
-    return new QMetaSimpleKeeper(obj,prop);
+        else if(t_id == qMetaTypeId<std::vector<bool>>())
+            return new QMetaArrayKeeper<bool>(obj, prop);
+    }
+    /// если не подошел ни один из задекларированных типов - попробовать квалифицировать Property как производную от QObject
+    else
+    {
+        QObject * castobj = qvariant_cast<QObject *>(prop.read(obj));
+        if(castobj)
+            return new QMetaObjectKeeper(castobj,prop);
+        else if (QString(prop.typeName()).contains("std::vector<"))
+        {
+            QString t = QString(prop.typeName()).remove("std::vector<").remove(">");
+            int idOfElement = QMetaType::type(t.toStdString().c_str());
+            if(QMetaType::typeFlags(idOfElement).testFlag(QMetaType::PointerToQObject))
+                return new QMetaObjectArrayKeeper(obj, prop);
+        }
+    }
+    throw QSException(UnsupportedPropertyType);
 }
 
 std::vector<PropertyKeeper *> KeepersFactory::getMetaKeepers(QObject *obj)

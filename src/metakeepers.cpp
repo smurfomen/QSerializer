@@ -3,7 +3,6 @@
 #include <qserializer.h>
 
 
-
 std::pair<QString, QJsonValue> QMetaSimpleKeeper::toJson()
 {
     QJsonValue result = QJsonValue::fromVariant(prop.read(linkedObj));

@@ -8,27 +8,39 @@
 #include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
 
-void writeEmployeeToJsonFile(Employee * e);
-Employee * readEmployeeFromJsonFile();
+
+
+#include <QMetaType>
+void writeEmployeeToJsonFile(QJsonObject);
+QJsonObject readEmployeeFromJsonFile();
 
 int main(int argc, char *argv[])
 {
+    // register types
+    QS_METATYPE(Skill);
+    QS_METATYPE(Skill*);
+    QS_METATYPE(std::vector<Skill*>);
     QCoreApplication a(argc, argv);
     Employee employee;
+    employee.age = 200;
+    employee.name = "Mike";
 
-    writeEmployeeToJsonFile(&employee);
+    // get the first employee json and write it to file
+    QJsonObject json = QSerializer::toJson(&employee);
+    qDebug()<<"EMPLOYEE 1"<<QString(QJsonDocument(json).toJson()).toStdString().c_str();
+    writeEmployeeToJsonFile(json);
 
-    Employee * employee2 = readEmployeeFromJsonFile();
+    // read the file and create new object Employee class from first employee json
+    json = readEmployeeFromJsonFile();
+    Employee * employee2 = QSerializer::fromJson<Employee>(json);
+    json = QSerializer::toJson(employee2);
+    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(json).toJson()).toStdString().c_str();
 
-    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QSerializer::toJson(employee2)).toJson()).toStdString().c_str();
     return 0;
 }
 
-void writeEmployeeToJsonFile(Employee * e)
+void writeEmployeeToJsonFile(QJsonObject jsonUser)
 {
-    QJsonObject jsonUser =  QSerializer::toJson(e);
-    qDebug()<<"EMPLOYEE 1"<<QString(QJsonDocument(jsonUser).toJson()).toStdString().c_str();
-
     QJsonDocument document(jsonUser);
     QFile file(EMPLOYEE_FILE);
     if(file.exists())
@@ -40,15 +52,15 @@ void writeEmployeeToJsonFile(Employee * e)
     }
 }
 
-Employee * readEmployeeFromJsonFile()
+QJsonObject readEmployeeFromJsonFile()
 {
+    QJsonObject json;
     QFile file (EMPLOYEE_FILE);
     if(file.open(QIODevice::ReadOnly))
     {
-        QJsonObject jsonObj = QJsonDocument::fromJson(file.readAll()).object();
+        json = QJsonDocument::fromJson(file.readAll()).object();
         file.close();
-        return QSerializer::fromJson<Employee>(jsonObj);
     }
-    throw std::exception();
+    return json;
 }
 

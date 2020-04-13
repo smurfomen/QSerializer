@@ -1,5 +1,5 @@
-#ifndef ARRAYKEEPERS_H
-#define ARRAYKEEPERS_H
+#ifndef METAKEEPERS_H
+#define METAKEEPERS_H
 #include <qserializerlib_global.h>
 #include <serializerexception.h>
 #include <propertykeeper.h>
@@ -208,4 +208,4 @@ private:
 
 };
 
-#endif // ARRAYKEEPERS_H
+#endif // METAKEEPERS_H

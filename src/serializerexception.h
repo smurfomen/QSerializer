@@ -12,6 +12,7 @@ enum QSError
     JsonObjectExpected,
     InvalidQObject,
 
+    UnsupportedPropertyType,
 
     UndefinedQSError = 0xFFFF,
 };

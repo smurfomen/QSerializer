@@ -8,46 +8,51 @@
 #include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.xml";
 
-void writeEmployeeToJsonFile(Employee * e);
-Employee * readEmployeeFromJsonFile();
+void writeEmployeeToXmlFile(const QDomDocument &doc);
+QDomDocument readEmployeeFromJsonFile();
 
 int main(int argc, char *argv[])
 {
+    QS_METATYPE(Skill*);
+    QS_METATYPE(std::vector<Skill*>);
     QCoreApplication a(argc, argv);
     Employee employee;
+    employee.age = 100;
+    employee.name = "Mike";
 
-    writeEmployeeToJsonFile(&employee);
+    QDomDocument xml = QSerializer::toXml(&employee);
+    writeEmployeeToXmlFile(xml);
+    qDebug()<<"EMPLOYEE 1"<<xml.toString().toStdString().c_str();
 
-    Employee * employee2 = readEmployeeFromJsonFile();
+    xml = readEmployeeFromJsonFile();
+    Employee * employee2 = QSerializer::fromXml<Employee>(xml);
+    xml = QSerializer::toXml(employee2);
+    qDebug()<<"EMPLOYEE 2"<<xml.toString().toStdString().c_str();
 
-    qDebug()<<"EMPLOYEE 2"<<QSerializer::toXml(employee2).toString().toStdString().c_str();
     return 0;
 }
 
-void writeEmployeeToJsonFile(Employee * e)
+void writeEmployeeToXmlFile(const QDomDocument &doc)
 {
-    QDomDocument xmlUser =  QSerializer::toXml(e);
-    qDebug()<<"EMPLOYEE 1"<<xmlUser.toString().toStdString().c_str();
-
     QFile file(EMPLOYEE_FILE);
     if(file.exists())
         file.remove();
     if(file.open(QIODevice::WriteOnly))
     {
-        file.write(xmlUser.toString().toStdString().c_str());
+        file.write(doc.toString().toStdString().c_str());
         file.close();
     }
 }
 
-Employee * readEmployeeFromJsonFile()
+QDomDocument readEmployeeFromJsonFile()
 {
     QFile file (EMPLOYEE_FILE);
+    QDomDocument xml;
     if(file.open(QIODevice::ReadOnly))
     {
-        QJsonObject jsonObj = QJsonDocument::fromJson(file.readAll()).object();
+        xml.setContent(&file);
         file.close();
-        return QSerializer::fromJson<Employee>(jsonObj);
     }
-    throw std::exception();
+    return xml;
 }
 

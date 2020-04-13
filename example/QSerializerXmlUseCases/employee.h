@@ -2,7 +2,7 @@
 #define EMPLOYEE_H
 #include <QObject>
 #include <vector>
-
+#include <qserializer.h>
 class Skill : public QObject
 {
     Q_OBJECT
@@ -11,14 +11,20 @@ class Skill : public QObject
     Q_PROPERTY(double score MEMBER score USER true)
     Q_PROPERTY(QString description MEMBER description USER true)
 public:
-    Skill(QString describtion, double score)
+    Skill(QString describtion, double score) : QObject ()
     {
         this->score = score;
         this->description = describtion;
     }
-
+    Skill(const Skill& s)
+        : QObject()
+    {
+        score = s.score;
+        description = s.description;
+    }
+    Skill() : QObject () {}
 private:
-    double score;
+    double score {0.0};
     QString description;
 };
 
@@ -32,13 +38,12 @@ class SPECIAL : public QObject
 
 public:
 
-    SPECIAL() { }
+    SPECIAL() {
+    }
 
     std::vector<Skill*> skills;
     double total_score{0.0};
 };
-Q_DECLARE_METATYPE(std::vector<Skill*>)
-
 
 class Employee : public QObject
 {
@@ -79,7 +84,7 @@ public:
         special->total_score += 7.09;
     }
 
-private:
+    //private:
     QString name;
     QString email;
     int age{0};

@@ -1,11 +1,11 @@
 #include "serializerexception.h"
 
 
-static std::map<QSError,QString> descriptions = {
+static std::map<QSError,const char*> descriptions = {
     {JsonArrayExpected, "Expected JSON array"},
     {JsonObjectExpected, "Expected JSON object"},
     {InvalidQObject, "Invalid cast to QObject type"},
-
+    {UnsupportedPropertyType, "Use of unsupported type QMetaProperty object"},
 
     {UndefinedQSError, "Undefined QSerializer Exception"},
 };
@@ -18,13 +18,9 @@ QSException::QSException(QSError e)
 
 const char *QSException::what() const noexcept
 {
-    QString desc;
     try {
-        desc = descriptions.at(e);
+        return descriptions.at(e);
     } catch (...) {
-
-        desc = "Undefined QSerializerException::NotFoundExDescription";
+        return "Undefined QSerializerException::NotFoundExDescription";
     }
-
-    return desc.toStdString().data();
 }

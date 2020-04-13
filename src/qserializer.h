@@ -9,7 +9,13 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 
-#define QS_METATYPE(Type) qRegisterMetaType<Type>(#Type)
+#define QS_METATYPE(Type) qRegisterMetaType<Type>(#Type) ;
+
+#define QS_REGISTER(Type)       \
+QS_METATYPE(Type)               \
+QS_METATYPE(Type*)              \
+QS_METATYPE(std::vector<Type*>) \
+QS_METATYPE(std::vector<Type>)  \
 
 namespace QSerializer
 {

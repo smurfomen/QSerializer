@@ -8,18 +8,13 @@
 #include <QDebug>
 const QString EMPLOYEE_FILE = "employeeOutput.json";
 
-
-
-#include <QMetaType>
 void writeEmployeeToJsonFile(QJsonObject);
 QJsonObject readEmployeeFromJsonFile();
 
 int main(int argc, char *argv[])
 {
-    // register types
-    QS_METATYPE(Skill);
-    QS_METATYPE(Skill*);
-    QS_METATYPE(std::vector<Skill*>);
+    QS_REGISTER(Skill);
+
     QCoreApplication a(argc, argv);
     Employee employee;
     employee.age = 200;

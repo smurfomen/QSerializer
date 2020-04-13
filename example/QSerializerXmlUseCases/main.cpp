@@ -13,8 +13,7 @@ QDomDocument readEmployeeFromJsonFile();
 
 int main(int argc, char *argv[])
 {
-    QS_METATYPE(Skill*);
-    QS_METATYPE(std::vector<Skill*>);
+    QS_REGISTER(Skill)
     QCoreApplication a(argc, argv);
     Employee employee;
     employee.age = 100;

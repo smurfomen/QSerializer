@@ -3,10 +3,10 @@
 #include <QObject>
 #include <vector>
 #include <qserializer.h>
+
 class Skill : public QObject
 {
     Q_OBJECT
-
     // set Json propertyes (mark ' USER true ' necessarily !!!)
     Q_PROPERTY(double score MEMBER score USER true)
     Q_PROPERTY(QString description MEMBER description USER true)
@@ -27,6 +27,7 @@ private:
     double score {0.0};
     QString description;
 };
+
 
 class SPECIAL : public QObject
 {

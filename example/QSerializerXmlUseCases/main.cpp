@@ -6,7 +6,7 @@
 
 #include "employee.h"
 #include <QDebug>
-const QString EMPLOYEE_FILE = "employeeOutput.json";
+const QString EMPLOYEE_FILE = "employeeOutput.xml";
 
 void writeEmployeeToJsonFile(Employee * e);
 Employee * readEmployeeFromJsonFile();
@@ -20,23 +20,21 @@ int main(int argc, char *argv[])
 
     Employee * employee2 = readEmployeeFromJsonFile();
 
-    qDebug()<<"EMPLOYEE 2"<<QString(QJsonDocument(QSerializer::toJson(employee2)).toJson()).toStdString().c_str();
-    exit(0);
-    return a.exec();
+    qDebug()<<"EMPLOYEE 2"<<QSerializer::toXml(employee2).toString().toStdString().c_str();
+    return 0;
 }
 
 void writeEmployeeToJsonFile(Employee * e)
 {
-    QJsonObject jsonUser =  QSerializer::toJson(e);
-    qDebug()<<"EMPLOYEE 1"<<QString(QJsonDocument(jsonUser).toJson()).toStdString().c_str();
+    QDomDocument xmlUser =  QSerializer::toXml(e);
+    qDebug()<<"EMPLOYEE 1"<<xmlUser.toString().toStdString().c_str();
 
-    QJsonDocument document(jsonUser);
     QFile file(EMPLOYEE_FILE);
     if(file.exists())
         file.remove();
     if(file.open(QIODevice::WriteOnly))
     {
-        file.write(QString(document.toJson()).toStdString().c_str());
+        file.write(xmlUser.toString().toStdString().c_str());
         file.close();
     }
 }

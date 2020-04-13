@@ -1,0 +1,39 @@
+<Employee>
+ <name type="QString">Bob</name>
+ <email type="QString">example@exmail.com</email>
+ <age type="int">18</age>
+ <vacation type="bool">true</vacation>
+ <score type="double">82.23</score>
+ <phone type="array">
+  <item index="0" type="QString">+12345678989</item>
+  <item index="1" type="QString">+98765432121</item>
+ </phone>
+ <shedule type="array">
+  <item index="0" type="int">0</item>
+  <item index="1" type="int">1</item>
+  <item index="2" type="int">2</item>
+  <item index="3" type="int">3</item>
+  <item index="4" type="int">4</item>
+ </shedule>
+ <SPECIAL>
+  <skills type="array">
+   <Skill>
+    <score type="double">8.88</score>
+    <description type="QString">STRONG</description>
+   </Skill>
+   <Skill>
+    <score type="double">5.67</score>
+    <description type="QString">AGILITY</description>
+   </Skill>
+   <Skill>
+    <score type="double">3.78</score>
+    <description type="QString">LUCK</description>
+   </Skill>
+   <Skill>
+    <score type="double">7.09</score>
+    <description type="QString">INTELLIGENCE</description>
+   </Skill>
+  </skills>
+  <total_score type="double">25.42</total_score>
+ </SPECIAL>
+</Employee>

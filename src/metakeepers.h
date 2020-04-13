@@ -1,75 +1,35 @@
 #ifndef ARRAYKEEPERS_H
 #define ARRAYKEEPERS_H
 #include <qserializerlib_global.h>
-
+#include <serializerexception.h>
 #include <propertykeeper.h>
+
 #include <vector>
+
 #include <QMetaProperty>
 #include <QMetaType>
 #include <QVariant>
-#include <serializerexception.h>
 
-/// \brief возвращает один из Meta хранителей, подходящих для переданного свойства связанного объекта, обернутый в базовый интерфейс хранителя
-PropertyKeeper * getMetaKeeper(QObject *obj, QMetaProperty prop);
+#include <QDomElement>
+#include <QDomAttr>
+#include <QDomNode>
+#include <QDomDocument>
 
-/// \brief возвраащет коллекцию Meta хранителей для объекта обернутых в базовый интерфейс хранителя
-std::vector<PropertyKeeper*> getMetaKeepers(QObject * obj);
 
-/// \brief абстрактный класс для Meta хранителей
-class MetaPropertyKeeper : public PropertyKeeper
+
+/// \brief абстрактный класс для Meta хранителей, не реализует интерфейс PropertyKeeper
+/// хранит свойство объекта и указатель на сам объект для доступа к свойству.
+/// предназначен для наследования другими конкретными реализациями интерфейса PropertyKeeper в угоду меньшего дублирования кода
+class MetaKeeper : public PropertyKeeper
 {
 public:
-    MetaPropertyKeeper(QObject * obj, QMetaProperty prop)
+    MetaKeeper(QObject * obj, QMetaProperty prop)
     {
         this->linkedObj = obj;
         this->prop = prop;
     }
+
 protected:
-
-    /// \brief накачивает переданный объект переданным JSONом
-    void fillObjectFromJson(QObject * qo, QJsonValue json)
-    {
-        if(!json.isObject())
-            throw QSException(JsonObjectExpected);
-
-        /// перебор всех ключей у переданного JSON и всех хранителей у объекта, если нашли хранителя с подходящим ключом - отдаем значение по ключу в найденный хранитель
-        /// дальше он сам разберется что ему с ним делать, в зависимости от типа хранителя за прослойкой интерфейса
-        QJsonObject jsonObject = json.toObject();
-        QStringList keys = jsonObject.keys();
-        std::vector<PropertyKeeper*> metaKeepers = getMetaKeepers(qo);
-        for(QString & key : keys)
-        {
-            for(int i = 0; i < metaKeepers.size(); i++)
-            {
-                PropertyKeeper * keeper = metaKeepers.at(i);
-                QString keeperKey = keeper->getValue().first;
-                if(key == keeperKey)
-                {
-                    keeper->setValue(jsonObject.value(key));
-                    metaKeepers.erase(metaKeepers.begin()+i);
-                }
-            }
-        }
-    }
-
-    /// \brief выкачивает JSON из переданного объекта
-    QJsonObject getJsonFromObject(QObject * qo)
-    {
-        /// взять коллекцию простых хранителей, хранящих в себе элементарные данные и взять у каждого хранителя его ключ и JSON значение
-        /// составить из этих значений объект.
-        /// внутри коллекции хранителей может быть любой хранитель (как элементарный так и хранитель вложенного объекта)
-        /// сбор информации будет продолжаться до тех пор, пока не упрется в последние элементарные хранители самых глубоковложенных объектов
-        /// и так же JSON значения (QJsonValue) будут возвращаться и сливаться в объекты до тех пор, пока не вернутся в корень для возврата вернут сформированного JSON объекта
-        QJsonObject json;
-        std::vector<PropertyKeeper*> keepers = getMetaKeepers(qo);
-        for(PropertyKeeper * keeper : keepers)
-        {
-            std::pair<QString, QJsonValue> keeperValue = keeper->getValue();
-            json.insert(keeperValue.first, keeperValue.second);
-        }
-        return json;
-    }
-
     QObject * linkedObj;
     QMetaProperty prop;
 };
@@ -77,51 +37,51 @@ protected:
 
 
 
-/// \brief хранитель обычного поля (не массива) QMetaProperty у указанного QObject
-class QMetaSimpleKeeper : public MetaPropertyKeeper
+/// \brief хранитель для примитивных значений (integer, boolean, double, text)
+class QMetaSimpleKeeper : public MetaKeeper
 {
 public:
-    QMetaSimpleKeeper(QObject * obj, QMetaProperty prop): MetaPropertyKeeper(obj, prop){ }
+    QMetaSimpleKeeper(QObject * obj, QMetaProperty prop): MetaKeeper(obj, prop){ }
     /// \brief вернуть пару из ключа и JSON значения из указанной QMetaProperty связанного объекта
-    std::pair<QString, QJsonValue> getValue() override
-    {
-        QJsonValue result = QJsonValue::fromVariant(prop.read(linkedObj));
-        return std::make_pair(QString(prop.name()), result);
-    }
+    std::pair<QString, QJsonValue> toJson() override;
 
     /// \brief задать новое значение для связанной с хранимой QMetaProperty поля связанного объекта из JSON
-    void setValue(QJsonValue val) override
-    {
-        prop.write(linkedObj, QVariant(val));
-    }
+    void fromJson(const QJsonValue &val) override;
+
+    /// \brief возвращает пару из имени и XML хранимого примитивного значения
+    std::pair<QString, QDomNode> toXml() override;
+
+    /// \brief изменяет хранимое примитивное значение согласно переданному XML
+    void fromXml(const QDomNode &node) override;
 };
 
 
 
 
-/// \brief хранитель массивов типа А для поля QMetaProperty у указанного QObject
+
+
+/// \brief хранитель массивов шаблонного типа для примитивных значений (integer, boolean, double, text)
 template<typename A>
-class QMetaArrayKeeper : public MetaPropertyKeeper
+class QMetaArrayKeeper : public MetaKeeper
 {
 public:
-    QMetaArrayKeeper(QObject * obj, QMetaProperty prop): MetaPropertyKeeper(obj, prop) { }
-    /// \brief возвращает пару из имени хранимого поля и cформированного в массив QJsonValue
-    std::pair<QString, QJsonValue> getValue() override
+    QMetaArrayKeeper(QObject * obj, QMetaProperty prop): MetaKeeper(obj, prop) { }
+
+    /// \brief возвращает пару из имени и JSON хранимого массива примитивных значений
+    std::pair<QString, QJsonValue> toJson() override
     {
         QVariant property = prop.read(linkedObj);
         std::vector<A> values = property.value<std::vector<A>>();
 
         QJsonArray result;
         for(auto val : values)
-        {
             result.push_back(QJsonValue::fromVariant(QVariant(val)));
-        }
 
         return std::make_pair(QString(prop.name()), QJsonValue(result));
     }
 
-    /// \brief изменение значения поля из JSON по переданному QJsonValue
-    void setValue(QJsonValue json) override
+    /// \brief изменяет хранимый массив примитивных значений согласно переданному JSON
+    void fromJson(const QJsonValue & json) override
     {
         /// переводим значение в массив и наполняем вектор типа А, с которым был создан хранитель значениями из JSON массива
         /// в конце записываем в хранимое свойство связанного объекта этот вектор
@@ -137,77 +97,115 @@ public:
         }
         prop.write(linkedObj, QVariant::fromValue(v));
     }
+
+    /// \brief возвращает пару из имени и XML хранимого массива примитивных значений
+    std::pair<QString, QDomNode> toXml() override
+    {
+        /// берем массив объектов А и наполняем документ дочерними элементами типа с атрибутами 'type' и 'index'
+        /// Возвращаем имя опции и ноду в виде документа.
+        QVariant property = prop.read(linkedObj);
+        std::vector<A> array = property.value<std::vector<A>>();
+        QDomDocument doc;
+        QDomElement arrayXml = doc.createElement(prop.name());
+        arrayXml.setAttribute("type", "array");
+        for(int i = 0; i < array.size(); i++)
+        {
+            A item = array.at(i);
+            QDomElement itemXml = doc.createElement("item");
+            itemXml.setAttribute("type", QMetaType::typeName(qMetaTypeId<A>()));
+            itemXml.setAttribute("index", i);
+
+            QVariant variantItem = QVariant::fromValue(item);
+            itemXml.appendChild(doc.createTextNode(variantItem.toString()));
+            arrayXml.appendChild(itemXml);
+        }
+        doc.appendChild(arrayXml);
+        return  std::make_pair(QString(prop.name()), QDomNode(doc));
+    }
+
+    /// \brief изменяет хранимый массив примитивных значений согласно переданному XML
+    void fromXml(const QDomNode &node) override
+    {
+        std::vector<A> v;
+        QDomNode domNode = node.firstChild();
+        while(!domNode.isNull())
+        {
+            if(domNode.isElement())
+            {
+                QDomElement domElement = domNode.toElement();
+                v.push_back(QVariant(domElement.text()).value<A>());
+            }
+            domNode = domNode.nextSibling();
+        }
+        prop.write(linkedObj, QVariant::fromValue(v));
+    }
 };
 
 
 
 
+
+
 /// \brief хранитель полей класса, типы которых унаследованны от QObject
-class QMetaObjectKeeper : public MetaPropertyKeeper
+class QMetaObjectKeeper : public MetaKeeper
 {
     /// такой тип хранителя предназначен для хранения вложенных объектов, т.е. объектов, унаследованных от QObject
     /// вместо изменения свойства напрямую, он разбирает хранимый объект на элементарные составляющие или такие же хранители объектов
     /// и служит "маршрутизатором" JSON значений внутрь хранимых объектов и обратно.
     /// QMetaObjectKeeper, фактически, является воплощением QMetaObject для связанного с ним вложенного объекта.
 public:
-    QMetaObjectKeeper(QObject * obj, QMetaProperty prop): MetaPropertyKeeper(obj, prop) { }
-    /// \brief возвращает пару из имени хранимого поля и упакованного в QJsonValue объекта JSON
-    std::pair<QString, QJsonValue> getValue() override
-    {
-        QJsonObject result = getJsonFromObject(linkedObj);
-        return std::make_pair(prop.name(),QJsonValue(result));
-    }
+    QMetaObjectKeeper(QObject * obj, QMetaProperty prop): MetaKeeper(obj, prop) { }
+    /// \brief возвращает пару из имени и JSON хранимого объекта
+    std::pair<QString, QJsonValue> toJson() override;
 
-    /// \brief изменение значения хранимого объекта по переданному QJsonValue, в который упакован объект
-    void setValue(QJsonValue json) override
-    {
-        fillObjectFromJson(linkedObj, json);
-    }
+    /// \brief изменяет объект согласно переданному JSON
+    void fromJson(const QJsonValue & json) override;
+
+    /// \brief возвращает пару из имени и XML хранимого объекта
+    std::pair<QString, QDomNode> toXml() override;
+
+    /// \brief изменяет объект согласно переданному XML
+    void fromXml(const QDomNode &node) override;
 };
+
+
+
 
 
 
 
 /// \brief хранитель массивов типа QObject или базового от него
-class QMetaObjectArrayKeeper : public MetaPropertyKeeper
+class QMetaObjectArrayKeeper : public MetaKeeper
 {
+    /// Стоит оговориться, на данный момент возможна работа только с коллекциями указателей на объекты, а не с непосредственно самими объектами.
+    /// Если есть нужда работать с объектом напрямую - в Q_PROPERTY необходимо явно указать методы доступа и записи вместо флага MEMBER
 public:
-    QMetaObjectArrayKeeper(QObject * obj, QMetaProperty prop) : MetaPropertyKeeper(obj, prop){ }
+    QMetaObjectArrayKeeper(QObject * obj, QMetaProperty prop) : MetaKeeper(obj, prop){ }
+
     /// \brief возвращает пару из имени хранимого поля и упакованного в QJsonValue массива объектов
-    std::pair<QString, QJsonValue> getValue() override
-    {
-        QJsonArray result;
-        QVariant property = prop.read(linkedObj);
-        std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+    std::pair<QString, QJsonValue> toJson() override;
 
-        if(objects != nullptr && (objects->size() == 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr))
-        {
-            for(QObject * qo : *objects)
-                result.push_back(getJsonFromObject(qo));
-        } else throw QSException(InvalidQObject);
+    /// \brief изменяет хранимый массив объектов согласно переданному JSON
+    void fromJson(const QJsonValue & json) override;
 
-        return std::make_pair(QString(prop.name()), QJsonValue(result));
-    }
+    /// \brief возвращает пару из имени и XML хранимого массива объектов
+    std::pair<QString, QDomNode> toXml() override;
 
-    /// \brief изменение значения хранимого массива объектов по переданному JSON массиву обернутому в QJsonValue
-    void setValue(QJsonValue json) override
-    {
-        if(!json.isArray())
-            throw QSException(JsonArrayExpected);
+    /// \brief изменяет хранимый массив объектов согласно переданному XML
+    /// ВАЖНО: v.1.0.2. может только изменять существующие объекты, но не добавлять новые.
+    /// Это распространяется только на непремитивные типы наследованные от QObject
+    void fromXml(const QDomNode &node) override;
 
-        QJsonArray jsonArray = json.toArray();
-        QVariant property = prop.read(linkedObj);
-        std::vector<QObject*> * objects = static_cast<std::vector<QObject*>*>(property.data());
+private:
 
-        if(objects != nullptr && (objects->size() == 0 || qobject_cast<QObject*>(objects->at(0)) != nullptr))
-        {
-            for(int i = 0; i < jsonArray.size() && i < objects->size(); i ++)
-                fillObjectFromJson(objects->at(i),jsonArray.at(i));
-        } else throw QSException(InvalidQObject);
-    }
+    void fillArray(const QJsonArray &jsonArray);
+
+    void fillArray(const QDomNodeList & nodeList);
+
+    QJsonValue makeJson();
+
+    QDomNode makeXml();
+
 };
-
-
-
 
 #endif // ARRAYKEEPERS_H

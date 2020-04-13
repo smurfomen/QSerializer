@@ -21,7 +21,10 @@ const char *QSException::what() const noexcept
     QString desc;
     try {
         desc = descriptions.at(e);
-    } catch (...) { }
+    } catch (...) {
+
+        desc = "Undefined QSerializerException::NotFoundExDescription";
+    }
 
     return desc.toStdString().data();
 }

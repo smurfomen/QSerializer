@@ -10,6 +10,8 @@ $ cd QSerializer
 ```
 Open file QSerializer.pro with QtCreator and build project. Binaries will be in the build folder after building, divided into folders "debug" and "release". To connect the library to your project, right-click on your project> select "Add Library"> "External Library" and in the window that opens, specify the path to the .so file from the "release" folder. Header files are located in the src folder from the root of the repository.
 
+If you use Windows you need define macro QSERIALIZER_LIBRARY in your .pro file.
+
 Demo-projects for using QSerializer locate are in the examples folder. There are also collected binaries of the examples/build library. Examples of output JSON files can be found in the root of the examples.
 
 ## Workflow

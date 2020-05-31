@@ -18,11 +18,10 @@ std::pair<QString, QDomNode> QMetaSimpleKeeper::toXml()
 {
     QDomDocument doc;
     QDomElement element = doc.createElement(prop.name());
-    element.setAttribute("type",prop.typeName());
     QDomText valueOfProp = doc.createTextNode(prop.read(linkedObj).toString());
     element.appendChild(valueOfProp);
     doc.appendChild(element);
-    return  std::make_pair(QString(prop.name()), QDomNode(doc));
+    return  std::make_pair(QString(prop.name()), QDomNode(element));
 }
 
 void QMetaSimpleKeeper::fromXml(const QDomNode &node)
@@ -162,7 +161,6 @@ QDomNode QMetaObjectArrayKeeper::makeXml()
 {
     QDomDocument doc;
     QDomElement element = doc.createElement(prop.name());
-    element.setAttribute("type", "array");
     QVariant property = prop.read(linkedObj);
     std::vector<QObject*> * arrayObjects = static_cast<std::vector<QObject*>*>(property.data());
 

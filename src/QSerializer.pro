@@ -9,6 +9,8 @@ QT       += core xml
 TARGET = QSerializer
 TEMPLATE = lib
 
+CONFIG += staticlib
+
 DEFINES += QSERIALIZER_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
@@ -49,7 +51,7 @@ unix: {
 
 VERSION = 1.0.0
 
-CONFIG += debug_and_release build_all
+CONFIG += debug_and_release build_all staticlib
 
 CONFIG(debug, debug|release){
 DESTDIR = debug

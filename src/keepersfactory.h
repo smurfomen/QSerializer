@@ -1,9 +1,9 @@
 #ifndef KEEPERSFACTORY_H
 #define KEEPERSFACTORY_H
-#include <qserializerlib_global.h>
+#include "qserializerlib_global.h"
 
-#include <metakeepers.h>
-#include <propertykeeper.h>
+#include "metakeepers.h"
+#include "propertykeeper.h"
 
 /// \brief фабрика интерфейсов класса PropertyKeeper
 class KeepersFactory

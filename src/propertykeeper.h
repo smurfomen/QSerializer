@@ -1,6 +1,6 @@
 #ifndef PROPERTYKEEPER_H
 #define PROPERTYKEEPER_H
-#include <qserializerlib_global.h>
+#include "qserializerlib_global.h"
 
 #include <QJsonArray>
 #include <QJsonValue>

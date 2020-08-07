@@ -1,8 +1,8 @@
 #ifndef METAKEEPERS_H
 #define METAKEEPERS_H
-#include <qserializerlib_global.h>
-#include <serializerexception.h>
-#include <propertykeeper.h>
+#include "qserializerlib_global.h"
+#include "serializerexception.h"
+#include "propertykeeper.h"
 
 #include <vector>
 

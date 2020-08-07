@@ -1,7 +1,7 @@
 #ifndef SERIALIZEREXCEPTION_H
 #define SERIALIZEREXCEPTION_H
 
-#include <qserializerlib_global.h>
+#include "qserializerlib_global.h"
 #include <QString>
 #include <exception>
 #include <map>

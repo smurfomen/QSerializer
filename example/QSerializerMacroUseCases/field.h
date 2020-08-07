@@ -2,93 +2,25 @@
 #define FIELD_H
 #include <QObject>
 #include <vector>
-#include <QVector>
-#include <QVariant>
-#include <QMetaProperty>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonValue>
-#include <QVariantList>
-#include <string.h>
+#include "../../src/qserializer.h"
 
-class QGadget {
+
+class Obj2 : public QGadget{
     Q_GADGET
+    QS_MAKE_ARRAY(QList<QString>, names)
+    QS_MAKE_FIELD(int, count)
 public:
-    QGadget(QMetaObject mo) : mo(mo){}
-    QJsonObject toJson(){
-        QJsonObject json;
-        for(int i = 0; i < mo.propertyCount(); i++)
-        {
-            json.insert(mo.property(i).name(), mo.property(i).readOnGadget(this).toJsonValue());
-        }
-        return json;
-    }
-
-private:
-    QMetaObject mo;
+    Obj2() : QGadget(staticMetaObject){}
 };
 
-#define QS_METATYPE(Type) qRegisterMetaType<Type>(#Type) ;
-
-#define QS_REGISTER(Type)       \
-QS_METATYPE(Type)               \
-QS_METATYPE(Type*)              \
-QS_METATYPE(std::vector<Type*>) \
-QS_METATYPE(std::vector<Type>)  \
-
-
-#define __QS_FIELD             "field"
-#define __QS_NAME_PERFIX       "qs_info::"
-#define QS_INFO(type, name, value)                                                  \
-    Q_CLASSINFO(__QS_NAME_PERFIX type #name #value,                                 \
-                type "\n" #name "\n" #value)                                        \
-
-
-#define QS_DECLARE(type, name)                                                      \
-    public :                                                                        \
-    type name;                                                                      \
-
-#define QS_BIND_FIELD(type, name)                                                   \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)                    \
-    private:                                                                        \
-    QJsonValue get_##name() const {                                                 \
-        QJsonValue val = QJsonValue::fromVariant(QVariant::fromValue(name));        \
-        return val;                                                                 \
-    }                                                                               \
-    void set_##name(QJsonValue varname){                                            \
-        name = varname.toVariant().value<type>();                                   \
-    }                                                                               \
-                                                                                    \
-// работает с любым шаблонным контейнером,
-// у которого есть метод append
-#define QS_BIND_ARRAY(type, name)                                                   \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)                    \
-    private:                                                                        \
-    QJsonValue get_##name() const {                                                 \
-        QJsonArray val;                                                             \
-        for(int i = 0; i < name.size(); i++)                                        \
-            val.append(name.at(i));                                                 \
-        return QJsonValue::fromVariant(val);                                        \
-    }                                                                               \
-    void set_##name(QJsonValue varname){                                            \
-        if(!varname.isArray())                                                      \
-            return;                                                                 \
-        QJsonArray val = varname.toArray();                                         \
-        for(int i = 0; i < val.size(); i++)                                         \
-        name.append(val.at(i).toVariant().value<type>());                           \
-    }                                                                               \
-
-#define QS_MAKE_FIELD(type, name)                                                   \
-    QS_DECLARE(type, name)                                                          \
-    QS_BIND_FIELD(type, name)                                                       \
-
-// работает с любым шаблонным контейнером, у которого есть метод append
-#define QS_MAKE_ARRAY(type, name)                                                   \
-    QS_DECLARE(type, name)                                                          \
-    QS_BIND_ARRAY(type, name)                                                       \
-
-
+class Obj : public QGadget {
+    Q_GADGET
+    QS_MAKE_FIELD(int, i)
+    QS_MAKE_FIELD(QString, s)
+    QS_MAKE_OBJECT(Obj2, names)
+public:
+    Obj() : QGadget(staticMetaObject) {}
+};
 
 
 class Field : public QGadget {
@@ -100,8 +32,11 @@ class Field : public QGadget {
     QS_MAKE_FIELD(QString, message)
     QS_MAKE_FIELD(int, digit)
 
+    QS_MAKE_ARRAY(QVector<int>, array)
     // создать и связать массив (Это может быть что угодно - главное, чтобы контейнер имел метод append)
-    QS_MAKE_ARRAY(QList<int>, array)
+    QS_MAKE_OBJECT(Obj, ob)
+
+    QS_MAKE_ARRAY_OBJECTS(QVector<Obj>, vob)
 
 public:
     Field() : QGadget(staticMetaObject){}

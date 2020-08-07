@@ -47,7 +47,7 @@ Makefile.*
 #--- *.filters
 [Bb]uild-*
 .*
-
+*.pro.*
 ipch/
 Virtual/
 VSS_BD/

@@ -2,53 +2,53 @@
 #define CLASSES_H
 #include "../../src/qserializer.h"
 
-class Field : public QGadget {
+class Field : public QSerializer {
     Q_GADGET
     QS_FIELD(int, digit)
     QS_FIELD(QString, string)
     QS_FIELD(bool, flag)
 
     public:
-        Field() : QGadget(staticMetaObject) {}
+        Field() : QSerializer(staticMetaObject) {}
 };
 
-class Collection : public QGadget {
+class Collection : public QSerializer {
     Q_GADGET
     QS_COLLECTION(QVector, int, vector)
     QS_COLLECTION(QList, QString, list)
 
     public:
-        Collection() : QGadget(staticMetaObject) {}
+        Collection() : QSerializer(staticMetaObject) {}
 };
 
 
-class CustomObject : public QGadget {
+class CustomObject : public QSerializer {
     Q_GADGET
     QS_FIELD(int, digit)
     QS_COLLECTION(QVector, QString, string)
 
     public:
-        CustomObject() : QGadget(staticMetaObject) {}
+        CustomObject() : QSerializer(staticMetaObject) {}
 };
 
 
-class CollectionOfObjects : public QGadget {
+class CollectionOfObjects : public QSerializer {
     Q_GADGET
     QS_COLLECTION_OBJECTS(QVector, CustomObject, objects)
 
     public:
-        CollectionOfObjects() : QGadget(staticMetaObject) {}
+        CollectionOfObjects() : QSerializer(staticMetaObject) {}
 };
 
 
-class General : public QGadget {
+class General : public QSerializer {
     Q_GADGET
     QS_OBJECT(Field, field)
     QS_OBJECT(Collection, collection)
     QS_OBJECT(CustomObject, object)
     QS_OBJECT(CollectionOfObjects, collectionObjects)
 public:
-    General() : QGadget(staticMetaObject){}
+    General() : QSerializer(staticMetaObject){}
 };
 
 

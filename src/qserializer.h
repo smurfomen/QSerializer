@@ -1,5 +1,5 @@
-#ifndef QJSONMARSHALER_H
-#define QJSONMARSHALER_H
+#ifndef QSERIALIZER_H
+#define QSERIALIZER_H
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -19,10 +19,10 @@
 
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
-class QGadget {
+class QSerializer {
     Q_GADGET
 public:
-    QGadget(QMetaObject mo) : mo(mo){}
+    QSerializer(QMetaObject mo) : mo(mo){}
     ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
@@ -38,7 +38,6 @@ public:
 
     ///\brief Deserialize all accessed JSON propertyes for this object
     void fromJson(const QJsonValue & val) {
-
         if(val.isObject())
         {
             QJsonObject json = val.toObject();
@@ -216,7 +215,7 @@ private:
 
 
 /* Generate JSON-property and methods for some custom class */
-/* Custom type must be provide methods fromJson and toJson or inherit from QGadget */
+/* Custom type must be provide methods fromJson and toJson or inherit from QSerializer */
 #define QS_JSON_OBJECT(type, name)                                                          \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
@@ -231,7 +230,7 @@ private:
     }                                                                                       \
 
 /* Generate XML-property and methods for some custom class */
-/* Custom type must be provide methods fromJson and toJson or inherit from QGadget */
+/* Custom type must be provide methods fromJson and toJson or inherit from QSerializer */
 #define QS_XML_OBJECT(type, name)                                                           \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
@@ -243,7 +242,7 @@ private:
         }                                                                                   \
 
 /* Generate JSON-property and methods for collection of custom type objects */
-/* Custom item type must be provide methods fromJson and toJson or inherit from QGadget */
+/* Custom item type must be provide methods fromJson and toJson or inherit from QSerializer */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
 #define QS_JSON_ARRAY_OBJECTS(itemType, name)                                               \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
@@ -255,7 +254,7 @@ private:
             return QJsonValue::fromVariant(val);                                            \
         }                                                                                   \
         void SET(json, name)(const QJsonValue & varname) {                                  \
-            if(!varname.isArray() || !std::is_base_of<QGadget, itemType>())                 \
+            if(!varname.isArray() || !std::is_base_of<QSerializer, itemType>())                 \
                 return;                                                                     \
             name.clear();                                                                   \
             QJsonArray val = varname.toArray();                                             \
@@ -267,7 +266,7 @@ private:
         }                                                                                   \
 
 /* Generate XML-property and methods for collection of custom type objects  */
-/* Custom type must be provide methods fromXml and toXml or inherit from QGadget */
+/* Custom type must be provide methods fromXml and toXml or inherit from QSerializer */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
 #define QS_XML_ARRAY_OBJECTS(itemType, name)                                                \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
@@ -314,7 +313,7 @@ private:
     QS_XML_ARRAY(itemType, name)                                                            \
 
 /* Make custom class object and bind serializable propertyes */
-/* This class must be inherited from QGadget */
+/* This class must be inherited from QSerializer */
 #define QS_OBJECT(type,name)                                                                \
     QS_DECLARE_VARIABLE(type, name)                                                         \
     QS_JSON_OBJECT(type, name)                                                              \
@@ -330,5 +329,5 @@ private:
 
 
 
-#endif // QJSONMARSHALER_H
+#endif // QSERIALIZER_H
 

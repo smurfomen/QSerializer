@@ -13,7 +13,7 @@ Demo-projects for using QSerializer locate are in the examples folder.
 
 ## Workflow
 ## Create serialization class
-To get started, include qserializer.h in your code, inherit from QGadget and declare some serializable fields. 
+To get started, include qserializer.h in your code, inherit from QSerializer and declare some serializable fields. 
 For create serializable member of class and generate propertyes, use macro:
 - QS_FIELD
 - QS_COLLECTION
@@ -22,15 +22,15 @@ For create serializable member of class and generate propertyes, use macro:
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (lock at qserializer.h)
 ```C++
-class User : public QGadget
+class User : public QSerializer
 {
 Q_GADGET
 // Create data members to be serialized - you can use this members in code
 QS_FIELD(int, age)
 QS_COLLECTION(QVector, QString, parents)
 public:
-  // Make constructor, where provide staticMetaObject in base QGadget class
-  User() : QGadget(staticMetaObject) { }
+  // Make constructor, where provide staticMetaObject in base QSerializer class
+  User() : QSerializer(staticMetaObject) { }
 };
 ```
 

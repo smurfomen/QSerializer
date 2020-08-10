@@ -254,7 +254,7 @@ private:
             return QJsonValue::fromVariant(val);                                            \
         }                                                                                   \
         void SET(json, name)(const QJsonValue & varname) {                                  \
-            if(!varname.isArray() || !std::is_base_of<QSerializer, itemType>())                 \
+            if(!varname.isArray())                                                          \
                 return;                                                                     \
             name.clear();                                                                   \
             QJsonArray val = varname.toArray();                                             \

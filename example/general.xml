@@ -6,22 +6,22 @@
  </Field>
  <Collection>
   <vector type="array">
-   <item index="0" type="int">1</item>
-   <item index="1" type="int">2</item>
-   <item index="2" type="int">3</item>
+   <item type="int" index="0">1</item>
+   <item type="int" index="1">2</item>
+   <item type="int" index="2">3</item>
   </vector>
   <list type="array">
-   <item index="0" type="QString">first</item>
-   <item index="1" type="QString">second</item>
-   <item index="2" type="QString">third</item>
+   <item type="QString" index="0">first</item>
+   <item type="QString" index="1">second</item>
+   <item type="QString" index="2">third</item>
   </list>
  </Collection>
  <CustomObject>
   <digit>8</digit>
   <string type="array">
-   <item index="0" type="QString">third</item>
-   <item index="1" type="QString">second</item>
-   <item index="2" type="QString">first</item>
+   <item type="QString" index="0">third</item>
+   <item type="QString" index="1">second</item>
+   <item type="QString" index="2">first</item>
   </string>
  </CustomObject>
  <CollectionOfObjects>
@@ -29,25 +29,25 @@
    <CustomObject>
     <digit>8</digit>
     <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
+     <item type="QString" index="0">third</item>
+     <item type="QString" index="1">second</item>
+     <item type="QString" index="2">first</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>8</digit>
     <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
+     <item type="QString" index="0">third</item>
+     <item type="QString" index="1">second</item>
+     <item type="QString" index="2">first</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>8</digit>
     <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
+     <item type="QString" index="0">third</item>
+     <item type="QString" index="1">second</item>
+     <item type="QString" index="2">first</item>
     </string>
    </CustomObject>
   </objects>

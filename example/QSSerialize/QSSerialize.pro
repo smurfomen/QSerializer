@@ -1,5 +1,4 @@
 QT -= gui
-QT += xml
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -15,6 +14,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include(../../src/QSerializer.pri)
+include(../base.pri)
+
 SOURCES += \
         main.cpp
 
@@ -22,13 +24,3 @@ SOURCES += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build/release/release/ -lQSerializer
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/release/debug/ -lQSerializer
-else:unix: LIBS += -L$$PWD/../build/release/ -lQSerializer
-
-INCLUDEPATH += $$PWD/../../src
-DEPENDPATH += $$PWD/../../src
-
-HEADERS += \
-    employee.h

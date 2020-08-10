@@ -1,0 +1,55 @@
+{
+    "collection": {
+        "list": [
+            "first",
+            "second",
+            "third"
+        ],
+        "vector": [
+            1,
+            2,
+            3
+        ]
+    },
+    "collectionObjects": {
+        "objects": [
+            {
+                "digit": 8,
+                "string": [
+                    "third",
+                    "second",
+                    "first"
+                ]
+            },
+            {
+                "digit": 8,
+                "string": [
+                    "third",
+                    "second",
+                    "first"
+                ]
+            },
+            {
+                "digit": 8,
+                "string": [
+                    "third",
+                    "second",
+                    "first"
+                ]
+            }
+        ]
+    },
+    "field": {
+        "digit": 10,
+        "flag": false,
+        "string": "some string"
+    },
+    "object": {
+        "digit": 8,
+        "string": [
+            "third",
+            "second",
+            "first"
+        ]
+    }
+}

@@ -1,40 +1,42 @@
 #ifndef QJSONMARSHALER_H
 #define QJSONMARSHALER_H
-#include "qserializerlib_global.h"
-#include "serializerexception.h"
 
-#include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
-#include <typeinfo>
 #include <type_traits>
 
 #include <QVector>
 #include <QVariant>
 #include <QMetaProperty>
+#include <QMetaObject>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonValue>
-#include <QVariantList>
-#include <string.h>
 
 
+Q_DECLARE_METATYPE(QDomNode)
+Q_DECLARE_METATYPE(QDomElement)
 class QGadget {
     Q_GADGET
 public:
     QGadget(QMetaObject mo) : mo(mo){}
+    ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
         for(int i = 0; i < mo.propertyCount(); i++)
         {
+            if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+                continue;
+
             json.insert(mo.property(i).name(), mo.property(i).readOnGadget(this).toJsonValue());
         }
         return json;
     }
 
+    ///\brief Deserialize all accessed JSON propertyes for this object
     void fromJson(const QJsonValue & val) {
 
         if(val.isObject())
@@ -44,10 +46,55 @@ public:
             int propCount = mo.propertyCount();
             for(int i = 0; i < propCount; i++)
             {
+                if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+                    continue;
+
                 for(auto key : json.keys())
                 {
                     if(key == mo.property(i).name())
+                    {
                         mo.property(i).writeOnGadget(this, json.value(key));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    ///\brief Serialize all accessed XML propertyes for this object
+    QDomNode toXml() const {
+        QDomDocument doc;
+        QDomElement el = doc.createElement(mo.className());
+        for(int i = 0; i < mo.propertyCount(); i++)
+        {
+            if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+                continue;
+
+            el.appendChild(QDomNode(mo.property(i).readOnGadget(this).value<QDomNode>()));
+        }
+        doc.appendChild(el);
+        return doc;
+    }
+
+    ///\brief Deserialize all accessed XML propertyes for this object
+    void fromXml(const QDomNode doc){
+        if(mo.className() == doc.firstChildElement().tagName())
+        {
+            for(int i = 0; i < mo.propertyCount(); i++)
+            {
+                if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+                    continue;
+
+                QDomNode fieldNode = doc.firstChild().firstChild();
+                while(!fieldNode.isNull())
+                {
+                    QDomElement currentElement = fieldNode.toElement();
+                    if(mo.property(i).name() == currentElement.tagName())
+                    {
+                        mo.property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
+                        break;
+                    }
+                    fieldNode = fieldNode.nextSibling();
                 }
             }
         }
@@ -59,178 +106,227 @@ private:
 
 #define __QS_FIELD             "field"
 #define __QS_NAME_PERFIX       "qs_info::"
-#define QS_INFO(type, name, value)                                                  \
-    Q_CLASSINFO(__QS_NAME_PERFIX type #name #value,                                 \
-                type "\n" #name "\n" #value)                                        \
+#define QS_INFO(type, name, value)                                                          \
+    Q_CLASSINFO(__QS_NAME_PERFIX type #name #value,                                         \
+                type "\n" #name "\n" #value)                                                \
+
+#define GET(prefix, name) get_##prefix##_##name
+#define SET(prefix, name) set_##prefix##_##name
+
+/* Create variable */
+#define QS_DECLARE_VARIABLE(type, name)                                                     \
+    public :                                                                                \
+    type name = type();                                                                     \
+
+/* Create JSON property and methods for primitive type field*/
+#define QS_JSON_FIELD(type, name) \
+    Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
+    private:                                                                                \
+        QJsonValue GET(json, name)() const {                                                \
+            QJsonValue val = QJsonValue::fromVariant(QVariant::fromValue(name));            \
+            return val;                                                                     \
+        }                                                                                   \
+        void SET(json, name)(const QJsonValue & varname){                                   \
+            name = varname.toVariant().value<type>();                                       \
+        }                                                                                   \
 
 
-#define QS_DECLARE(type, name)                                                      \
-    public :                                                                        \
-    type name = type();                                                                      \
-
-#define QS_BIND_FIELD(type, name)                                                   \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)                    \
-    private:                                                                        \
-    QJsonValue get_##name() const {                                                 \
-        QJsonValue val = QJsonValue::fromVariant(QVariant::fromValue(name));        \
-        return val;                                                                 \
-    }                                                                               \
-    void set_##name(QJsonValue varname){                                            \
-        name = varname.toVariant().value<type>();                                   \
-    }                                                                               \
-
-// работает с любым шаблонным контейнером,
-// у которого есть метод append
-#define QS_BIND_ARRAY(type, contains, name)                                                   \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)                    \
-    private: \
-    QJsonValue get_##name() const {                                                 \
-        QJsonArray val;                                                             \
-        for(int i = 0; i < name.size(); i++)                                        \
-            val.push_back(name.at(i));                                 \
-        return QJsonValue::fromVariant(val);                                        \
-    }                                                                               \
-    void set_##name(QJsonValue varname){                                            \
-        if(!varname.isArray())                                                      \
-            return;                                                                 \
-        name.clear();                                                               \
-        QJsonArray val = varname.toArray();                                         \
-        for(auto item : val){                                        \
-            QVariant tmp(item); \
-            name.append(tmp.value<contains>());                           \
-        }\
-    }                                                                               \
-
-#define QS_BIND_OBJECT(type, name) \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)\
-    private: \
-    QJsonValue get_##name() const {\
-    QJsonObject val = name.toJson();\
-    return QJsonValue(val);\
-    }\
-    void set_##name(QJsonValue varname) {\
-    if(!varname.isObject())\
-    return;\
-    name.fromJson(varname);\
-    }\
+/* Create XML property and methods for primitive type field*/
+#define QS_XML_FIELD(type, name) \
+    Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
+    private:                                                                                \
+    QDomNode GET(xml, name)() const {                                                       \
+        QDomDocument doc;                                                                   \
+        QString strname = #name;                                                            \
+        QDomElement element = doc.createElement(strname);                                   \
+        QDomText valueOfProp = doc.createTextNode(QVariant(name).toString());               \
+        element.appendChild(valueOfProp);                                                   \
+        doc.appendChild(element);                                                           \
+        return  QDomNode(element);                                                          \
+    }                                                                                       \
+    void SET(xml, name)(const QDomNode &node) {                                             \
+        if(!node.isNull() && node.isElement()){                                             \
+            QDomElement domElement = node.toElement();                                      \
+            if(domElement.tagName() == name)                                                \
+                name = QVariant(domElement.text()).value<type>();                           \
+        }                                                                                   \
+    }                                                                                       \
 
 
+/* Generate JSON-property and methods for primitive type objects */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_JSON_ARRAY(itemType, name)                                                       \
+    Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
+    private:                                                                                \
+        QJsonValue GET(json, name)() const {                                                \
+            QJsonArray val;                                                                 \
+            for(int i = 0; i < name.size(); i++)                                            \
+                val.push_back(name.at(i));                                                  \
+            return QJsonValue::fromVariant(val);                                            \
+        }                                                                                   \
+        void SET(json, name)(const QJsonValue & varname) {                                  \
+            if(!varname.isArray())                                                          \
+                return;                                                                     \
+            name.clear();                                                                   \
+            QJsonArray val = varname.toArray();                                             \
+            for(auto item : val) {                                                          \
+                itemType tmp;                                                               \
+                tmp = item.toVariant().value<itemType>();                                   \
+                name.append(tmp);                                                           \
+            }                                                                               \
+        }                                                                                   \
 
-#define QS_BIND_ARRAY_OBJECTS(type, contains, name) \
-    Q_PROPERTY(QJsonValue name READ get_##name WRITE set_##name)                    \
-    private: \
-    QJsonValue get_##name() const {                                                 \
-        QJsonArray val;                                                                 \
-        for(int i = 0; i < name.size(); i++)\
-            val.push_back(name.at(i).toJson());\
-        return QJsonValue::fromVariant(val); \
-    }\
-    void set_##name(QJsonValue varname) {\
-    if(!varname.isArray() || !std::is_base_of<QGadget, contains>()) \
-        return; \
-    name.clear(); \
-    QJsonArray val = varname.toArray();\
-    for(int i = 0; i < val.size(); i++) { \
-        contains tmp;\
-        tmp.fromJson(val.at(i)); \
-        name.append(tmp);\
-    }\
-    }\
-
-
-
-#define QS_FIELD(type, name)                                                   \
-    QS_DECLARE(type, name)                                                          \
-    QS_BIND_FIELD(type, name)                                                       \
-
-// работает с любым шаблонным контейнером, у которого есть метод append
-#define QS_ARRAY(type, contains, name)                                                   \
-    QS_DECLARE(type, name)                                                          \
-    QS_BIND_ARRAY(type, contains, name)                                                       \
-
-#define QS_OBJECT(type,name)\
-    QS_DECLARE(type, name)\
-    QS_BIND_OBJECT(type, name)\
-
-#define QS_ARRAY_OBJECTS(type, contains, name) \
-    QS_DECLARE(type, name) \
-    QS_BIND_ARRAY_OBJECTS(type, contains, name) \
-
-
-
-
-
-
-
-namespace QSerializer
-{
-    /// \brief производит сериализацию QObject в JSON по имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT QJsonObject toJson(QObject * qo);
-
-    /// \brief производит сериализацию JSON в переданный QObject согласно имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT void fromJson(QObject * qo, const QJsonObject & json);
-
-    /// \brief производит сериализацию JSON в переданный QObject согласно имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT void fromJson(QObject * qo, const QJsonDocument & json);
-
-    /// \brief производит сериализацию JSON в переданный QObject согласно имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT void fromJson(QObject * qo, const QByteArray & json);
-
-    /// \brief производит JSON в переданный QObject согласно имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT void fromJson(QObject * qo, const QString & json);
-
-
-    /// \brief конвертирует JSON в новый объект указанного типа и возвращает указатель на него
-    template <class T, typename = std::enable_if<std::is_base_of<QObject, T>::value>>
-    QSERIALIZER_EXPORT T * fromJson(const QJsonObject &json)
-    {
-        T * targetObj = new T();
-        fromJson(targetObj, json);
-        return targetObj;
-    }
-    /// \brief конвертирует JSON в новый объект указанного типа и возвращает указатель на него
-    template <class T, typename = std::enable_if<std::is_base_of<QObject, T>::value>>
-    QSERIALIZER_EXPORT T * fromJson(const QJsonDocument & json)
-    {
-        QJsonObject jObject = json.object();
-        return fromJson<T>(jObject);
-    }
-
-    /// \brief конвертирует JSON в новый объект указанного типа и возвращает указатель на него
-    template <class T, typename = std::enable_if<std::is_base_of<QObject, T>::value>>
-    QSERIALIZER_EXPORT T * fromJson(const QByteArray & json)
-    {
-        QJsonObject jObject = QJsonDocument::fromJson(json).object();
-        return fromJson<T>(jObject);
-    }
-
-    /// \brief конвертирует JSON в новый объект указанного типа и возвращает указатель на него
-    template <class T, typename = std::enable_if<std::is_base_of<QObject, T>::value>>
-    QSERIALIZER_EXPORT T * fromJson(const QString &json)
-    {
-        const char * raw = json.toStdString().c_str();
-        QJsonObject jObject = QJsonDocument::fromRawData(raw, static_cast<int>(strlen(raw))).object();
-        return fromJson<T>(jObject);
-    }
-
-    /// \brief производит сериализацию QObject в XML по имеющейся у объекта метаинформации
-    QSERIALIZER_EXPORT QDomDocument toXml(QObject * qo);
-
-    /// \brief модифицирует существующий объект из XML
-    QSERIALIZER_EXPORT void fromXml(QObject * qo, const QDomNode &xml);
-
-    /// \brief конвертирует XML в новый объект указанного типа и возвращает указатель на него
-    template <class T, typename = std::enable_if<std::is_base_of<QObject, T>::value>>
-    QSERIALIZER_EXPORT T * fromXml(const QDomNode &xml)
-    {
-        T * targetObj = new T();
-        fromXml(targetObj, xml);
-        return targetObj;
-    }
-}
+/* Generate XML-property and methods for primitive type objects */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_XML_ARRAY(itemType, name)                                                        \
+    Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
+    private:                                                                                \
+        QDomNode GET(xml, name)() const {                                                   \
+            QDomDocument doc;                                                               \
+            QString strname = #name;                                                        \
+            QDomElement arrayXml = doc.createElement(QString(strname));                     \
+            arrayXml.setAttribute("type", "array");                                         \
+                                                                                            \
+            for(int i = 0; i < name.size(); i++) {                                          \
+                itemType item = name.at(i);                                                 \
+                QDomElement itemXml = doc.createElement("item");                            \
+                itemXml.setAttribute("type", #itemType);                                    \
+                itemXml.setAttribute("index", i);                                           \
+                itemXml.appendChild(doc.createTextNode(QVariant(item).toString()));         \
+                arrayXml.appendChild(itemXml);                                              \
+            }                                                                               \
+                                                                                            \
+            doc.appendChild(arrayXml);                                                      \
+            return  QDomNode(doc);                                                          \
+        }                                                                                   \
+        void SET(xml, name)(const QDomNode & node) {                                        \
+            QDomNode domNode = node.firstChild();                                           \
+            name.clear();                                                                   \
+            while(!domNode.isNull()) {                                                      \
+                if(domNode.isElement()) {                                                   \
+                    QDomElement domElement = domNode.toElement();                           \
+                    name.append(QVariant(domElement.text()).value<itemType>());             \
+                }                                                                           \
+                domNode = domNode.nextSibling();                                            \
+            }                                                                               \
+        }                                                                                   \
 
 
 
+
+
+/* Generate JSON-property and methods for some custom class */
+/* Custom type must be provide methods fromJson and toJson or inherit from QGadget */
+#define QS_JSON_OBJECT(type, name)                                                          \
+    Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
+    private:                                                                                \
+    QJsonValue GET(json, name)() const {                                                    \
+        QJsonObject val = name.toJson();                                                    \
+        return QJsonValue(val);                                                             \
+    }                                                                                       \
+    void SET(json, name)(const QJsonValue & varname) {                                      \
+        if(!varname.isObject())                                                             \
+        return;                                                                             \
+        name.fromJson(varname);                                                             \
+    }                                                                                       \
+
+/* Generate XML-property and methods for some custom class */
+/* Custom type must be provide methods fromJson and toJson or inherit from QGadget */
+#define QS_XML_OBJECT(type, name)                                                           \
+    Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
+    private:                                                                                \
+        QDomNode GET(xml, name)() const {                                                   \
+            return name.toXml();                                                            \
+        }                                                                                   \
+        void SET(xml, name)(const QDomNode & node){                                         \
+            name.fromXml(node);                                                             \
+        }                                                                                   \
+
+/* Generate JSON-property and methods for collection of custom type objects */
+/* Custom item type must be provide methods fromJson and toJson or inherit from QGadget */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_JSON_ARRAY_OBJECTS(itemType, name)                                               \
+    Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
+    private:                                                                                \
+        QJsonValue GET(json, name)() const {                                                \
+            QJsonArray val;                                                                 \
+            for(int i = 0; i < name.size(); i++)                                            \
+                val.push_back(name.at(i).toJson());                                         \
+            return QJsonValue::fromVariant(val);                                            \
+        }                                                                                   \
+        void SET(json, name)(const QJsonValue & varname) {                                  \
+            if(!varname.isArray() || !std::is_base_of<QGadget, itemType>())                 \
+                return;                                                                     \
+            name.clear();                                                                   \
+            QJsonArray val = varname.toArray();                                             \
+            for(int i = 0; i < val.size(); i++) {                                           \
+                itemType tmp;                                                               \
+                tmp.fromJson(val.at(i));                                                    \
+                name.append(tmp);                                                           \
+            }                                                                               \
+        }                                                                                   \
+
+/* Generate XML-property and methods for collection of custom type objects  */
+/* Custom type must be provide methods fromXml and toXml or inherit from QGadget */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_XML_ARRAY_OBJECTS(itemType, name)                                                \
+    Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
+    private:                                                                                \
+    QDomNode GET(xml, name)() const {                                                       \
+        QDomDocument doc;                                                                   \
+        QDomElement element = doc.createElement(#name);                                     \
+        for(int i = 0; i < name.size(); i++)                                                \
+            element.appendChild(name.at(i).toXml());                                        \
+        doc.appendChild(element);                                                           \
+        return QDomNode(doc);                                                               \
+    }                                                                                       \
+    void SET(xml, name)(const QDomNode & node) {                                            \
+        name.clear();                                                                       \
+        QDomNodeList nodesList = node.childNodes();                                         \
+        for(int i = 0;  i < name.size(); i++) {                                             \
+            itemType tmp;                                                                   \
+            tmp.fromXml(nodesList.at(i));                                                   \
+            name.append(tmp);                                                               \
+        }                                                                                   \
+    }                                                                                       \
+
+
+
+
+
+
+
+
+
+
+/* Make primitive field and generate serializable propertyes */
+/* For example: QS_FIELD(int, digit), QS_FIELD(bool, flag) */
+#define QS_FIELD(type, name)                                                                \
+    QS_DECLARE_VARIABLE(type, name)                                                         \
+    QS_JSON_FIELD(type, name)                                                               \
+    QS_XML_FIELD(type, name)                                                                \
+
+/* Make collection of primitive type objects [collectionType<itemType> name] and generate serializable propertyes for this collection */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_COLLECTION(collectionType, itemType, name)                                            \
+    QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
+    QS_JSON_ARRAY(itemType, name)                                                           \
+    QS_XML_ARRAY(itemType, name)                                                            \
+
+/* Make custom class object and bind serializable propertyes */
+/* This class must be inherited from QGadget */
+#define QS_OBJECT(type,name)                                                                \
+    QS_DECLARE_VARIABLE(type, name)                                                         \
+    QS_JSON_OBJECT(type, name)                                                              \
+    QS_XML_OBJECT(type, name)                                                               \
+
+
+/* Make collection of custom class objects [collectionType<itemType> name] and bind serializable propertyes */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_COLLECTION_OBJECTS(collectionType, itemType, name)                                    \
+    QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
+    QS_JSON_ARRAY_OBJECTS(itemType, name)                                                   \
+    QS_XML_ARRAY_OBJECTS(itemType, name)                                                    \
 
 
 

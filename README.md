@@ -20,7 +20,7 @@ For create serializable member of class and generate propertyes, use macro:
 - QS_OBJECT
 - QS_COLLECTION_OBJECTS
 
-If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (lock at qserializer.h)
+If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
 ```C++
 class User : public QSerializer
 {

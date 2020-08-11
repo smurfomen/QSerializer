@@ -134,11 +134,11 @@ private:
 #define QS_PROVIDE : QSerializer(staticMetaObject)
 #define QS_CLASS Q_GADGET
 
-#define QS_BEGIN_CLASS(classname) \
-    class classname : public QSerializer { \
-    QS_CLASS\
-        public:\
-        classname() QS_PROVIDE {}\
+#define QS_BEGIN_CLASS(classname)  \
+class classname : public QSerializer {  \
+    QS_CLASS            \
+        public:                 \
+        classname() QS_PROVIDE {} \
 
 #define QS_END_CLASS };
 

@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
     qDebug()<<QJsonDocument(general.toJson()).toJson().toStdString().c_str();
     qDebug()<<general.toXml().toDocument().toString().toStdString().c_str();
 
-
     QFile json("../general.json");
     if(json.exists())
         json.remove();

@@ -1,15 +1,17 @@
 #ifndef CLASSES_H
 #define CLASSES_H
 #include "../../src/qserializer.h"
-
+#include <QQueue>
+#include <QStack>
 class Field : public QSerializer {
     QS_CLASS
     QS_FIELD(int, digit)
     QS_FIELD(QString, string)
     QS_FIELD(bool, flag)
+    QS_FIELD(double, asd)
 
     public:
-        Field() QS_PROVIDE {}
+        Field() QS_PROVIDE { }
 };
 
 class Collection : public QSerializer {

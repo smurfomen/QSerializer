@@ -154,7 +154,7 @@ private:
     void SET(xml, name)(const QDomNode &node) {                                             \
         if(!node.isNull() && node.isElement()){                                             \
             QDomElement domElement = node.toElement();                                      \
-            if(domElement.tagName() == name)                                                \
+            if(domElement.tagName() == #name)                                                \
                 name = QVariant(domElement.text()).value<type>();                           \
         }                                                                                   \
     }                                                                                       \

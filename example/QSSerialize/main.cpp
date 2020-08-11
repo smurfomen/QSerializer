@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     field.digit = 10;
     field.string = "some string";
     field.d_digit = 88.99;
-    qDebug()<<QJsonDocument(field.toJson()).toJson().toStdString().c_str();
-    qDebug()<<field.toXml().toDocument().toString().toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(field.toJson()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(field.toXml()).toStdString().c_str();
 
 
     qDebug()<<"\nCOLLECTIONS";
@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     collection.stack.append(2.44);
     collection.stack.append(4.42);
     collection.stack.append(77);
-    qDebug()<<QJsonDocument(collection.toJson()).toJson().toStdString().c_str();
-    qDebug()<<collection.toXml().toDocument().toString().toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collection.toJson()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collection.toXml()).toStdString().c_str();
 
 
     qDebug()<<"\nCUSTOM OBJECT";
@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
     object.string.append("third");
     object.string.append("second");
     object.string.append("first");
-    qDebug()<<QJsonDocument(object.toJson()).toJson().toStdString().c_str();
-    qDebug()<<object.toXml().toDocument().toString().toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(object.toJson()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(object.toXml()).toStdString().c_str();
 
 
     qDebug()<<"\nCOLLECTION OF CUSTOM OBJECTS";
@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);
-    qDebug()<<QJsonDocument(collectionObjects.toJson()).toJson().toStdString().c_str();
-    qDebug()<<collectionObjects.toXml().toDocument().toString().toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collectionObjects.toJson()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collectionObjects.toXml()).toStdString().c_str();
 
 
     qDebug()<<"\nGENERAL";
@@ -59,15 +59,16 @@ int main(int argc, char *argv[])
     general.object = object;
     general.collection = collection;
     general.collectionObjects = collectionObjects;
-    qDebug()<<QJsonDocument(general.toJson()).toJson().toStdString().c_str();
-    qDebug()<<general.toXml().toDocument().toString().toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(general.toJson()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(general.toXml()).toStdString().c_str();
+
 
     QFile json("../general.json");
     if(json.exists())
         json.remove();
     if(json.open(QIODevice::WriteOnly))
     {
-        json.write(QJsonDocument(general.toJson()).toJson().toStdString().c_str());
+        json.write(QSerializer::toByteArray(general.toJson()));
         json.close();
     }
 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
         xml.remove();
     if(xml.open(QIODevice::WriteOnly))
     {
-        xml.write(general.toXml().toDocument().toString().toStdString().c_str());
+        xml.write(QSerializer::toByteArray(general.toXml()));
         xml.close();
     }
 

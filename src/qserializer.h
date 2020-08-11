@@ -24,6 +24,14 @@ class QSerializer {
     Q_GADGET
 public:
     QSerializer(QMetaObject mo) : mo(mo){}
+    static QByteArray toByteArray(const QJsonValue & value){
+        return QJsonDocument(value.toObject()).toJson();
+    }
+
+    static QByteArray toByteArray(const QDomNode & value) {
+        return value.toDocument().toByteArray();
+    }
+
     ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
@@ -77,7 +85,7 @@ public:
     }
 
     ///\brief Deserialize all accessed XML propertyes for this object
-    void fromXml(const QDomNode doc){
+    void fromXml(const QDomNode & doc){
         if(metaObject()->className() == doc.firstChildElement().tagName())
         {
             for(int i = 0; i < metaObject()->propertyCount(); i++)
@@ -98,6 +106,14 @@ public:
                 }
             }
         }
+    }
+
+    void fromXml(const QByteArray & data) {
+        fromXml(QDomDocument(data));
+    }
+
+    void fromJson(const QByteArray & data) {
+        fromJson(QJsonDocument::fromJson(data).object());
     }
 
     const QMetaObject * metaObject() const {

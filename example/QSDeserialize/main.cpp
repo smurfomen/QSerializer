@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
         qWarning()<<"ERROR: general.json is not exist";
     if(json.open(QIODevice::ReadOnly))
     {
-        general.fromJson(QJsonDocument::fromJson(json.readAll()).object());
-        qDebug()<<QJsonDocument(general.toJson()).toJson().toStdString().c_str();
+        general.fromJson(json.readAll());
+        qDebug()<<QSerializer::toByteArray(general.toJson()).toStdString().c_str();
         json.close();
     }
 
@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
         qWarning()<<"ERROR: general.xml is not exist";
     if(xml.open(QIODevice::ReadOnly))
     {
-        general.fromXml(QDomDocument(xml.readAll()));
-        qDebug()<<general.toXml().toDocument().toString().toStdString().c_str();
+        general.fromXml(xml.readAll());
+        qDebug()<<QSerializer::toByteArray(general.toXml()).toStdString().c_str();
         xml.close();
     }
 

@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     field.flag = false;
     field.digit = 10;
     field.string = "some string";
+    field.d_digit = 88.99;
     qDebug()<<QJsonDocument(field.toJson()).toJson().toStdString().c_str();
     qDebug()<<field.toXml().toDocument().toString().toStdString().c_str();
 
@@ -26,6 +27,9 @@ int main(int argc, char *argv[])
     collection.vector.append(1);
     collection.vector.append(2);
     collection.vector.append(3);
+    collection.stack.append(2.44);
+    collection.stack.append(4.42);
+    collection.stack.append(77);
     qDebug()<<QJsonDocument(collection.toJson()).toJson().toStdString().c_str();
     qDebug()<<collection.toXml().toDocument().toString().toStdString().c_str();
 

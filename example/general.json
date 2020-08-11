@@ -5,6 +5,11 @@
             "second",
             "third"
         ],
+        "stack": [
+            2.44,
+            4.42,
+            77
+        ],
         "vector": [
             1,
             2,
@@ -40,7 +45,7 @@
         ]
     },
     "field": {
-        "asd": 22.4,
+        "d_digit": 88.99,
         "digit": 10,
         "flag": false,
         "string": "some string"

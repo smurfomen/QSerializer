@@ -3,7 +3,7 @@
   <digit>10</digit>
   <string>some string</string>
   <flag>false</flag>
-  <asd>22.4</asd>
+  <d_digit>88.99</d_digit>
  </Field>
  <Collection>
   <vector type="array">
@@ -16,6 +16,11 @@
    <item index="1" type="QString">second</item>
    <item index="2" type="QString">third</item>
   </list>
+  <stack type="array">
+   <item index="0" type="double">2.44</item>
+   <item index="1" type="double">4.42</item>
+   <item index="2" type="double">77</item>
+  </stack>
  </Collection>
  <CustomObject>
   <digit>8</digit>

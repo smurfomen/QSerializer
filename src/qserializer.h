@@ -126,11 +126,11 @@ private:
     type name = type();                                                                     \
 
 /* Create JSON property and methods for primitive type field*/
-#define QS_JSON_FIELD(type, name) \
+#define QS_JSON_FIELD(type, name)                                                           \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
         QJsonValue GET(json, name)() const {                                                \
-            QJsonValue val = QJsonValue::fromVariant(QVariant::fromValue(name));            \
+            QJsonValue val = QJsonValue::fromVariant(QVariant(name));                       \
             return val;                                                                     \
         }                                                                                   \
         void SET(json, name)(const QJsonValue & varname){                                   \
@@ -139,7 +139,7 @@ private:
 
 
 /* Create XML property and methods for primitive type field*/
-#define QS_XML_FIELD(type, name) \
+#define QS_XML_FIELD(type, name)                                                            \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
     QDomNode GET(xml, name)() const {                                                       \
@@ -154,7 +154,7 @@ private:
     void SET(xml, name)(const QDomNode &node) {                                             \
         if(!node.isNull() && node.isElement()){                                             \
             QDomElement domElement = node.toElement();                                      \
-            if(domElement.tagName() == #name)                                                \
+            if(domElement.tagName() == #name)                                               \
                 name = QVariant(domElement.text()).value<type>();                           \
         }                                                                                   \
     }                                                                                       \
@@ -315,7 +315,7 @@ private:
 
 /* Make collection of primitive type objects [collectionType<itemType> name] and generate serializable propertyes for this collection */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
-#define QS_COLLECTION(collectionType, itemType, name)                                            \
+#define QS_COLLECTION(collectionType, itemType, name)                                       \
     QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
     QS_JSON_ARRAY(itemType, name)                                                           \
     QS_XML_ARRAY(itemType, name)                                                            \
@@ -330,7 +330,7 @@ private:
 
 /* Make collection of custom class objects [collectionType<itemType> name] and bind serializable propertyes */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
-#define QS_COLLECTION_OBJECTS(collectionType, itemType, name)                                    \
+#define QS_COLLECTION_OBJECTS(collectionType, itemType, name)                               \
     QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
     QS_JSON_ARRAY_OBJECTS(itemType, name)                                                   \
     QS_XML_ARRAY_OBJECTS(itemType, name)                                                    \

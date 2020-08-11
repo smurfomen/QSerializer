@@ -8,7 +8,7 @@ class Field : public QSerializer {
     QS_FIELD(int, digit)
     QS_FIELD(QString, string)
     QS_FIELD(bool, flag)
-    QS_FIELD(double, asd)
+    QS_FIELD(double, d_digit)
 
     public:
         Field() QS_PROVIDE { }
@@ -18,7 +18,7 @@ class Collection : public QSerializer {
     QS_CLASS
     QS_COLLECTION(QVector, int, vector)
     QS_COLLECTION(QList, QString, list)
-
+    QS_COLLECTION(QStack, double, stack)
     public:
         Collection() QS_PROVIDE {}
 };

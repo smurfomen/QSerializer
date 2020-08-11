@@ -8,19 +8,12 @@ Download repository
 $ git clone https://github.com/smurfomen/QSerializer.git
 ```
 Just include qserializer.h in your project and enjoy simple serialization. qserializer.h located in src folder.
-
 Demo-projects for using QSerializer locate are in the examples folder.
 
 ## Workflow
 ## Create serialization class
 To get started, include qserializer.h in your code.
-Next step, inherit from QSerializer and declare some serializable fields. QSerializer is not QObject-based class, but used Q_GADJET for greater performance. You may not inherit from QSerializer, for this case you need to define the methods in the class:
- - QJsonValue toJson()
- - void fromJson(const QJsonValue &)
- - QDomNode toXml()
- - void fromXml(const QDomNode &)
- - const QMetaObject * metaObject() const
-
+Next step, inherit from QSerializer and declare some serializable fields.
 For create serializable member of class and generate propertyes, use macro:
 - QS_FIELD
 - QS_COLLECTION
@@ -43,9 +36,26 @@ public:
 Macro QS_CLASS is redefined macro Q_GADGET.
 Macro QS_PROVIDE is define your constructor for provide staticMetaObject of Q_GADGET classes to QSerializer.
 
-You may not use QS_CLASS and QS_PROVIDE if you not use QSerializer, but use QObject based class, because the QObjest already contains the metaObject method and stores it in itself, however QObject is a heavier parent.
+### Simplest use case to create class special for serialization
+Also you may create classes special only for serialization and deserialization. For this use macro QS_BEGIN_CLASS(classname), then list all serialization fields and end the class with a macro QS_END_CLASS.
+QS_BEGIN_CLASS will generate header of class named classname, inherited from QSerializer, who use Q_GADGET and create default constructor with provide staticMetaObject to QSerializer.
+For example:
+```C++
+QS_BEGIN_CLASS(User)
+QS_FIELD(int, age)
+QS_COLLECTION(QVector, QString, parents)
+QS_END_CLASS
+```
 
 ### Alternative case without inherit QSerializer
+QSerializer is not QObject-based class, but used Q_GADJET for greater performance. You may not inherit from QSerializer, for this case you need to define the methods in the class:
+ - QJsonValue toJson()
+ - void fromJson(const QJsonValue &)
+ - QDomNode toXml()
+ - void fromXml(const QDomNode &)
+ - const QMetaObject * metaObject() const
+
+You may not use QS_CLASS and QS_PROVIDE if you not use QSerializer, but use QObject based class, because the QObjest already contains the metaObject method and stores it in itself, however QObject is a heavier parent.
 ```C++
 class User : public QObject
 {
@@ -93,9 +103,10 @@ u.fromXml(userXml);
 | Macro | Description | Restrictions | For example |
 |-|-|-|-|
 | QS_FIELD | Create simple field, generate methods and propertyes | Available types: <li>int</li> <li>QString</li> <li>double</li> <li>bool</li> <li>short</li> <li>unsigned char</li> | create field named "Digit" of int type</br> QS_FIELD(int, Digit) |
-| QS_COLLECTION | Create collection of simple fields, generate methods and propertyes | Available types of collection: <li>QVector</li> <li>QList</li> <li>QStack</li> <li>QQueue</li> | create collection named "MyCollection" of QVector\<int\> type</br> QS_COLLECTION(QVector, int, MyCollection) |
+| QS_COLLECTION | Create collection of simple fields, generate methods and propertyes | Available types of collections: <li>QVector</li> <li>QList</li> <li>QStack</li> <li>QQueue</li> | create collection named "MyCollection" of QVector\<int\> type</br> QS_COLLECTION(QVector, int, MyCollection) |
 | QS_OBJECT | Create some class object field, generate methods and propertyes | You may create some object field, if class of this object provide methods: <li>QJsonValue toJson() const</li> <li>void fromJson(const QJsonValue &)</li> <li>QDomNode toXml() const</li> <li>void fromXml(const QDomNode &)</li> <li>const QMetaObject * metaObject() const</li> | create some object "MyObject"  of MyClass type</br> QS_OBJECT(MyClass, MyObject) |
 | QS_COLLECTION_OBJECTS | Create collection of some objects, generate methods and propertyes | You may create collection of objects satisfying restrictions of QS_OBJECT | create collection of some objects</br> named "MyObjectsCollection" of QList\<MyClass\> type QS_COLLECTION_OBJECTS(QList, MyClass, MyObjectsCollection) |
 | QS_CLASS | Added in class QMetaObject System | Use this macro if you don't use QObject based class | class ClassName : public QSerializer { </br> QS_CLASS</br>  ...</br> }; |
-| QS_PROVIDE | Provide metaObject to QSerializer with you constructor | Use this macro only with QS_CLASS and inherit of QSerializer. You already have QMetaObject in QObject-based classes. | class ClassName : public QSerializer { </br> QS_CLASS</br> public:</br> ClassName() QS_PROVIDE {}</br> }; |
+| QS_PROVIDE | Provide metaObject to QSerializer with you constructor | Use this macro only with QS_CLASS and inherited QSerializer. In QObject-based classes you already have QMetaObject, who provided method metaObject. | class ClassName : public QSerializer { </br> QS_CLASS</br> public:</br> ClassName() QS_PROVIDE {}</br> }; |
 | QS_DECLARE_VARRIABLE | Created new public member of class | Use exists types | create public member class [int Digit]</br> QS_DECLARE_VARIABLE(int, Digit) |
+| QS_BEGIN_CLASS | Generate header for serializeable class | Use if you want use class only for serialize and deserialize Close list of serializable fields use macro QS_END_CLASS | make class named "SerializationClass"</br> QS_BEGIN_CLASS(SerializationClass)</br>..</br>..</br>QS_END_CLASS</br> |

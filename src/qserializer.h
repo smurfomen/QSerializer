@@ -16,6 +16,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
+#include <QObject>
 
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
@@ -26,12 +27,12 @@ public:
     ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
-        for(int i = 0; i < mo.propertyCount(); i++)
+        for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
                 continue;
 
-            json.insert(mo.property(i).name(), mo.property(i).readOnGadget(this).toJsonValue());
+            json.insert(metaObject()->property(i).name(), metaObject()->property(i).readOnGadget(this).toJsonValue());
         }
         return json;
     }
@@ -42,17 +43,17 @@ public:
         {
             QJsonObject json = val.toObject();
             QStringList keys = json.keys();
-            int propCount = mo.propertyCount();
+            int propCount = metaObject()->propertyCount();
             for(int i = 0; i < propCount; i++)
             {
-                if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
                     continue;
 
                 for(auto key : json.keys())
                 {
-                    if(key == mo.property(i).name())
+                    if(key == metaObject()->property(i).name())
                     {
-                        mo.property(i).writeOnGadget(this, json.value(key));
+                        metaObject()->property(i).writeOnGadget(this, json.value(key));
                         break;
                     }
                 }
@@ -63,13 +64,13 @@ public:
     ///\brief Serialize all accessed XML propertyes for this object
     QDomNode toXml() const {
         QDomDocument doc;
-        QDomElement el = doc.createElement(mo.className());
-        for(int i = 0; i < mo.propertyCount(); i++)
+        QDomElement el = doc.createElement(metaObject()->className());
+        for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
                 continue;
 
-            el.appendChild(QDomNode(mo.property(i).readOnGadget(this).value<QDomNode>()));
+            el.appendChild(QDomNode(metaObject()->property(i).readOnGadget(this).value<QDomNode>()));
         }
         doc.appendChild(el);
         return doc;
@@ -77,26 +78,30 @@ public:
 
     ///\brief Deserialize all accessed XML propertyes for this object
     void fromXml(const QDomNode doc){
-        if(mo.className() == doc.firstChildElement().tagName())
+        if(metaObject()->className() == doc.firstChildElement().tagName())
         {
-            for(int i = 0; i < mo.propertyCount(); i++)
+            for(int i = 0; i < metaObject()->propertyCount(); i++)
             {
-                if(QString(mo.property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
                     continue;
 
                 QDomNode fieldNode = doc.firstChild().firstChild();
                 while(!fieldNode.isNull())
                 {
                     QDomElement currentElement = fieldNode.toElement();
-                    if(mo.property(i).name() == currentElement.tagName())
+                    if(metaObject()->property(i).name() == currentElement.tagName())
                     {
-                        mo.property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
                         break;
                     }
                     fieldNode = fieldNode.nextSibling();
                 }
             }
         }
+    }
+
+    const QMetaObject * metaObject() const {
+        return &mo;
     }
 
 private:

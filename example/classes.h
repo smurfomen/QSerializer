@@ -3,6 +3,20 @@
 #include "../../src/qserializer.h"
 #include <QQueue>
 #include <QStack>
+
+QS_BEGIN_CLASS(Parent)
+    QS_FIELD(int, age)
+    QS_FIELD(QString, name)
+    QS_FIELD(bool, male)
+QS_END_CLASS
+
+QS_BEGIN_CLASS(Student)
+    QS_FIELD(int, age)
+    QS_FIELD(QString, name)
+    QS_COLLECTION(QList, QString, links)
+    QS_COLLECTION_OBJECTS(QList, Parent, parents)
+QS_END_CLASS
+
 class Field : public QSerializer {
     QS_CLASS
     QS_FIELD(int, digit)

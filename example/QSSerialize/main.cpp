@@ -4,6 +4,27 @@
 #include <QFile>
 #include <QDebug>
 
+void exampleStudent() {
+    Student stud;
+    stud.age = 23;
+    stud.name = "Vlad";
+    stud.links.append("https:/github.com/smurfomen");
+
+    Parent mother;
+    mother.age = 43;
+    mother.male = false;
+    mother.name = "Olga";
+
+    Parent father;
+    father.age = 48;
+    father.male = true;
+    father.name = "Alex";
+    stud.parents.append(mother);
+    stud.parents.append(father);
+
+    qDebug()<<QSerializer::toByteArray(stud.toJson()).constData();
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -15,8 +36,8 @@ int main(int argc, char *argv[])
     field.digit = 10;
     field.string = "some string";
     field.d_digit = 88.99;
-    qDebug()<<QSerializer::toByteArray(field.toJson()).toStdString().c_str();
-    qDebug()<<QSerializer::toByteArray(field.toXml()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(field.toJson()).constData();
+    qDebug()<<QSerializer::toByteArray(field.toXml()).constData();
 
 
     qDebug()<<"\nCOLLECTIONS";
@@ -30,8 +51,8 @@ int main(int argc, char *argv[])
     collection.stack.append(2.44);
     collection.stack.append(4.42);
     collection.stack.append(77);
-    qDebug()<<QSerializer::toByteArray(collection.toJson()).toStdString().c_str();
-    qDebug()<<QSerializer::toByteArray(collection.toXml()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collection.toJson()).constData();
+    qDebug()<<QSerializer::toByteArray(collection.toXml()).constData();
 
 
     qDebug()<<"\nCUSTOM OBJECT";
@@ -40,8 +61,8 @@ int main(int argc, char *argv[])
     object.string.append("third");
     object.string.append("second");
     object.string.append("first");
-    qDebug()<<QSerializer::toByteArray(object.toJson()).toStdString().c_str();
-    qDebug()<<QSerializer::toByteArray(object.toXml()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(object.toJson()).constData();
+    qDebug()<<QSerializer::toByteArray(object.toXml()).constData();
 
 
     qDebug()<<"\nCOLLECTION OF CUSTOM OBJECTS";
@@ -49,8 +70,8 @@ int main(int argc, char *argv[])
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);
-    qDebug()<<QSerializer::toByteArray(collectionObjects.toJson()).toStdString().c_str();
-    qDebug()<<QSerializer::toByteArray(collectionObjects.toXml()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(collectionObjects.toJson()).constData();
+    qDebug()<<QSerializer::toByteArray(collectionObjects.toXml()).constData();
 
 
     qDebug()<<"\nGENERAL";
@@ -59,8 +80,8 @@ int main(int argc, char *argv[])
     general.object = object;
     general.collection = collection;
     general.collectionObjects = collectionObjects;
-    qDebug()<<QSerializer::toByteArray(general.toJson()).toStdString().c_str();
-    qDebug()<<QSerializer::toByteArray(general.toXml()).toStdString().c_str();
+    qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+    qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
 
 
     QFile json("../general.json");
@@ -80,7 +101,6 @@ int main(int argc, char *argv[])
         xml.write(QSerializer::toByteArray(general.toXml()));
         xml.close();
     }
-
 
     return a.exec();
 }

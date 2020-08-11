@@ -16,8 +16,6 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
-#include <QObject>
-
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
 class QSerializer {
@@ -135,6 +133,15 @@ private:
 
 #define QS_PROVIDE : QSerializer(staticMetaObject)
 #define QS_CLASS Q_GADGET
+
+#define QS_BEGIN_CLASS(classname) \
+    class classname : public QSerializer { \
+    QS_CLASS\
+        public:\
+        classname() QS_PROVIDE {}\
+
+#define QS_END_CLASS };
+
 
 /* Create variable */
 #define QS_DECLARE_VARIABLE(type, name)                                                     \

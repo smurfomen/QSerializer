@@ -117,6 +117,9 @@ private:
 #define GET(prefix, name) get_##prefix##_##name
 #define SET(prefix, name) set_##prefix##_##name
 
+#define QS_PROVIDE : QSerializer(staticMetaObject)
+#define QS_CLASS Q_GADGET
+
 /* Create variable */
 #define QS_DECLARE_VARIABLE(type, name)                                                     \
     public :                                                                                \

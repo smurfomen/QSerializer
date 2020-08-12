@@ -8,19 +8,23 @@ Download repository
 $ git clone https://github.com/smurfomen/QSerializer.git
 ```
 Just include qserializer.h in your project and enjoy simple serialization. qserializer.h located in src folder.
-Demo-projects for using QSerializer locate are in the examples folder.
+</br>Demo-projects for using QSerializer locate are in the examples folder.
 
 ## Workflow
-## Create serialization class
 To get started, include qserializer.h in your code.
-Next step, inherit from QSerializer and declare some serializable fields.
-For create serializable member of class and generate propertyes, use macro:
-- QS_FIELD
-- QS_COLLECTION
-- QS_OBJECT
-- QS_COLLECTION_OBJECTS
+Next, you need to make a serializable class. For this you have 3 ways
+## Create serialization class
+</br>For create serializable member of class and generate propertyes, use macro:
+- __QS_FIELD__
+- __QS_COLLECTION__
+- __QS_OBJECT__
+- __QS_COLLECTION_OBJECTS__
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
+
+### 1. Inherit from QSerializer and use Q_GADGET macro
+Inherit from QSerializer and declare some serializable fields.</br>
+In this case you must use Q_GADGET in your class.
 ```C++
 class User : public QSerializer
 {
@@ -34,15 +38,15 @@ public:
 };
 ```
 
-### If you don't want inherit from QSerializer
-Also you may create classes special only for serialization and deserialization without inherit QSerializer. For this use macro QS_CLASS.
-Macro QS_CLASS will generate methods in you'r class:
-- toJson
-- fromJson
-- toXml
-- fromXml
-- metaObject
-
+### 2. Use macro QS_CLASS and Q_GADGET
+Also you may create serializable classes without inherit QSerializer. For this use macro QS_CLASS.
+Macro QS_CLASS will generate next methods:</br>
+ - QJsonValue toJson()
+ - void fromJson(const QJsonValue &)
+ - QDomNode toXml()
+ - void fromXml(const QDomNode &)
+ - const QMetaObject * metaObject() const</br>
+In this case you must use Q_GADGET in your class.
 For example:
 ```C++
 class User {
@@ -53,16 +57,20 @@ QS_COLLECTION(QVector, QString, parents)
 };
 ```
 
-### Alternative case if you don't inherit from QSerializer and don't use QS_CLASS macro
+
+### 3. QObject-based class
 #### Requirements
-For this case you need to define the methods into class or base class:
+For this case you need to define the methods into class or base class:</br>
  - QJsonValue toJson()
  - void fromJson(const QJsonValue &)
  - QDomNode toXml()
  - void fromXml(const QDomNode &)
  - const QMetaObject * metaObject() const
-
+ 
 ##### NOTE: Method metaObject() already exists if you use QObject-based class, however QObject is a heavier parent
+
+You also need to define an assignment operator and a copy constructor, since QObject forbids copying itself by default. This is the most difficult path.
+
 For example:
 ```C++
 class User : public QObject
@@ -72,7 +80,6 @@ Q_OBJECT
 QS_FIELD(int, age)
 QS_COLLECTION(QVector, QString, parents)
 public:
-  // Make constructor, where provide staticMetaObject in base QSerializer class
   User() {...}
   User(const User & u) {...}
   User & operator=(const User & u) {...}

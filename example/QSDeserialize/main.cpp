@@ -9,20 +9,18 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     qDebug()<<"QSDeserialize";
 
-    // empty object
-    General general;
-    qDebug()<<QJsonDocument(general.toJson()).toJson().toStdString().c_str();
-    qDebug()<<general.toXml().toDocument().toString().toStdString().c_str();
-
-
     qDebug()<<"\nDESERIALIZATION";
     QFile json ("../general.json");
     if(!json.exists())
         qWarning()<<"ERROR: general.json is not exist";
     if(json.open(QIODevice::ReadOnly))
     {
+        // empty object
+        General general;
+        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+
         general.fromJson(json.readAll());
-        qDebug()<<QSerializer::toByteArray(general.toJson()).toStdString().c_str();
+        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
         json.close();
     }
 
@@ -32,8 +30,12 @@ int main(int argc, char *argv[])
         qWarning()<<"ERROR: general.xml is not exist";
     if(xml.open(QIODevice::ReadOnly))
     {
+        // empty object
+        General general;
+        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+
         general.fromXml(xml.readAll());
-        qDebug()<<QSerializer::toByteArray(general.toXml()).toStdString().c_str();
+        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
         xml.close();
     }
 

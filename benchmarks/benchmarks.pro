@@ -16,7 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         bench.cpp \
-        main.cpp \
         testclasses.cpp
 
 # Default rules for deployment.

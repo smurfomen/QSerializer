@@ -44,9 +44,8 @@ int main(int argc, char *argv[])
     collection.list.append("first");
     collection.list.append("second");
     collection.list.append("third");
-    collection.vector.append(1);
-    collection.vector.append(2);
-    collection.vector.append(3);
+    for(int i = 0; i < 20 ; i ++)
+        collection.vector.append(i);
     collection.stack.append(2.44);
     collection.stack.append(4.42);
     collection.stack.append(77);
@@ -66,6 +65,14 @@ int main(int argc, char *argv[])
 
     qDebug()<<"\nCOLLECTION OF CUSTOM OBJECTS";
     CollectionOfObjects collectionObjects;
+    for(int i = 0; i < 20 ; i ++)
+    {
+        CustomObject o;
+        o.digit = i;
+        for(int k = 0; k < 10; k ++)
+            o.string.append(QString("so it's just index number %1").arg(k+i));
+        collectionObjects.objects.append(o);
+    }
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);
     collectionObjects.objects.append(object);

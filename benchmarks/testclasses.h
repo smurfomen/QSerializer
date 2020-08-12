@@ -35,12 +35,12 @@ class TestCollection_vector_string {
 
 class Object
 {
-  Q_GADGET
-  QS_CLASS
-  QS_FIELD(int, f_int)
-  QS_FIELD(QString, f_string)
-  QS_COLLECTION(QVector, int, v_int)
-  QS_COLLECTION(QVector, QString, v_string)
+    Q_GADGET
+    QS_CLASS
+    QS_FIELD(int, f_int)
+    QS_FIELD(QString, f_string)
+    QS_COLLECTION(QVector, int, v_int)
+    QS_COLLECTION(QVector, QString, v_string)
 };
 
 

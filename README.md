@@ -14,14 +14,13 @@ Just include qserializer.h in your project and enjoy simple serialization. qseri
 To get started, include qserializer.h in your code.
 Next, you need to make a serializable class. For this you have 3 ways
 ## Create serialization class
-</br>For create serializable member of class and generate propertyes, use macro:
+For create serializable member of class and generate propertyes, use macro:
 - __QS_FIELD__
 - __QS_COLLECTION__
 - __QS_OBJECT__
 - __QS_COLLECTION_OBJECTS__
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
-
 ### 1. Inherit from QSerializer
 Inherit from QSerializer and declare some serializable fields.</br>
 In this case you must use Q_GADGET in your class.
@@ -37,7 +36,6 @@ public:
   User() : QSerializer(staticMetaObject) { }
 };
 ```
-
 ### 2. Use macro QS_CLASS
 Also you may create serializable classes without inherit QSerializer. For this use macro QS_CLASS.
 Macro QS_CLASS will generate next methods:</br>
@@ -45,9 +43,9 @@ Macro QS_CLASS will generate next methods:</br>
  - void fromJson(const QJsonValue &)
  - QDomNode toXml()
  - void fromXml(const QDomNode &)
- - const QMetaObject * metaObject() const</br>
+ - const QMetaObject * metaObject() const
+
 In this case you must use Q_GADGET in your class.
-For example:
 ```C++
 class User {
 Q_GADGET

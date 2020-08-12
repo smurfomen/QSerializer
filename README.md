@@ -22,7 +22,7 @@ Next, you need to make a serializable class. For this you have 3 ways
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
 
-### 1. Inherit from QSerializer and use Q_GADGET macro
+### 1. Inherit from QSerializer
 Inherit from QSerializer and declare some serializable fields.</br>
 In this case you must use Q_GADGET in your class.
 ```C++
@@ -38,7 +38,7 @@ public:
 };
 ```
 
-### 2. Use macro QS_CLASS and Q_GADGET
+### 2. Use macro QS_CLASS
 Also you may create serializable classes without inherit QSerializer. For this use macro QS_CLASS.
 Macro QS_CLASS will generate next methods:</br>
  - QJsonValue toJson()

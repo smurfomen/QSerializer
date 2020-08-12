@@ -25,11 +25,35 @@ void exampleStudent() {
     qDebug()<<QSerializer::toByteArray(stud.toJson()).constData();
 }
 
+
+void testXml(){
+    TestXml src;
+    src.field = 999;
+    for(int i = 0; i < 10; i ++)
+        src.collection.append(i);
+    src.object.digit = 666;
+    src.object.string.append("asd");
+    src.object.string.append("dsa");
+
+
+    QDomNode node = src.toXml();
+    qDebug()<<QSerializer::toByteArray(node).constData();
+
+
+    TestXml dst;
+    dst.fromXml(QSerializer::toByteArray(node));
+    qDebug()<<QSerializer::toByteArray(dst.toXml()).constData();
+}
+
+//#define TESTXML
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    qDebug()<<"QSSerialize";
 
+#ifdef TESTXML
+    testXml();
+#else
+    qDebug()<<"QSSerialize";
     qDebug()<<"\nFIELDS";
     Field field;
     field.flag = false;
@@ -107,6 +131,6 @@ int main(int argc, char *argv[])
         xml.write(QSerializer::toByteArray(general.toXml()));
         xml.close();
     }
-
+#endif
     return a.exec();
 }

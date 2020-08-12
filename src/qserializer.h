@@ -124,7 +124,7 @@ private:
     QMetaObject mo;
 };
 
-
+#include <QDebug>
 #define GET(prefix, name) get_##prefix##_##name
 #define SET(prefix, name) set_##prefix##_##name
 
@@ -180,30 +180,58 @@ private:
     }                                                                                                                                 \
                                                                                                                                       \
     void fromXml(const QDomNode & doc){                                                                                               \
-        if(mobj()->className() == doc.firstChildElement().tagName())                                                            \
+    if(mobj()->className() == doc.firstChild().nodeName())                                                                            \
+    {                                                                                                                                 \
+        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                              \
         {                                                                                                                             \
-            for(int i = 0; i < mobj()->propertyCount(); i++)                                                                    \
-            {                                                                                                                         \
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                     \
-                    continue;                                                                                                         \
+            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                               \
+                continue;                                                                                                             \
                                                                                                                                       \
-                QDomNode fieldNode = doc.firstChild().firstChild();                                                                   \
-                while(!fieldNode.isNull())                                                                                            \
+            QDomNode fieldNode = doc.firstChild().firstChild();                                                                       \
+            while(!fieldNode.isNull())                                                                                                \
+            {                                                                                                                         \
+                QDomElement currentElement = fieldNode.toElement();                                                                   \
+                                                                                                                                      \
+                QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                       \
+                                                                                                                                      \
+                if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())               \
                 {                                                                                                                     \
-                    QDomElement currentElement = fieldNode.toElement();                                                               \
-                    if(mobj()->property(i).name() == currentElement.tagName())                                                  \
-                    {                                                                                                                 \
-                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue(currentElement));                           \
-                        break;                                                                                                        \
-                    }                                                                                                                 \
-                    fieldNode = fieldNode.nextSibling();                                                                              \
+                    mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                           \
+                    break;                                                                                                            \
                 }                                                                                                                     \
+                fieldNode = fieldNode.nextSibling();                                                                                  \
             }                                                                                                                         \
         }                                                                                                                             \
     }                                                                                                                                 \
+    else if (mobj()->className() == doc.toElement().tagName())                                                                        \
+    {                                                                                                                                 \
+        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                              \
+        {                                                                                                                             \
+            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                               \
+                continue;                                                                                                             \
+                                                                                                                                      \
+            QDomNode fieldNode = doc.firstChild();                                                                                    \
+            while(!fieldNode.isNull())                                                                                                \
+            {                                                                                                                         \
+                QDomElement currentElement = fieldNode.toElement();                                                                   \
+                                                                                                                                      \
+                QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                       \
+                                                                                                                                      \
+                if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())               \
+                {                                                                                                                     \
+                    mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                           \
+                    break;                                                                                                            \
+                }                                                                                                                     \
+                fieldNode = fieldNode.nextSibling();                                                                                  \
+            }                                                                                                                         \
+        }                                                                                                                             \
+    }                                                                                                                                 \
+    }                                                                                                                                 \
                                                                                                                                       \
     void fromXml(const QByteArray & data) {                                                                                           \
-        fromXml(QDomDocument(data));                                                                                                  \
+        QDomDocument doc;\
+        doc.setContent(data);\
+        fromXml(doc);                                                                                                  \
     }                                                                                                                                 \
                                                                                                                                       \
     void fromJson(const QByteArray & data) {                                                                                          \
@@ -395,7 +423,7 @@ private:
     void SET(xml, name)(const QDomNode & node) {                                            \
         name.clear();                                                                       \
         QDomNodeList nodesList = node.childNodes();                                         \
-        for(int i = 0;  i < name.size(); i++) {                                             \
+        for(int i = 0;  i < nodesList.size(); i++) {                                             \
             itemType tmp;                                                                   \
             tmp.fromXml(nodesList.at(i));                                                   \
             name.append(tmp);                                                               \

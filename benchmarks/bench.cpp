@@ -33,7 +33,7 @@ void Bench::bench_field_int_fromXml() {
     QDomNode xml = test.toXml();
     TestField_int dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
 }
 
@@ -69,7 +69,7 @@ void Bench::bench_field_string_fromXml() {
     QDomNode xml = test.toXml();
     TestField_string dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
 }
 
@@ -109,7 +109,7 @@ void Bench::bench_collection_vector_int_fromXml() {
     QDomNode xml = test.toXml();
     TestCollection_vector_int dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
 }
 
@@ -149,7 +149,7 @@ void Bench::bench_collection_vector_string_fromXml() {
     QDomNode xml = test.toXml();
     TestCollection_vector_string dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
 }
 
@@ -212,12 +212,10 @@ void Bench::bench_object_field_fromXml() {
     }
 
     QDomNode xml = test.toXml();
-//    qDebug()<<"\n"<<QSerializer::toByteArray(test.toXml()).constData();
     TestObject_field dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
-    qDebug()<<"\n"<<QSerializer::toByteArray(dest.toXml()).constData();
 }
 
 void Bench::bench_collection_objects_toJson() {
@@ -295,7 +293,7 @@ void Bench::bench_collection_objects_fromXml() {
     QDomNode xml = test.toXml();
     TestObject_collection dest;
     QBENCHMARK{
-        dest.fromXml(xml);
+        dest.fromXml(QSerializer::toByteArray(xml));
     }
 }
 

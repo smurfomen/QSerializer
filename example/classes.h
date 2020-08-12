@@ -48,7 +48,6 @@ class CustomObject {
 };
 
 
-
 class CollectionOfObjects {
     Q_GADGET
     QS_CLASS
@@ -64,6 +63,22 @@ class General{
     QS_OBJECT(CustomObject, object)
     QS_OBJECT(CollectionOfObjects, collectionObjects)
 };
+
+class TestXmlObject {
+    Q_GADGET
+    QS_CLASS
+    QS_FIELD(int, digit)
+    QS_COLLECTION(QVector, QString, string)
+};
+
+class TestXml {
+    Q_GADGET
+    QS_CLASS
+    QS_FIELD(int, field)
+    QS_COLLECTION(QVector, int, collection)
+    QS_OBJECT(TestXmlObject, object)
+};
+
 
 
 #endif // CLASSES_H

@@ -39,7 +39,6 @@ int main(int argc, char *argv[])
     qDebug()<<QSerializer::toByteArray(field.toJson()).constData();
     qDebug()<<QSerializer::toByteArray(field.toXml()).constData();
 
-
     qDebug()<<"\nCOLLECTIONS";
     Collection collection;
     collection.list.append("first");

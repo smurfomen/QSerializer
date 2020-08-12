@@ -1,5 +1,5 @@
 QT -= gui
-
+QT += core
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
@@ -7,7 +7,7 @@ CONFIG -= app_bundle
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+#DEFINES += QT_DEPRECATED_WARNINGS
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

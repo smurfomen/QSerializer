@@ -36,12 +36,12 @@ public:
     ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
-        for(int i = 0; i < mobj()->propertyCount(); i++)
+        for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
                 continue;
 
-            json.insert(mobj()->property(i).name(), mobj()->property(i).readOnGadget(this).toJsonValue());
+            json.insert(metaObject()->property(i).name(), metaObject()->property(i).readOnGadget(this).toJsonValue());
         }
         return json;
     }
@@ -52,17 +52,17 @@ public:
         {
             QJsonObject json = val.toObject();
             QStringList keys = json.keys();
-            int propCount = mobj()->propertyCount();
+            int propCount = metaObject()->propertyCount();
             for(int i = 0; i < propCount; i++)
             {
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
                     continue;
 
                 for(auto key : json.keys())
                 {
-                    if(key == mobj()->property(i).name())
+                    if(key == metaObject()->property(i).name())
                     {
-                        mobj()->property(i).writeOnGadget(this, json.value(key));
+                        metaObject()->property(i).writeOnGadget(this, json.value(key));
                         break;
                     }
                 }
@@ -73,13 +73,13 @@ public:
     ///\brief Serialize all accessed XML propertyes for this object
     QDomNode toXml() const {
         QDomDocument doc;
-        QDomElement el = doc.createElement(mobj()->className());
-        for(int i = 0; i < mobj()->propertyCount(); i++)
+        QDomElement el = doc.createElement(metaObject()->className());
+        for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
                 continue;
 
-            el.appendChild(QDomNode(mobj()->property(i).readOnGadget(this).value<QDomNode>()));
+            el.appendChild(QDomNode(metaObject()->property(i).readOnGadget(this).value<QDomNode>()));
         }
         doc.appendChild(el);
         return doc;
@@ -87,20 +87,20 @@ public:
 
     ///\brief Deserialize all accessed XML propertyes for this object
     void fromXml(const QDomNode & doc){
-        if(mobj()->className() == doc.firstChildElement().tagName())
+        if(metaObject()->className() == doc.firstChildElement().tagName())
         {
-            for(int i = 0; i < mobj()->propertyCount(); i++)
+            for(int i = 0; i < metaObject()->propertyCount(); i++)
             {
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
                     continue;
 
                 QDomNode fieldNode = doc.firstChild().firstChild();
                 while(!fieldNode.isNull())
                 {
                     QDomElement currentElement = fieldNode.toElement();
-                    if(mobj()->property(i).name() == currentElement.tagName())
+                    if(metaObject()->property(i).name() == currentElement.tagName())
                     {
-                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
                         break;
                     }
                     fieldNode = fieldNode.nextSibling();
@@ -117,7 +117,7 @@ public:
         fromJson(QJsonDocument::fromJson(data).object());
     }
 
-    const QMetaObject * mobj() const {
+    const QMetaObject * metaObject() const {
         return &mo;
     }
 
@@ -133,12 +133,12 @@ private:
     public:                                                                                                                             \
     QJsonObject toJson() const {                                                                                                        \
         QJsonObject json;                                                                                                               \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                                \
+        for(int i = 0; i < metaObject()->propertyCount(); i++)                                                                                \
         {                                                                                                                               \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                               \
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                               \
                 continue;                                                                                                               \
                                                                                                                                         \
-            json.insert(mobj()->property(i).name(), mobj()->property(i).readOnGadget(this).toJsonValue());                              \
+            json.insert(metaObject()->property(i).name(), metaObject()->property(i).readOnGadget(this).toJsonValue());                              \
         }                                                                                                                               \
         return json;                                                                                                                    \
     }                                                                                                                                   \
@@ -148,17 +148,17 @@ private:
         {                                                                                                                               \
             QJsonObject json = val.toObject();                                                                                          \
             QStringList keys = json.keys();                                                                                             \
-            int propCount = mobj()->propertyCount();                                                                                    \
+            int propCount = metaObject()->propertyCount();                                                                                    \
             for(int i = 0; i < propCount; i++)                                                                                          \
             {                                                                                                                           \
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                           \
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                           \
                     continue;                                                                                                           \
                                                                                                                                         \
                 for(auto key : json.keys())                                                                                             \
                 {                                                                                                                       \
-                    if(key == mobj()->property(i).name())                                                                               \
+                    if(key == metaObject()->property(i).name())                                                                               \
                     {                                                                                                                   \
-                        mobj()->property(i).writeOnGadget(this, json.value(key));                                                       \
+                        metaObject()->property(i).writeOnGadget(this, json.value(key));                                                       \
                         break;                                                                                                          \
                     }                                                                                                                   \
                 }                                                                                                                       \
@@ -168,13 +168,13 @@ private:
                                                                                                                                         \
     QDomNode toXml() const {                                                                                                            \
         QDomDocument doc;                                                                                                               \
-        QDomElement el = doc.createElement(mobj()->className());                                                                        \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                                \
+        QDomElement el = doc.createElement(metaObject()->className());                                                                        \
+        for(int i = 0; i < metaObject()->propertyCount(); i++)                                                                                \
         {                                                                                                                               \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                                 \
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                                 \
                 continue;                                                                                                               \
                                                                                                                                         \
-            el.appendChild(QDomNode(mobj()->property(i).readOnGadget(this).value<QDomNode>()));                                         \
+            el.appendChild(QDomNode(metaObject()->property(i).readOnGadget(this).value<QDomNode>()));                                         \
         }                                                                                                                               \
         doc.appendChild(el);                                                                                                            \
         QDomDocument d;                                                                                                                 \
@@ -183,11 +183,11 @@ private:
     }                                                                                                                                   \
                                                                                                                                         \
     void fromXml(const QDomNode & doc){                                                                                                 \
-        if(mobj()->className() == doc.firstChild().nodeName())                                                                          \
+        if(metaObject()->className() == doc.firstChild().nodeName())                                                                          \
         {                                                                                                                               \
-            for(int i = 0; i < mobj()->propertyCount(); i++)                                                                            \
+            for(int i = 0; i < metaObject()->propertyCount(); i++)                                                                            \
             {                                                                                                                           \
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
                     continue;                                                                                                           \
                                                                                                                                         \
                 QDomNode fieldNode = doc.firstChild().firstChild();                                                                     \
@@ -195,22 +195,22 @@ private:
                 {                                                                                                                       \
                     QDomElement currentElement = fieldNode.toElement();                                                                 \
                                                                                                                                         \
-                    QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
+                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
                                                                                                                                         \
-                    if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
+                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
                     {                                                                                                                   \
-                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
                         break;                                                                                                          \
                     }                                                                                                                   \
                     fieldNode = fieldNode.nextSibling();                                                                                \
                 }                                                                                                                       \
             }                                                                                                                           \
         }                                                                                                                               \
-        else if (mobj()->className() == doc.toElement().tagName())                                                                      \
+        else if (metaObject()->className() == doc.toElement().tagName())                                                                      \
         {                                                                                                                               \
-            for(int i = 0; i < mobj()->propertyCount(); i++)                                                                            \
+            for(int i = 0; i < metaObject()->propertyCount(); i++)                                                                            \
             {                                                                                                                           \
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
                     continue;                                                                                                           \
                                                                                                                                         \
                 QDomNode fieldNode = doc.firstChild();                                                                                  \
@@ -218,11 +218,11 @@ private:
                 {                                                                                                                       \
                     QDomElement currentElement = fieldNode.toElement();                                                                 \
                                                                                                                                         \
-                    QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
+                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
                                                                                                                                         \
-                    if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
+                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
                     {                                                                                                                   \
-                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
                         break;                                                                                                          \
                     }                                                                                                                   \
                     fieldNode = fieldNode.nextSibling();                                                                                \
@@ -241,7 +241,7 @@ private:
         fromJson(QJsonDocument::fromJson(data).object());                                                                               \
     }                                                                                                                                   \
                                                                                                                                         \
-    const QMetaObject * mobj() const {                                                                                                  \
+    const QMetaObject * metaObject() const {                                                                                                  \
         return &this->staticMetaObject;                                                                                                 \
     }                                                                                                                                   \
 

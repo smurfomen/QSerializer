@@ -7,7 +7,6 @@
 class Bench : public QObject {
 Q_OBJECT
 private Q_SLOTS:
-
     //========================================================================================================================================
     void bench_field_int_toJson();
 
@@ -73,7 +72,6 @@ private Q_SLOTS:
     void bench_collection_objects_toXml();
 
     void bench_collection_objects_fromJson();
-
     void bench_collection_objects_fromXml();
     //========================================================================================================================================
 

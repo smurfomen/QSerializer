@@ -276,6 +276,7 @@ void Bench::bench_collection_objects_fromJson() {
         dest.fromJson(json);
     }
 }
+
 void Bench::bench_collection_objects_fromXml() {
     TestObject_collection test;
     for(int i = 0; i < 100; i++)
@@ -293,7 +294,7 @@ void Bench::bench_collection_objects_fromXml() {
     QDomNode xml = test.toXml();
     TestObject_collection dest;
     QBENCHMARK{
-        dest.fromXml(QSerializer::toByteArray(xml));
+        dest.fromXml(xml);
     }
 }
 

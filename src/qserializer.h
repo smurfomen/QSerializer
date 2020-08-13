@@ -29,7 +29,8 @@ public:
     }
 
     static QByteArray toByteArray(const QDomNode & value) {
-        return value.toDocument().toByteArray();
+        QDomDocument doc = value.toDocument();
+        return doc.toByteArray();
     }
 
     ///\brief Serialize all accessed JSON propertyes for this object
@@ -128,119 +129,121 @@ private:
 #define GET(prefix, name) get_##prefix##_##name
 #define SET(prefix, name) set_##prefix##_##name
 
-#define QS_CLASS \
-    public: \
-    QJsonObject toJson() const {                                                                                                      \
-        QJsonObject json;                                                                                                             \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                        \
-        {                                                                                                                             \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                       \
-                continue;                                                                                                             \
-                                                                                                                                      \
-            json.insert(mobj()->property(i).name(), mobj()->property(i).readOnGadget(this).toJsonValue());                \
-        }                                                                                                                             \
-        return json;                                                                                                                  \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    void fromJson(const QJsonValue & val) {                                                                                           \
-        if(val.isObject())                                                                                                            \
-        {                                                                                                                             \
-            QJsonObject json = val.toObject();                                                                                        \
-            QStringList keys = json.keys();                                                                                           \
-            int propCount = mobj()->propertyCount();                                                                            \
-            for(int i = 0; i < propCount; i++)                                                                                        \
-            {                                                                                                                         \
-                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                   \
-                    continue;                                                                                                         \
-                                                                                                                                      \
-                for(auto key : json.keys())                                                                                           \
-                {                                                                                                                     \
-                    if(key == mobj()->property(i).name())                                                                       \
-                    {                                                                                                                 \
-                        mobj()->property(i).writeOnGadget(this, json.value(key));                                               \
-                        break;                                                                                                        \
-                    }                                                                                                                 \
-                }                                                                                                                     \
-            }                                                                                                                         \
-        }                                                                                                                             \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    QDomNode toXml() const {                                                                                                          \
-        QDomDocument doc;                                                                                                             \
-        QDomElement el = doc.createElement(mobj()->className());                                                                \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                        \
-        {                                                                                                                             \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                         \
-                continue;                                                                                                             \
-                                                                                                                                      \
-            el.appendChild(QDomNode(mobj()->property(i).readOnGadget(this).value<QDomNode>()));                                 \
-        }                                                                                                                             \
-        doc.appendChild(el);                                                                                                          \
-        return doc;                                                                                                                   \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    void fromXml(const QDomNode & doc){                                                                                               \
-    if(mobj()->className() == doc.firstChild().nodeName())                                                                            \
-    {                                                                                                                                 \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                              \
-        {                                                                                                                             \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                               \
-                continue;                                                                                                             \
-                                                                                                                                      \
-            QDomNode fieldNode = doc.firstChild().firstChild();                                                                       \
-            while(!fieldNode.isNull())                                                                                                \
-            {                                                                                                                         \
-                QDomElement currentElement = fieldNode.toElement();                                                                   \
-                                                                                                                                      \
-                QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                       \
-                                                                                                                                      \
-                if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())               \
-                {                                                                                                                     \
-                    mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                           \
-                    break;                                                                                                            \
-                }                                                                                                                     \
-                fieldNode = fieldNode.nextSibling();                                                                                  \
-            }                                                                                                                         \
-        }                                                                                                                             \
-    }                                                                                                                                 \
-    else if (mobj()->className() == doc.toElement().tagName())                                                                        \
-    {                                                                                                                                 \
-        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                              \
-        {                                                                                                                             \
-            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                               \
-                continue;                                                                                                             \
-                                                                                                                                      \
-            QDomNode fieldNode = doc.firstChild();                                                                                    \
-            while(!fieldNode.isNull())                                                                                                \
-            {                                                                                                                         \
-                QDomElement currentElement = fieldNode.toElement();                                                                   \
-                                                                                                                                      \
-                QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                       \
-                                                                                                                                      \
-                if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())               \
-                {                                                                                                                     \
-                    mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                           \
-                    break;                                                                                                            \
-                }                                                                                                                     \
-                fieldNode = fieldNode.nextSibling();                                                                                  \
-            }                                                                                                                         \
-        }                                                                                                                             \
-    }                                                                                                                                 \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    void fromXml(const QByteArray & data) {                                                                                           \
-        QDomDocument doc;\
-        doc.setContent(data);\
-        fromXml(doc);                                                                                                  \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    void fromJson(const QByteArray & data) {                                                                                          \
-        fromJson(QJsonDocument::fromJson(data).object());                                                                             \
-    }                                                                                                                                 \
-                                                                                                                                      \
-    const QMetaObject * mobj() const {                                                                                          \
-        return &this->staticMetaObject;                                                                                                     \
-    }                                                                                                                                 \
+#define QS_CLASS                                                                                                                        \
+    public:                                                                                                                             \
+    QJsonObject toJson() const {                                                                                                        \
+        QJsonObject json;                                                                                                               \
+        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                                \
+        {                                                                                                                               \
+            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                               \
+                continue;                                                                                                               \
+                                                                                                                                        \
+            json.insert(mobj()->property(i).name(), mobj()->property(i).readOnGadget(this).toJsonValue());                              \
+        }                                                                                                                               \
+        return json;                                                                                                                    \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    void fromJson(const QJsonValue & val) {                                                                                             \
+        if(val.isObject())                                                                                                              \
+        {                                                                                                                               \
+            QJsonObject json = val.toObject();                                                                                          \
+            QStringList keys = json.keys();                                                                                             \
+            int propCount = mobj()->propertyCount();                                                                                    \
+            for(int i = 0; i < propCount; i++)                                                                                          \
+            {                                                                                                                           \
+                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))                           \
+                    continue;                                                                                                           \
+                                                                                                                                        \
+                for(auto key : json.keys())                                                                                             \
+                {                                                                                                                       \
+                    if(key == mobj()->property(i).name())                                                                               \
+                    {                                                                                                                   \
+                        mobj()->property(i).writeOnGadget(this, json.value(key));                                                       \
+                        break;                                                                                                          \
+                    }                                                                                                                   \
+                }                                                                                                                       \
+            }                                                                                                                           \
+        }                                                                                                                               \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    QDomNode toXml() const {                                                                                                            \
+        QDomDocument doc;                                                                                                               \
+        QDomElement el = doc.createElement(mobj()->className());                                                                        \
+        for(int i = 0; i < mobj()->propertyCount(); i++)                                                                                \
+        {                                                                                                                               \
+            if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                                 \
+                continue;                                                                                                               \
+                                                                                                                                        \
+            el.appendChild(QDomNode(mobj()->property(i).readOnGadget(this).value<QDomNode>()));                                         \
+        }                                                                                                                               \
+        doc.appendChild(el);                                                                                                            \
+        QDomDocument d;                                                                                                                 \
+        d.setContent(QSerializer::toByteArray(doc));                                                                                    \
+        return d;                                                                                                                       \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    void fromXml(const QDomNode & doc){                                                                                                 \
+        if(mobj()->className() == doc.firstChild().nodeName())                                                                          \
+        {                                                                                                                               \
+            for(int i = 0; i < mobj()->propertyCount(); i++)                                                                            \
+            {                                                                                                                           \
+                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
+                    continue;                                                                                                           \
+                                                                                                                                        \
+                QDomNode fieldNode = doc.firstChild().firstChild();                                                                     \
+                while(!fieldNode.isNull())                                                                                              \
+                {                                                                                                                       \
+                    QDomElement currentElement = fieldNode.toElement();                                                                 \
+                                                                                                                                        \
+                    QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
+                                                                                                                                        \
+                    if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
+                    {                                                                                                                   \
+                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
+                        break;                                                                                                          \
+                    }                                                                                                                   \
+                    fieldNode = fieldNode.nextSibling();                                                                                \
+                }                                                                                                                       \
+            }                                                                                                                           \
+        }                                                                                                                               \
+        else if (mobj()->className() == doc.toElement().tagName())                                                                      \
+        {                                                                                                                               \
+            for(int i = 0; i < mobj()->propertyCount(); i++)                                                                            \
+            {                                                                                                                           \
+                if(QString(mobj()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))                             \
+                    continue;                                                                                                           \
+                                                                                                                                        \
+                QDomNode fieldNode = doc.firstChild();                                                                                  \
+                while(!fieldNode.isNull())                                                                                              \
+                {                                                                                                                       \
+                    QDomElement currentElement = fieldNode.toElement();                                                                 \
+                                                                                                                                        \
+                    QDomElement tmp = mobj()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();                     \
+                                                                                                                                        \
+                    if(mobj()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())             \
+                    {                                                                                                                   \
+                        mobj()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));                         \
+                        break;                                                                                                          \
+                    }                                                                                                                   \
+                    fieldNode = fieldNode.nextSibling();                                                                                \
+                }                                                                                                                       \
+            }                                                                                                                           \
+        }                                                                                                                               \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    void fromXml(const QByteArray & data) {                                                                                             \
+        QDomDocument doc;                                                                                                               \
+        doc.setContent(data);                                                                                                           \
+        fromXml(doc);                                                                                                                   \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    void fromJson(const QByteArray & data) {                                                                                            \
+        fromJson(QJsonDocument::fromJson(data).object());                                                                               \
+    }                                                                                                                                   \
+                                                                                                                                        \
+    const QMetaObject * mobj() const {                                                                                                  \
+        return &this->staticMetaObject;                                                                                                 \
+    }                                                                                                                                   \
 
 
 

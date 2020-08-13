@@ -16,9 +16,6 @@ class TestField_string{
     QS_FIELD(QString, field_string)
 };
 
-
-
-
 class TestCollection_vector_int {
     Q_GADGET
     QS_CLASS

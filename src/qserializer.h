@@ -82,12 +82,14 @@ public:
             el.appendChild(QDomNode(metaObject()->property(i).readOnGadget(this).value<QDomNode>()));
         }
         doc.appendChild(el);
-        return doc;
+        QDomDocument d;
+        d.setContent(QSerializer::toByteArray(doc));
+        return d;
     }
 
     ///\brief Deserialize all accessed XML propertyes for this object
     void fromXml(const QDomNode & doc){
-        if(metaObject()->className() == doc.firstChildElement().tagName())
+        if(metaObject()->className() == doc.firstChild().nodeName())
         {
             for(int i = 0; i < metaObject()->propertyCount(); i++)
             {
@@ -98,9 +100,35 @@ public:
                 while(!fieldNode.isNull())
                 {
                     QDomElement currentElement = fieldNode.toElement();
-                    if(metaObject()->property(i).name() == currentElement.tagName())
+
+                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();
+
+                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())
                     {
-                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue(currentElement));
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));
+                        break;
+                    }
+                    fieldNode = fieldNode.nextSibling();
+                }
+            }
+        }
+        else if (metaObject()->className() == doc.toElement().tagName())
+        {
+            for(int i = 0; i < metaObject()->propertyCount(); i++)
+            {
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+                    continue;
+
+                QDomNode fieldNode = doc.firstChild();
+                while(!fieldNode.isNull())
+                {
+                    QDomElement currentElement = fieldNode.toElement();
+
+                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();
+
+                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())
+                    {
+                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));
                         break;
                     }
                     fieldNode = fieldNode.nextSibling();

@@ -25,23 +25,21 @@
 #ifndef QSERIALIZER_H
 #define QSERIALIZER_H
 
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
-#include <type_traits>
-
-#include <QVector>
-#include <QVariant>
-
-#include <QMetaProperty>
-#include <QMetaObject>
-#include <QMetaType>
-
+/* JSON */
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonValue>
+
+/* XML */
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+
+/* META OBJECT SYSTEM */
+#include <QVariant>
+#include <QMetaProperty>
+#include <QMetaObject>
+#include <QMetaType>
 
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
@@ -193,10 +191,10 @@ private:
     QMetaObject mo;
 };
 
-#include <QDebug>
 #define GET(prefix, name) get_##prefix##_##name
 #define SET(prefix, name) set_##prefix##_##name
 
+/* generate methods for provide JSON and XML values inside and outside serializable fields */
 #define QS_CLASS                                                                                                                        \
     public:                                                                                                                             \
     QJsonObject toJson() const {                                                                                                        \
@@ -328,7 +326,7 @@ private:
 
 
 /* Create variable */
-#define QS_DECLARE_VARIABLE(type, name)                                                     \
+#define QS_DECLARE_MEMBER(type, name)                                                       \
     public :                                                                                \
     type name = type();                                                                     \
 
@@ -510,38 +508,60 @@ private:
 
 
 
-
-
-
-
-/* Make primitive field and generate serializable propertyes */
-/* For example: QS_FIELD(int, digit), QS_FIELD(bool, flag) */
-#define QS_FIELD(type, name)                                                                \
-    QS_DECLARE_VARIABLE(type, name)                                                         \
+/* BIND: */
+/* generate serializable propertyes JSON and XML for primitive type field */
+#define QS_BIND_FIELD(type, name)                                                           \
     QS_JSON_FIELD(type, name)                                                               \
     QS_XML_FIELD(type, name)                                                                \
 
-/* Make collection of primitive type objects [collectionType<itemType> name] and generate serializable propertyes for this collection */
-/* This collection must be provide method append(T) (it's can be QList, QVector)    */
-#define QS_COLLECTION(collectionType, itemType, name)                                       \
-    QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
+/* BIND: */
+/* generate serializable propertyes JSON and XML for collection of primitive type fields */
+#define QS_BIND_COLLECTION(itemType, name)                                                  \
     QS_JSON_ARRAY(itemType, name)                                                           \
     QS_XML_ARRAY(itemType, name)                                                            \
 
-/* Make custom class object and bind serializable propertyes */
-/* This class must be inherited from QSerializer */
-#define QS_OBJECT(type,name)                                                                \
-    QS_DECLARE_VARIABLE(type, name)                                                         \
+/* BIND: */
+/* generate serializable propertyes JSON and XML for custom type object */
+#define QS_BIND_OBJECT(type, name)                                                          \
     QS_JSON_OBJECT(type, name)                                                              \
     QS_XML_OBJECT(type, name)                                                               \
 
+/* BIND: */
+/* generate serializable propertyes JSON and XML for collection of custom type objects */
+#define QS_BIND_COLLECTION_OBJECTS(itemType, name)                                          \
+    QS_JSON_ARRAY_OBJECTS(itemType, name)                                                   \
+    QS_XML_ARRAY_OBJECTS(itemType, name)                                                    \
 
+
+
+
+/* CREATE AND BIND: */
+/* Make primitive field and generate serializable propertyes */
+/* For example: QS_FIELD(int, digit), QS_FIELD(bool, flag) */
+#define QS_FIELD(type, name)                                                                \
+    QS_DECLARE_MEMBER(type, name)                                                           \
+    QS_BIND_FIELD(type, name)                                                               \
+
+/* CREATE AND BIND: */
+/* Make collection of primitive type objects [collectionType<itemType> name] and generate serializable propertyes for this collection */
+/* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#define QS_COLLECTION(collectionType, itemType, name)                                       \
+    QS_DECLARE_MEMBER(collectionType<itemType>, name)                                       \
+    QS_BIND_COLLECTION(itemType, name)                                                      \
+
+/* CREATE AND BIND: */
+/* Make custom class object and bind serializable propertyes */
+/* This class must be inherited from QSerializer */
+#define QS_OBJECT(type,name)                                                                \
+    QS_DECLARE_MEMBER(type, name)                                                           \
+    QS_BIND_OBJECT(type, name)                                                              \
+
+/* CREATE AND BIND: */
 /* Make collection of custom class objects [collectionType<itemType> name] and bind serializable propertyes */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
 #define QS_COLLECTION_OBJECTS(collectionType, itemType, name)                               \
-    QS_DECLARE_VARIABLE(collectionType<itemType>, name)                                     \
-    QS_JSON_ARRAY_OBJECTS(itemType, name)                                                   \
-    QS_XML_ARRAY_OBJECTS(itemType, name)                                                    \
+    QS_DECLARE_MEMBER(collectionType<itemType>, name)                                       \
+    QS_BIND_COLLECTION_OBJECTS(itemType, name)                                              \
 
 
 

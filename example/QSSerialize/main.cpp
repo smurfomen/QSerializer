@@ -4,7 +4,8 @@
 #include <QFile>
 #include <QDebug>
 
-void exampleStudent() {
+void json_example() {
+    qDebug()<<"\n\nSERIALIZE JSON_EXAMPLE";
     Student stud;
     stud.age = 23;
     stud.name = "Vlad";
@@ -21,40 +22,33 @@ void exampleStudent() {
     father.name = "Alex";
     stud.parents.append(mother);
     stud.parents.append(father);
-
     qDebug()<<QSerializer::toByteArray(stud.toJson()).constData();
 }
 
 
-void testXml(){
+void xml_example(){
+    qDebug()<<"\n\nSERIALIZE XML_EXAMPLE";
     TestXml src;
-    src.field = 999;
-    for(int i = 0; i < 10; i ++)
+    src.field = 10;
+    for(int i = 0; i < src.field; i ++)
         src.collection.append(i);
     src.object.digit = 666;
-    src.object.string.append("asd");
-    src.object.string.append("dsa");
+    src.object.string.append("it's first note in string array");
+    src.object.string.append("it's second note in string array");
 
-
-    QDomNode node = src.toXml();
+    // make hat if need this
+    QDomDocument node = QSerializer::appendXmlHat(src.toXml(), "UTF-8");
     qDebug()<<QSerializer::toByteArray(node).constData();
 
-
     TestXml dst;
-    dst.fromXml(QSerializer::toByteArray(node));
+    dst.fromXml(node);
     qDebug()<<QSerializer::toByteArray(dst.toXml()).constData();
 }
 
-//#define TESTXML
-int main(int argc, char *argv[])
-{
-    QCoreApplication a(argc, argv);
 
-#ifdef TESTXML
-    testXml();
-#else
-    qDebug()<<"QSSerialize";
-    qDebug()<<"\nFIELDS";
+void serialize_to_file() {
+    qDebug()<<"\n\nSERIALIZE_TO_FILE_EXAMPLE";
+    qDebug()<<"\nfield example";
     Field field;
     field.flag = false;
     field.digit = 10;
@@ -63,7 +57,7 @@ int main(int argc, char *argv[])
     qDebug()<<QSerializer::toByteArray(field.toJson()).constData();
     qDebug()<<QSerializer::toByteArray(field.toXml()).constData();
 
-    qDebug()<<"\nCOLLECTIONS";
+    qDebug()<<"\ncollection example";
     Collection collection;
     collection.list.append("first");
     collection.list.append("second");
@@ -77,7 +71,7 @@ int main(int argc, char *argv[])
     qDebug()<<QSerializer::toByteArray(collection.toXml()).constData();
 
 
-    qDebug()<<"\nCUSTOM OBJECT";
+    qDebug()<<"\nobject example";
     CustomObject object;
     object.digit = 8;
     object.string.append("third");
@@ -87,24 +81,21 @@ int main(int argc, char *argv[])
     qDebug()<<QSerializer::toByteArray(object.toXml()).constData();
 
 
-    qDebug()<<"\nCOLLECTION OF CUSTOM OBJECTS";
+    qDebug()<<"\ncollection of objects example";
     CollectionOfObjects collectionObjects;
-    for(int i = 0; i < 20 ; i ++)
+    for(int i = 0; i < 5 ; i ++)
     {
         CustomObject o;
         o.digit = i;
-        for(int k = 0; k < 10; k ++)
-            o.string.append(QString("so it's just index number %1").arg(k+i));
+        for(int k = 0; k < 5; k ++)
+            o.string.append(QString("so it's just index number in binary %1").arg(QString::number(k+i,2)));
         collectionObjects.objects.append(o);
     }
-    collectionObjects.objects.append(object);
-    collectionObjects.objects.append(object);
-    collectionObjects.objects.append(object);
     qDebug()<<QSerializer::toByteArray(collectionObjects.toJson()).constData();
     qDebug()<<QSerializer::toByteArray(collectionObjects.toXml()).constData();
 
 
-    qDebug()<<"\nGENERAL";
+    qDebug()<<"\ngeneral document example";
     General general;
     general.field = field;
     general.object = object;
@@ -131,6 +122,26 @@ int main(int argc, char *argv[])
         xml.write(QSerializer::toByteArray(general.toXml()));
         xml.close();
     }
+}
+
+#define SERIALIZE_TO_FILE_EX
+#define XML_EX
+#define JSON_EX
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+    qDebug()<<"QSSerialize";
+
+#ifdef XML_EX
+    xml_example();
+#endif
+
+#ifdef JSON_EX
+    json_example();
+#endif
+
+#ifdef SERIALIZE_TO_FILE_EX
+    serialize_to_file();
 #endif
     return a.exec();
 }

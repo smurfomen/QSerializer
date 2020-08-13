@@ -38,325 +38,51 @@
             {
                 "digit": 0,
                 "string": [
-                    "so it's just index number 0",
-                    "so it's just index number 1",
-                    "so it's just index number 2",
-                    "so it's just index number 3",
-                    "so it's just index number 4",
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9"
+                    "so it's just index number in binary 0",
+                    "so it's just index number in binary 1",
+                    "so it's just index number in binary 10",
+                    "so it's just index number in binary 11",
+                    "so it's just index number in binary 100"
                 ]
             },
             {
                 "digit": 1,
                 "string": [
-                    "so it's just index number 1",
-                    "so it's just index number 2",
-                    "so it's just index number 3",
-                    "so it's just index number 4",
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10"
+                    "so it's just index number in binary 1",
+                    "so it's just index number in binary 10",
+                    "so it's just index number in binary 11",
+                    "so it's just index number in binary 100",
+                    "so it's just index number in binary 101"
                 ]
             },
             {
                 "digit": 2,
                 "string": [
-                    "so it's just index number 2",
-                    "so it's just index number 3",
-                    "so it's just index number 4",
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11"
+                    "so it's just index number in binary 10",
+                    "so it's just index number in binary 11",
+                    "so it's just index number in binary 100",
+                    "so it's just index number in binary 101",
+                    "so it's just index number in binary 110"
                 ]
             },
             {
                 "digit": 3,
                 "string": [
-                    "so it's just index number 3",
-                    "so it's just index number 4",
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12"
+                    "so it's just index number in binary 11",
+                    "so it's just index number in binary 100",
+                    "so it's just index number in binary 101",
+                    "so it's just index number in binary 110",
+                    "so it's just index number in binary 111"
                 ]
             },
             {
                 "digit": 4,
                 "string": [
-                    "so it's just index number 4",
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13"
-                ]
-            },
-            {
-                "digit": 5,
-                "string": [
-                    "so it's just index number 5",
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14"
-                ]
-            },
-            {
-                "digit": 6,
-                "string": [
-                    "so it's just index number 6",
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15"
-                ]
-            },
-            {
-                "digit": 7,
-                "string": [
-                    "so it's just index number 7",
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16"
-                ]
-            },
-            {
-                "digit": 8,
-                "string": [
-                    "so it's just index number 8",
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17"
-                ]
-            },
-            {
-                "digit": 9,
-                "string": [
-                    "so it's just index number 9",
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18"
-                ]
-            },
-            {
-                "digit": 10,
-                "string": [
-                    "so it's just index number 10",
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19"
-                ]
-            },
-            {
-                "digit": 11,
-                "string": [
-                    "so it's just index number 11",
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20"
-                ]
-            },
-            {
-                "digit": 12,
-                "string": [
-                    "so it's just index number 12",
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21"
-                ]
-            },
-            {
-                "digit": 13,
-                "string": [
-                    "so it's just index number 13",
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22"
-                ]
-            },
-            {
-                "digit": 14,
-                "string": [
-                    "so it's just index number 14",
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23"
-                ]
-            },
-            {
-                "digit": 15,
-                "string": [
-                    "so it's just index number 15",
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23",
-                    "so it's just index number 24"
-                ]
-            },
-            {
-                "digit": 16,
-                "string": [
-                    "so it's just index number 16",
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23",
-                    "so it's just index number 24",
-                    "so it's just index number 25"
-                ]
-            },
-            {
-                "digit": 17,
-                "string": [
-                    "so it's just index number 17",
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23",
-                    "so it's just index number 24",
-                    "so it's just index number 25",
-                    "so it's just index number 26"
-                ]
-            },
-            {
-                "digit": 18,
-                "string": [
-                    "so it's just index number 18",
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23",
-                    "so it's just index number 24",
-                    "so it's just index number 25",
-                    "so it's just index number 26",
-                    "so it's just index number 27"
-                ]
-            },
-            {
-                "digit": 19,
-                "string": [
-                    "so it's just index number 19",
-                    "so it's just index number 20",
-                    "so it's just index number 21",
-                    "so it's just index number 22",
-                    "so it's just index number 23",
-                    "so it's just index number 24",
-                    "so it's just index number 25",
-                    "so it's just index number 26",
-                    "so it's just index number 27",
-                    "so it's just index number 28"
-                ]
-            },
-            {
-                "digit": 8,
-                "string": [
-                    "third",
-                    "second",
-                    "first"
-                ]
-            },
-            {
-                "digit": 8,
-                "string": [
-                    "third",
-                    "second",
-                    "first"
-                ]
-            },
-            {
-                "digit": 8,
-                "string": [
-                    "third",
-                    "second",
-                    "first"
+                    "so it's just index number in binary 100",
+                    "so it's just index number in binary 101",
+                    "so it's just index number in binary 110",
+                    "so it's just index number in binary 111",
+                    "so it's just index number in binary 1000"
                 ]
             }
         ]

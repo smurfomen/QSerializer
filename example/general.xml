@@ -7,370 +7,96 @@
  </Field>
  <Collection>
   <vector type="array">
-   <item index="0" type="int">0</item>
-   <item index="1" type="int">1</item>
-   <item index="2" type="int">2</item>
-   <item index="3" type="int">3</item>
-   <item index="4" type="int">4</item>
-   <item index="5" type="int">5</item>
-   <item index="6" type="int">6</item>
-   <item index="7" type="int">7</item>
-   <item index="8" type="int">8</item>
-   <item index="9" type="int">9</item>
-   <item index="10" type="int">10</item>
-   <item index="11" type="int">11</item>
-   <item index="12" type="int">12</item>
-   <item index="13" type="int">13</item>
-   <item index="14" type="int">14</item>
-   <item index="15" type="int">15</item>
-   <item index="16" type="int">16</item>
-   <item index="17" type="int">17</item>
-   <item index="18" type="int">18</item>
-   <item index="19" type="int">19</item>
+   <item type="int" index="0">0</item>
+   <item type="int" index="1">1</item>
+   <item type="int" index="2">2</item>
+   <item type="int" index="3">3</item>
+   <item type="int" index="4">4</item>
+   <item type="int" index="5">5</item>
+   <item type="int" index="6">6</item>
+   <item type="int" index="7">7</item>
+   <item type="int" index="8">8</item>
+   <item type="int" index="9">9</item>
+   <item type="int" index="10">10</item>
+   <item type="int" index="11">11</item>
+   <item type="int" index="12">12</item>
+   <item type="int" index="13">13</item>
+   <item type="int" index="14">14</item>
+   <item type="int" index="15">15</item>
+   <item type="int" index="16">16</item>
+   <item type="int" index="17">17</item>
+   <item type="int" index="18">18</item>
+   <item type="int" index="19">19</item>
   </vector>
   <list type="array">
-   <item index="0" type="QString">first</item>
-   <item index="1" type="QString">second</item>
-   <item index="2" type="QString">third</item>
+   <item type="QString" index="0">first</item>
+   <item type="QString" index="1">second</item>
+   <item type="QString" index="2">third</item>
   </list>
   <stack type="array">
-   <item index="0" type="double">2.44</item>
-   <item index="1" type="double">4.42</item>
-   <item index="2" type="double">77</item>
+   <item type="double" index="0">2.44</item>
+   <item type="double" index="1">4.42</item>
+   <item type="double" index="2">77</item>
   </stack>
  </Collection>
  <CustomObject>
   <digit>8</digit>
   <string type="array">
-   <item index="0" type="QString">third</item>
-   <item index="1" type="QString">second</item>
-   <item index="2" type="QString">first</item>
+   <item type="QString" index="0">third</item>
+   <item type="QString" index="1">second</item>
+   <item type="QString" index="2">first</item>
   </string>
  </CustomObject>
  <CollectionOfObjects>
-  <objects>
+  <objects type="array">
    <CustomObject>
     <digit>0</digit>
     <string type="array">
-     <item index="0" type="QString">so it's just index number 0</item>
-     <item index="1" type="QString">so it's just index number 1</item>
-     <item index="2" type="QString">so it's just index number 2</item>
-     <item index="3" type="QString">so it's just index number 3</item>
-     <item index="4" type="QString">so it's just index number 4</item>
-     <item index="5" type="QString">so it's just index number 5</item>
-     <item index="6" type="QString">so it's just index number 6</item>
-     <item index="7" type="QString">so it's just index number 7</item>
-     <item index="8" type="QString">so it's just index number 8</item>
-     <item index="9" type="QString">so it's just index number 9</item>
+     <item type="QString" index="0">so it's just index number in binary 0</item>
+     <item type="QString" index="1">so it's just index number in binary 1</item>
+     <item type="QString" index="2">so it's just index number in binary 10</item>
+     <item type="QString" index="3">so it's just index number in binary 11</item>
+     <item type="QString" index="4">so it's just index number in binary 100</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>1</digit>
     <string type="array">
-     <item index="0" type="QString">so it's just index number 1</item>
-     <item index="1" type="QString">so it's just index number 2</item>
-     <item index="2" type="QString">so it's just index number 3</item>
-     <item index="3" type="QString">so it's just index number 4</item>
-     <item index="4" type="QString">so it's just index number 5</item>
-     <item index="5" type="QString">so it's just index number 6</item>
-     <item index="6" type="QString">so it's just index number 7</item>
-     <item index="7" type="QString">so it's just index number 8</item>
-     <item index="8" type="QString">so it's just index number 9</item>
-     <item index="9" type="QString">so it's just index number 10</item>
+     <item type="QString" index="0">so it's just index number in binary 1</item>
+     <item type="QString" index="1">so it's just index number in binary 10</item>
+     <item type="QString" index="2">so it's just index number in binary 11</item>
+     <item type="QString" index="3">so it's just index number in binary 100</item>
+     <item type="QString" index="4">so it's just index number in binary 101</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>2</digit>
     <string type="array">
-     <item index="0" type="QString">so it's just index number 2</item>
-     <item index="1" type="QString">so it's just index number 3</item>
-     <item index="2" type="QString">so it's just index number 4</item>
-     <item index="3" type="QString">so it's just index number 5</item>
-     <item index="4" type="QString">so it's just index number 6</item>
-     <item index="5" type="QString">so it's just index number 7</item>
-     <item index="6" type="QString">so it's just index number 8</item>
-     <item index="7" type="QString">so it's just index number 9</item>
-     <item index="8" type="QString">so it's just index number 10</item>
-     <item index="9" type="QString">so it's just index number 11</item>
+     <item type="QString" index="0">so it's just index number in binary 10</item>
+     <item type="QString" index="1">so it's just index number in binary 11</item>
+     <item type="QString" index="2">so it's just index number in binary 100</item>
+     <item type="QString" index="3">so it's just index number in binary 101</item>
+     <item type="QString" index="4">so it's just index number in binary 110</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>3</digit>
     <string type="array">
-     <item index="0" type="QString">so it's just index number 3</item>
-     <item index="1" type="QString">so it's just index number 4</item>
-     <item index="2" type="QString">so it's just index number 5</item>
-     <item index="3" type="QString">so it's just index number 6</item>
-     <item index="4" type="QString">so it's just index number 7</item>
-     <item index="5" type="QString">so it's just index number 8</item>
-     <item index="6" type="QString">so it's just index number 9</item>
-     <item index="7" type="QString">so it's just index number 10</item>
-     <item index="8" type="QString">so it's just index number 11</item>
-     <item index="9" type="QString">so it's just index number 12</item>
+     <item type="QString" index="0">so it's just index number in binary 11</item>
+     <item type="QString" index="1">so it's just index number in binary 100</item>
+     <item type="QString" index="2">so it's just index number in binary 101</item>
+     <item type="QString" index="3">so it's just index number in binary 110</item>
+     <item type="QString" index="4">so it's just index number in binary 111</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>4</digit>
     <string type="array">
-     <item index="0" type="QString">so it's just index number 4</item>
-     <item index="1" type="QString">so it's just index number 5</item>
-     <item index="2" type="QString">so it's just index number 6</item>
-     <item index="3" type="QString">so it's just index number 7</item>
-     <item index="4" type="QString">so it's just index number 8</item>
-     <item index="5" type="QString">so it's just index number 9</item>
-     <item index="6" type="QString">so it's just index number 10</item>
-     <item index="7" type="QString">so it's just index number 11</item>
-     <item index="8" type="QString">so it's just index number 12</item>
-     <item index="9" type="QString">so it's just index number 13</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>5</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 5</item>
-     <item index="1" type="QString">so it's just index number 6</item>
-     <item index="2" type="QString">so it's just index number 7</item>
-     <item index="3" type="QString">so it's just index number 8</item>
-     <item index="4" type="QString">so it's just index number 9</item>
-     <item index="5" type="QString">so it's just index number 10</item>
-     <item index="6" type="QString">so it's just index number 11</item>
-     <item index="7" type="QString">so it's just index number 12</item>
-     <item index="8" type="QString">so it's just index number 13</item>
-     <item index="9" type="QString">so it's just index number 14</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>6</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 6</item>
-     <item index="1" type="QString">so it's just index number 7</item>
-     <item index="2" type="QString">so it's just index number 8</item>
-     <item index="3" type="QString">so it's just index number 9</item>
-     <item index="4" type="QString">so it's just index number 10</item>
-     <item index="5" type="QString">so it's just index number 11</item>
-     <item index="6" type="QString">so it's just index number 12</item>
-     <item index="7" type="QString">so it's just index number 13</item>
-     <item index="8" type="QString">so it's just index number 14</item>
-     <item index="9" type="QString">so it's just index number 15</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>7</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 7</item>
-     <item index="1" type="QString">so it's just index number 8</item>
-     <item index="2" type="QString">so it's just index number 9</item>
-     <item index="3" type="QString">so it's just index number 10</item>
-     <item index="4" type="QString">so it's just index number 11</item>
-     <item index="5" type="QString">so it's just index number 12</item>
-     <item index="6" type="QString">so it's just index number 13</item>
-     <item index="7" type="QString">so it's just index number 14</item>
-     <item index="8" type="QString">so it's just index number 15</item>
-     <item index="9" type="QString">so it's just index number 16</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>8</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 8</item>
-     <item index="1" type="QString">so it's just index number 9</item>
-     <item index="2" type="QString">so it's just index number 10</item>
-     <item index="3" type="QString">so it's just index number 11</item>
-     <item index="4" type="QString">so it's just index number 12</item>
-     <item index="5" type="QString">so it's just index number 13</item>
-     <item index="6" type="QString">so it's just index number 14</item>
-     <item index="7" type="QString">so it's just index number 15</item>
-     <item index="8" type="QString">so it's just index number 16</item>
-     <item index="9" type="QString">so it's just index number 17</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>9</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 9</item>
-     <item index="1" type="QString">so it's just index number 10</item>
-     <item index="2" type="QString">so it's just index number 11</item>
-     <item index="3" type="QString">so it's just index number 12</item>
-     <item index="4" type="QString">so it's just index number 13</item>
-     <item index="5" type="QString">so it's just index number 14</item>
-     <item index="6" type="QString">so it's just index number 15</item>
-     <item index="7" type="QString">so it's just index number 16</item>
-     <item index="8" type="QString">so it's just index number 17</item>
-     <item index="9" type="QString">so it's just index number 18</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>10</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 10</item>
-     <item index="1" type="QString">so it's just index number 11</item>
-     <item index="2" type="QString">so it's just index number 12</item>
-     <item index="3" type="QString">so it's just index number 13</item>
-     <item index="4" type="QString">so it's just index number 14</item>
-     <item index="5" type="QString">so it's just index number 15</item>
-     <item index="6" type="QString">so it's just index number 16</item>
-     <item index="7" type="QString">so it's just index number 17</item>
-     <item index="8" type="QString">so it's just index number 18</item>
-     <item index="9" type="QString">so it's just index number 19</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>11</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 11</item>
-     <item index="1" type="QString">so it's just index number 12</item>
-     <item index="2" type="QString">so it's just index number 13</item>
-     <item index="3" type="QString">so it's just index number 14</item>
-     <item index="4" type="QString">so it's just index number 15</item>
-     <item index="5" type="QString">so it's just index number 16</item>
-     <item index="6" type="QString">so it's just index number 17</item>
-     <item index="7" type="QString">so it's just index number 18</item>
-     <item index="8" type="QString">so it's just index number 19</item>
-     <item index="9" type="QString">so it's just index number 20</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>12</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 12</item>
-     <item index="1" type="QString">so it's just index number 13</item>
-     <item index="2" type="QString">so it's just index number 14</item>
-     <item index="3" type="QString">so it's just index number 15</item>
-     <item index="4" type="QString">so it's just index number 16</item>
-     <item index="5" type="QString">so it's just index number 17</item>
-     <item index="6" type="QString">so it's just index number 18</item>
-     <item index="7" type="QString">so it's just index number 19</item>
-     <item index="8" type="QString">so it's just index number 20</item>
-     <item index="9" type="QString">so it's just index number 21</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>13</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 13</item>
-     <item index="1" type="QString">so it's just index number 14</item>
-     <item index="2" type="QString">so it's just index number 15</item>
-     <item index="3" type="QString">so it's just index number 16</item>
-     <item index="4" type="QString">so it's just index number 17</item>
-     <item index="5" type="QString">so it's just index number 18</item>
-     <item index="6" type="QString">so it's just index number 19</item>
-     <item index="7" type="QString">so it's just index number 20</item>
-     <item index="8" type="QString">so it's just index number 21</item>
-     <item index="9" type="QString">so it's just index number 22</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>14</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 14</item>
-     <item index="1" type="QString">so it's just index number 15</item>
-     <item index="2" type="QString">so it's just index number 16</item>
-     <item index="3" type="QString">so it's just index number 17</item>
-     <item index="4" type="QString">so it's just index number 18</item>
-     <item index="5" type="QString">so it's just index number 19</item>
-     <item index="6" type="QString">so it's just index number 20</item>
-     <item index="7" type="QString">so it's just index number 21</item>
-     <item index="8" type="QString">so it's just index number 22</item>
-     <item index="9" type="QString">so it's just index number 23</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>15</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 15</item>
-     <item index="1" type="QString">so it's just index number 16</item>
-     <item index="2" type="QString">so it's just index number 17</item>
-     <item index="3" type="QString">so it's just index number 18</item>
-     <item index="4" type="QString">so it's just index number 19</item>
-     <item index="5" type="QString">so it's just index number 20</item>
-     <item index="6" type="QString">so it's just index number 21</item>
-     <item index="7" type="QString">so it's just index number 22</item>
-     <item index="8" type="QString">so it's just index number 23</item>
-     <item index="9" type="QString">so it's just index number 24</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>16</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 16</item>
-     <item index="1" type="QString">so it's just index number 17</item>
-     <item index="2" type="QString">so it's just index number 18</item>
-     <item index="3" type="QString">so it's just index number 19</item>
-     <item index="4" type="QString">so it's just index number 20</item>
-     <item index="5" type="QString">so it's just index number 21</item>
-     <item index="6" type="QString">so it's just index number 22</item>
-     <item index="7" type="QString">so it's just index number 23</item>
-     <item index="8" type="QString">so it's just index number 24</item>
-     <item index="9" type="QString">so it's just index number 25</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>17</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 17</item>
-     <item index="1" type="QString">so it's just index number 18</item>
-     <item index="2" type="QString">so it's just index number 19</item>
-     <item index="3" type="QString">so it's just index number 20</item>
-     <item index="4" type="QString">so it's just index number 21</item>
-     <item index="5" type="QString">so it's just index number 22</item>
-     <item index="6" type="QString">so it's just index number 23</item>
-     <item index="7" type="QString">so it's just index number 24</item>
-     <item index="8" type="QString">so it's just index number 25</item>
-     <item index="9" type="QString">so it's just index number 26</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>18</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 18</item>
-     <item index="1" type="QString">so it's just index number 19</item>
-     <item index="2" type="QString">so it's just index number 20</item>
-     <item index="3" type="QString">so it's just index number 21</item>
-     <item index="4" type="QString">so it's just index number 22</item>
-     <item index="5" type="QString">so it's just index number 23</item>
-     <item index="6" type="QString">so it's just index number 24</item>
-     <item index="7" type="QString">so it's just index number 25</item>
-     <item index="8" type="QString">so it's just index number 26</item>
-     <item index="9" type="QString">so it's just index number 27</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>19</digit>
-    <string type="array">
-     <item index="0" type="QString">so it's just index number 19</item>
-     <item index="1" type="QString">so it's just index number 20</item>
-     <item index="2" type="QString">so it's just index number 21</item>
-     <item index="3" type="QString">so it's just index number 22</item>
-     <item index="4" type="QString">so it's just index number 23</item>
-     <item index="5" type="QString">so it's just index number 24</item>
-     <item index="6" type="QString">so it's just index number 25</item>
-     <item index="7" type="QString">so it's just index number 26</item>
-     <item index="8" type="QString">so it's just index number 27</item>
-     <item index="9" type="QString">so it's just index number 28</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>8</digit>
-    <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>8</digit>
-    <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
-    </string>
-   </CustomObject>
-   <CustomObject>
-    <digit>8</digit>
-    <string type="array">
-     <item index="0" type="QString">third</item>
-     <item index="1" type="QString">second</item>
-     <item index="2" type="QString">first</item>
+     <item type="QString" index="0">so it's just index number in binary 100</item>
+     <item type="QString" index="1">so it's just index number in binary 101</item>
+     <item type="QString" index="2">so it's just index number in binary 110</item>
+     <item type="QString" index="3">so it's just index number in binary 111</item>
+     <item type="QString" index="4">so it's just index number in binary 1000</item>
     </string>
    </CustomObject>
   </objects>

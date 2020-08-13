@@ -131,7 +131,6 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     qDebug()<<"QSSerialize";
-
 #ifdef XML_EX
     xml_example();
 #endif

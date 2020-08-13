@@ -4,17 +4,17 @@
 #include <QQueue>
 #include <QStack>
 
-class Parent {
+class Parent : public QSerializer{
     Q_GADGET
-    QS_CLASS
+    QS_SERIALIZER
     QS_FIELD(int, age)
     QS_FIELD(QString, name)
     QS_FIELD(bool, male)
 };
 
-class Student {
+class Student : public QSerializer {
     Q_GADGET
-    QS_CLASS
+    QS_SERIALIZER
     QS_FIELD(int, age)
     QS_FIELD(QString, name)
     QS_COLLECTION(QList, QString, links)

@@ -41,12 +41,23 @@
 #include <QMetaObject>
 #include <QMetaType>
 
+#include <type_traits>
+#include <QDebug>
+
+
+#define QS_SERIALIZER \
+    virtual const QMetaObject * metaObject() const{ \
+        return &this->staticMetaObject; \
+    } \
+
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
 class QSerializer {
     Q_GADGET
+    QS_SERIALIZER
 public:
-    QSerializer(QMetaObject _mo) : mo(_mo){}
+    QSerializer(){
+    }
 
     ///\brief Convert QJsonValue in QJsonDocument as QByteArray
     static QByteArray toByteArray(const QJsonValue & value){
@@ -182,13 +193,6 @@ public:
     void fromJson(const QByteArray & data) {
         fromJson(QJsonDocument::fromJson(data).object());
     }
-
-    const QMetaObject * metaObject() const {
-        return &mo;
-    }
-
-private:
-    QMetaObject mo;
 };
 
 #define GET(prefix, name) get_##prefix##_##name

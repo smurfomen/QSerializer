@@ -1,4 +1,4 @@
-# QSerializer 
+[<img alt="logo" width="1280px" src="https://habrastorage.org/webt/t6/e1/vv/t6e1vvxggs9qkz_h5njg4xrzi0k.png" />]()
 This project is designed to convert data from an object view to JSON or XML and opposite in the Qt/C++ ecosystem. C ++ classes by default do not have the required meta-object information for serializing class fields, but Qt is equipped with its own highly efficient meta-object system.
 An important feature of the QSerializer is the ability to specify serializable fields of the class without having to serialize the entire class. QSerilaizer generate code and declare Q_PROPERTY for every declared member of class. This is convenient because you do not need to create separate structures or classes for serialization of write some code to serialize every class, it's just included to QSerializer.
 

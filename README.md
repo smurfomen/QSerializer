@@ -22,18 +22,16 @@ For create serializable member of class and generate propertyes, use macro:
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
 ### 1. Inherit from QSerializer
-Inherit from QSerializer and declare some serializable fields.</br>
+Inherit from QSerializer, use macro QS_SERIALIZER or override metaObject method and declare some serializable fields.</br>
 In this case you must use Q_GADGET in your class.
 ```C++
 class User : public QSerializer
 {
 Q_GADGET
+QS_SERIALIZER
 // Create data members to be serialized - you can use this members in code
 QS_FIELD(int, age)
 QS_COLLECTION(QVector, QString, parents)
-public:
-  // Make constructor, where provide staticMetaObject in base QSerializer class
-  User() : QSerializer(staticMetaObject) { }
 };
 ```
 ### 2. Use macro QS_CLASS
@@ -122,4 +120,5 @@ u.fromXml(userXml);
 | QS_OBJECT | Create some class object field, generate methods and propertyes | You may create some object field, if class of this object provide methods: <li>QJsonValue toJson() const</li> <li>void fromJson(const QJsonValue &)</li> <li>QDomNode toXml() const</li> <li>void fromXml(const QDomNode &)</li> <li>const QMetaObject * metaObject() const</li> | create some object "MyObject"  of MyClass type</br> QS_OBJECT(MyClass, MyObject) |
 | QS_COLLECTION_OBJECTS | Create collection of some objects, generate methods and propertyes | You may create collection of objects satisfying restrictions of QS_OBJECT | create collection of some objects</br> named "MyObjectsCollection" of QList\<MyClass\> type QS_COLLECTION_OBJECTS(QList, MyClass, MyObjectsCollection) |
 | QS_CLASS | Generate methods for serialization | Use this macro if you don't inherit from QSerializer and use Q_GADGET | class ClassName { </br>Q_GADGET  </br> QS_CLASS</br>...</br>}; |
-| QS_DECLARE_VARRIABLE | Created new public member of class | Use exists types | create public member class [int Digit]</br> QS_DECLARE_VARIABLE(int, Digit) |
+| QS_SERIALIZER | Override method metaObject | Use if you inherits QSerializer class | class ClassName { </br> A_GADGET </br> QS_SERIALIZER </br> ... </br> }; |
+| QS_DECLARE_MEMBER | Created new public member of class | Use exists types | create public member class [int Digit]</br> QS_DECLARE_VARIABLE(int, Digit) |

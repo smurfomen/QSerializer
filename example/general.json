@@ -16,21 +16,7 @@
             2,
             3,
             4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19
+            5
         ]
     },
     "collectionObjects": {
@@ -87,9 +73,101 @@
             }
         ]
     },
+    "dictionaries": {
+        "qt_hash": {
+        },
+        "qt_map": {
+            "abra": null,
+            "ping": null
+        },
+        "qt_map_objects": {
+            "+7(909)000-01-00": {
+                "age": 22,
+                "links": [
+                    "http://katelink.com"
+                ],
+                "name": "Kate",
+                "parents": [
+                    {
+                        "age": 44,
+                        "male": false,
+                        "name": "Marlin"
+                    },
+                    {
+                        "age": 48,
+                        "male": true,
+                        "name": "Jake"
+                    }
+                ]
+            },
+            "+7(909)100-00-10": {
+                "age": 22,
+                "links": [
+                    "http://bobsite.com"
+                ],
+                "name": "Bob",
+                "parents": [
+                    {
+                        "age": 44,
+                        "male": false,
+                        "name": "Mary"
+                    },
+                    {
+                        "age": 48,
+                        "male": true,
+                        "name": "Koul"
+                    }
+                ]
+            }
+        },
+        "std_map": {
+            "1": null,
+            "2": null
+        },
+        "std_map_objects": {
+            "+7(909)000-10-00": {
+                "age": 21,
+                "links": [
+                    "http://somelink.com"
+                ],
+                "name": "Jane",
+                "parents": [
+                    {
+                        "age": 38,
+                        "male": false,
+                        "name": "Elie"
+                    },
+                    {
+                        "age": 48,
+                        "male": true,
+                        "name": "John"
+                    }
+                ]
+            },
+            "+7(909)001-00-00": {
+                "age": 22,
+                "links": [
+                    "http://github.com/smurfomen"
+                ],
+                "name": "Ken",
+                "parents": [
+                    {
+                        "age": 44,
+                        "male": false,
+                        "name": "Olga"
+                    },
+                    {
+                        "age": 48,
+                        "male": true,
+                        "name": "Alex"
+                    }
+                ]
+            }
+        }
+    },
     "field": {
         "d_digit": 88.99,
-        "digit": 10,
+        "digit": 34,
         "flag": false,
         "string": "some string"
     },

@@ -1,50 +1,36 @@
 <General>
  <Field>
-  <digit>10</digit>
+  <digit>34</digit>
   <string>some string</string>
   <flag>false</flag>
   <d_digit>88.99</d_digit>
  </Field>
  <Collection>
   <vector type="array">
-   <item type="int" index="0">0</item>
-   <item type="int" index="1">1</item>
-   <item type="int" index="2">2</item>
-   <item type="int" index="3">3</item>
-   <item type="int" index="4">4</item>
-   <item type="int" index="5">5</item>
-   <item type="int" index="6">6</item>
-   <item type="int" index="7">7</item>
-   <item type="int" index="8">8</item>
-   <item type="int" index="9">9</item>
-   <item type="int" index="10">10</item>
-   <item type="int" index="11">11</item>
-   <item type="int" index="12">12</item>
-   <item type="int" index="13">13</item>
-   <item type="int" index="14">14</item>
-   <item type="int" index="15">15</item>
-   <item type="int" index="16">16</item>
-   <item type="int" index="17">17</item>
-   <item type="int" index="18">18</item>
-   <item type="int" index="19">19</item>
+   <item index="0" type="int">0</item>
+   <item index="1" type="int">1</item>
+   <item index="2" type="int">2</item>
+   <item index="3" type="int">3</item>
+   <item index="4" type="int">4</item>
+   <item index="5" type="int">5</item>
   </vector>
   <list type="array">
-   <item type="QString" index="0">first</item>
-   <item type="QString" index="1">second</item>
-   <item type="QString" index="2">third</item>
+   <item index="0" type="QString">first</item>
+   <item index="1" type="QString">second</item>
+   <item index="2" type="QString">third</item>
   </list>
   <stack type="array">
-   <item type="double" index="0">2.44</item>
-   <item type="double" index="1">4.42</item>
-   <item type="double" index="2">77</item>
+   <item index="0" type="double">2.44</item>
+   <item index="1" type="double">4.42</item>
+   <item index="2" type="double">77</item>
   </stack>
  </Collection>
  <CustomObject>
   <digit>8</digit>
   <string type="array">
-   <item type="QString" index="0">third</item>
-   <item type="QString" index="1">second</item>
-   <item type="QString" index="2">first</item>
+   <item index="0" type="QString">third</item>
+   <item index="1" type="QString">second</item>
+   <item index="2" type="QString">first</item>
   </string>
  </CustomObject>
  <CollectionOfObjects>
@@ -52,53 +38,152 @@
    <CustomObject>
     <digit>0</digit>
     <string type="array">
-     <item type="QString" index="0">so it's just index number in binary 0</item>
-     <item type="QString" index="1">so it's just index number in binary 1</item>
-     <item type="QString" index="2">so it's just index number in binary 10</item>
-     <item type="QString" index="3">so it's just index number in binary 11</item>
-     <item type="QString" index="4">so it's just index number in binary 100</item>
+     <item index="0" type="QString">so it's just index number in binary 0</item>
+     <item index="1" type="QString">so it's just index number in binary 1</item>
+     <item index="2" type="QString">so it's just index number in binary 10</item>
+     <item index="3" type="QString">so it's just index number in binary 11</item>
+     <item index="4" type="QString">so it's just index number in binary 100</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>1</digit>
     <string type="array">
-     <item type="QString" index="0">so it's just index number in binary 1</item>
-     <item type="QString" index="1">so it's just index number in binary 10</item>
-     <item type="QString" index="2">so it's just index number in binary 11</item>
-     <item type="QString" index="3">so it's just index number in binary 100</item>
-     <item type="QString" index="4">so it's just index number in binary 101</item>
+     <item index="0" type="QString">so it's just index number in binary 1</item>
+     <item index="1" type="QString">so it's just index number in binary 10</item>
+     <item index="2" type="QString">so it's just index number in binary 11</item>
+     <item index="3" type="QString">so it's just index number in binary 100</item>
+     <item index="4" type="QString">so it's just index number in binary 101</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>2</digit>
     <string type="array">
-     <item type="QString" index="0">so it's just index number in binary 10</item>
-     <item type="QString" index="1">so it's just index number in binary 11</item>
-     <item type="QString" index="2">so it's just index number in binary 100</item>
-     <item type="QString" index="3">so it's just index number in binary 101</item>
-     <item type="QString" index="4">so it's just index number in binary 110</item>
+     <item index="0" type="QString">so it's just index number in binary 10</item>
+     <item index="1" type="QString">so it's just index number in binary 11</item>
+     <item index="2" type="QString">so it's just index number in binary 100</item>
+     <item index="3" type="QString">so it's just index number in binary 101</item>
+     <item index="4" type="QString">so it's just index number in binary 110</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>3</digit>
     <string type="array">
-     <item type="QString" index="0">so it's just index number in binary 11</item>
-     <item type="QString" index="1">so it's just index number in binary 100</item>
-     <item type="QString" index="2">so it's just index number in binary 101</item>
-     <item type="QString" index="3">so it's just index number in binary 110</item>
-     <item type="QString" index="4">so it's just index number in binary 111</item>
+     <item index="0" type="QString">so it's just index number in binary 11</item>
+     <item index="1" type="QString">so it's just index number in binary 100</item>
+     <item index="2" type="QString">so it's just index number in binary 101</item>
+     <item index="3" type="QString">so it's just index number in binary 110</item>
+     <item index="4" type="QString">so it's just index number in binary 111</item>
     </string>
    </CustomObject>
    <CustomObject>
     <digit>4</digit>
     <string type="array">
-     <item type="QString" index="0">so it's just index number in binary 100</item>
-     <item type="QString" index="1">so it's just index number in binary 101</item>
-     <item type="QString" index="2">so it's just index number in binary 110</item>
-     <item type="QString" index="3">so it's just index number in binary 111</item>
-     <item type="QString" index="4">so it's just index number in binary 1000</item>
+     <item index="0" type="QString">so it's just index number in binary 100</item>
+     <item index="1" type="QString">so it's just index number in binary 101</item>
+     <item index="2" type="QString">so it's just index number in binary 110</item>
+     <item index="3" type="QString">so it's just index number in binary 111</item>
+     <item index="4" type="QString">so it's just index number in binary 1000</item>
     </string>
    </CustomObject>
   </objects>
  </CollectionOfObjects>
+ <Dictionaries>
+  <qt_hash type="map"/>
+  <qt_map type="map">
+   <item value="kadabra" key="abra"/>
+   <item value="pong" key="ping"/>
+  </qt_map>
+  <qt_map_objects type="map">
+   <item key="+7(909)000-01-00">
+    <Student>
+     <age>22</age>
+     <name>Kate</name>
+     <links type="array">
+      <item index="0" type="QString">http://katelink.com</item>
+     </links>
+     <parents type="array">
+      <Parent>
+       <age>44</age>
+       <name>Marlin</name>
+       <male>false</male>
+      </Parent>
+      <Parent>
+       <age>48</age>
+       <name>Jake</name>
+       <male>true</male>
+      </Parent>
+     </parents>
+    </Student>
+   </item>
+   <item key="+7(909)100-00-10">
+    <Student>
+     <age>22</age>
+     <name>Bob</name>
+     <links type="array">
+      <item index="0" type="QString">http://bobsite.com</item>
+     </links>
+     <parents type="array">
+      <Parent>
+       <age>44</age>
+       <name>Mary</name>
+       <male>false</male>
+      </Parent>
+      <Parent>
+       <age>48</age>
+       <name>Koul</name>
+       <male>true</male>
+      </Parent>
+     </parents>
+    </Student>
+   </item>
+  </qt_map_objects>
+  <std_map type="map">
+   <item value="first" key="1"/>
+   <item value="second" key="2"/>
+  </std_map>
+  <std_map_objects type="map">
+   <item key="+7(909)000-10-00">
+    <Student>
+     <age>21</age>
+     <name>Jane</name>
+     <links type="array">
+      <item index="0" type="QString">http://somelink.com</item>
+     </links>
+     <parents type="array">
+      <Parent>
+       <age>38</age>
+       <name>Elie</name>
+       <male>false</male>
+      </Parent>
+      <Parent>
+       <age>48</age>
+       <name>John</name>
+       <male>true</male>
+      </Parent>
+     </parents>
+    </Student>
+   </item>
+   <item key="+7(909)001-00-00">
+    <Student>
+     <age>22</age>
+     <name>Ken</name>
+     <links type="array">
+      <item index="0" type="QString">http://github.com/smurfomen</item>
+     </links>
+     <parents type="array">
+      <Parent>
+       <age>44</age>
+       <name>Olga</name>
+       <male>false</male>
+      </Parent>
+      <Parent>
+       <age>48</age>
+       <name>Alex</name>
+       <male>true</male>
+      </Parent>
+     </parents>
+    </Student>
+   </item>
+  </std_map_objects>
+ </Dictionaries>
 </General>

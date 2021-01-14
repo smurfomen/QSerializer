@@ -7,9 +7,8 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    qDebug()<<"QSDeserialize";
 
-    qDebug()<<"\nDESERIALIZATION";
+    qDebug()<<"====================================DESERIALIZE EXAMPLES====================================";
     QFile json ("../general.json");
     if(!json.exists())
         qWarning()<<"ERROR: general.json is not exist";
@@ -17,9 +16,11 @@ int main(int argc, char *argv[])
     {
         // empty object
         General general;
+        qDebug()<<"====================================EMPTY====================================";
         qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
 
         general.fromJson(json.readAll());
+        qDebug()<<"====================================FULL SERIALIZED FROM general.json====================================";
         qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
         json.close();
     }
@@ -32,9 +33,11 @@ int main(int argc, char *argv[])
     {
         // empty object
         General general;
+        qDebug()<<"====================================EMPTY====================================";
         qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
 
         general.fromXml(xml.readAll());
+        qDebug()<<"====================================FULL SERIALIZED FROM general.xml====================================";
         qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
         xml.close();
     }

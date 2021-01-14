@@ -5,7 +5,7 @@
 #include <QDebug>
 
 void json_example() {
-    qDebug()<<"\n\nSERIALIZE JSON_EXAMPLE";
+    qDebug()<<"====================================SERIALIZATION JSON====================================";
     Student stud;
     stud.age = 23;
     stud.name = "Vlad";
@@ -27,7 +27,7 @@ void json_example() {
 
 
 void xml_example(){
-    qDebug()<<"\n\nSERIALIZE XML_EXAMPLE";
+    qDebug()<<"====================================SERIALIZATION XML====================================";
     TestXml src;
     src.field = 10;
     for(int i = 0; i < src.field; i ++)
@@ -47,41 +47,38 @@ void xml_example(){
 
 
 void serialize_to_file() {
-    qDebug()<<"\n\nSERIALIZE_TO_FILE_EXAMPLE";
-    qDebug()<<"\nfield example";
+    qDebug()<<"====================================SERIALIZE TO FILE====================================";
+    /* OBJECT */
     Field field;
     field.flag = false;
-    field.digit = 10;
+    field.digit = 34;
     field.string = "some string";
     field.d_digit = 88.99;
-    qDebug()<<QSerializer::toByteArray(field.toJson()).constData();
-    qDebug()<<QSerializer::toByteArray(field.toXml()).constData();
+    /*.........................................................................................................................*/
 
-    qDebug()<<"\ncollection example";
+    /* COLLECTION*/
     Collection collection;
     collection.list.append("first");
     collection.list.append("second");
     collection.list.append("third");
-    for(int i = 0; i < 20 ; i ++)
+    for(int i = 0; i < 6; i ++)
         collection.vector.append(i);
     collection.stack.append(2.44);
     collection.stack.append(4.42);
     collection.stack.append(77);
-    qDebug()<<QSerializer::toByteArray(collection.toJson()).constData();
-    qDebug()<<QSerializer::toByteArray(collection.toXml()).constData();
+    /*.........................................................................................................................*/
 
 
-    qDebug()<<"\nobject example";
+    /* OBJECT */
     CustomObject object;
     object.digit = 8;
     object.string.append("third");
     object.string.append("second");
     object.string.append("first");
-    qDebug()<<QSerializer::toByteArray(object.toJson()).constData();
-    qDebug()<<QSerializer::toByteArray(object.toXml()).constData();
+    /*.........................................................................................................................*/
 
 
-    qDebug()<<"\ncollection of objects example";
+    /* COLLECTION OF OBJECTS */
     CollectionOfObjects collectionObjects;
     for(int i = 0; i < 5 ; i ++)
     {
@@ -91,19 +88,51 @@ void serialize_to_file() {
             o.string.append(QString("so it's just index number in binary %1").arg(QString::number(k+i,2)));
         collectionObjects.objects.append(o);
     }
-    qDebug()<<QSerializer::toByteArray(collectionObjects.toJson()).constData();
-    qDebug()<<QSerializer::toByteArray(collectionObjects.toXml()).constData();
+    /*.........................................................................................................................*/
 
 
-    qDebug()<<"\ngeneral document example";
+
+    /* DICTIONARIES */
+    Dictionaries dict;
+    dict.std_map.insert(std::pair<int, QString>(1,"first"));
+    dict.std_map.insert(std::pair<int, QString>(2,"second"));
+    dict.std_map_objects.insert(std::pair<QString, Student>("+7(909)001-00-00", Student(22,
+                                                                                "Ken",
+                                                                                QStringList("http://github.com/smurfomen"),
+                                                                                Parent(44, "Olga", false),
+                                                                                Parent(48, "Alex", true))));
+    dict.std_map_objects.insert(std::pair<QString, Student>("+7(909)000-10-00", Student(21,
+                                                                                "Jane",
+                                                                                QStringList("http://somelink.com"),
+                                                                                Parent(38, "Elie", false),
+                                                                                Parent(48, "John", true))));
+    // fill QMap<QString, Student>
+    dict.qt_map_objects.insert("+7(909)000-01-00", Student(22,
+                                                    "Kate",
+                                                    QStringList("http://katelink.com"),
+                                                    Parent(44, "Marlin", false),
+                                                    Parent(48, "Jake", true)));
+    dict.qt_map_objects.insert("+7(909)100-00-10", Student(22,
+                                                    "Bob",
+                                                    QStringList("http://bobsite.com"),
+                                                    Parent(44, "Mary", false),
+                                                    Parent(48, "Koul", true)));
+    dict.qt_map.insert("ping","pong");
+    dict.qt_map.insert("abra","kadabra");
+    /*.........................................................................................................................*/
+
     General general;
     general.field = field;
     general.object = object;
     general.collection = collection;
     general.collectionObjects = collectionObjects;
-    qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
-    qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+    general.dictionaries = dict;
 
+    qDebug()<<"====================================GENERAL JSON====================================";
+    qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+
+    qDebug()<<"====================================GENERAL XML====================================";
+    qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
 
     QFile json("../general.json");
     if(json.exists())
@@ -124,13 +153,111 @@ void serialize_to_file() {
     }
 }
 
+
+// use case json dictionaries
+// 1. create some statement local Dictionaries object (fill this)
+// 2. emulate receive other json from server for this object (receive new data)
+// 3. update local Dictionaries object (update statement from server)
+void json_dict_ex()
+{
+    // local object
+    Dictionaries myDict;
+
+    // fill std::map<int, QString>
+    myDict.std_map.insert(std::pair<int, QString>(1,"first"));
+    myDict.std_map.insert(std::pair<int, QString>(2,"second"));
+
+    // create couple students, fill std::map<QString, Student>
+    myDict.std_map_objects.insert(std::pair<QString, Student>("+7(909)001-00-00", Student(22,
+                                                                                "Ken",
+                                                                                QStringList("http://github.com/smurfomen"),
+                                                                                Parent(44, "Olga", false),
+                                                                                Parent(48, "Alex", true))));
+    myDict.std_map_objects.insert(std::pair<QString, Student>("+7(909)000-10-00", Student(21,
+                                                                                "Jane",
+                                                                                QStringList("http://somelink.com"),
+                                                                                Parent(38, "Elie", false),
+                                                                                Parent(48, "John", true))));
+    // fill QMap<QString, QString> with some phrases
+    myDict.qt_map.insert("ping","pong");
+    myDict.qt_map.insert("abra","kadabra");
+
+    qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
+
+    // emulate receive JsonFromServer
+    auto JsonFromServer = []() -> QByteArray {
+        Dictionaries dict;
+        // fill std::map<int, QString>
+        dict.std_map.insert(std::pair<int, QString>(3, "third"));
+
+        // fill QMap<QString, Student>
+        dict.qt_map_objects.insert("+7(909)000-01-00", Student(22,
+                                                        "Kate",
+                                                        QStringList("http://katelink.com"),
+                                                        Parent(44, "Marlin", false),
+                                                        Parent(48, "Jake", true)));
+        dict.qt_map_objects.insert("+7(909)100-00-10", Student(22,
+                                                        "Bob",
+                                                        QStringList("http://bobsite.com"),
+                                                        Parent(44, "Mary", false),
+                                                        Parent(48, "Koul", true)));
+        // fill QMap<QString,QString> with some phrases
+        dict.qt_map.insert("fokus","pokus");
+
+        // serialize dict to QByteArray
+        return QSerializer::toByteArray(dict.toJson());
+    };
+
+
+    // update original local object to equial received json
+    myDict.fromJson(JsonFromServer());
+    qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
+
+
+    QDomDocument doc;
+    QDomElement element = doc.createElement("asdasd");
+    element.setAttribute("type", "map");
+    for(auto p = myDict.qt_map.begin(); p != myDict.qt_map.end(); ++p)
+    {
+        QDomElement e = doc.createElement("pair");
+        e.setAttribute("key", p.key());
+        e.appendChild(doc.createTextNode(QVariant(p.value()).toString()));
+        element.appendChild(e);
+    }
+    doc.appendChild(element);
+}
+
+
+void foo() {
+    QDomNode node;
+    if(!node.isNull() && node.isElement())
+    {
+        QDomElement root = node.toElement();
+        if(root.tagName() == "qt_map")
+        {
+            QDomElement item = root.firstChildElement();
+
+            QMap<QString,QString> name;
+            name.insert(QVariant(item.attributeNode("key").value()).value<QString>(),
+                        QVariant(item.attributeNode("value").value()).value<QString>());
+            item = root.nextSibling().toElement();
+        }
+
+
+    }
+
+}
+
+
+
 #define SERIALIZE_TO_FILE_EX
 #define XML_EX
 #define JSON_EX
+#define JSON_DICT_EX
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    qDebug()<<"QSSerialize";
+    qDebug()<<"====================================SERIALIZE EXAMPLES====================================";
 #ifdef XML_EX
     xml_example();
 #endif
@@ -142,5 +269,12 @@ int main(int argc, char *argv[])
 #ifdef SERIALIZE_TO_FILE_EX
     serialize_to_file();
 #endif
+
+#ifdef JSON_DICT_EX
+    json_dict_ex();
+#endif
     return a.exec();
 }
+
+
+

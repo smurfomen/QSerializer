@@ -8,84 +8,35 @@ Download repository
 $ git clone https://github.com/smurfomen/QSerializer.git
 ```
 Just include qserializer.h in your project and enjoy simple serialization. qserializer.h located in src folder.
-</br>Demo-projects for using QSerializer locate are in the examples folder.
+</br>Demo-projects for using QSerializer locate in examples folder.
 
 ## Workflow
 To get started, include qserializer.h in your code.
-Next, you need to make a serializable class. For this you have 3 ways
 ## Create serialization class
 For create serializable member of class and generate propertyes, use macro:
 - __QS_FIELD__
 - __QS_COLLECTION__
 - __QS_OBJECT__
 - __QS_COLLECTION_OBJECTS__
+- __QS_QT_DICT__
+- __QS_QT_DICT_OBJECTS__
+- __QS_STL_DICT__
+- __QS_STL_DICT_OBJECTS__
 
 If you want only declare exists fields - use macro QS_JSON_FIELD, QS_XML_FIELD, QS_JSON_COLLECTION and other (look at qserializer.h)
-### 1. Inherit from QSerializer
-Inherit from QSerializer, use macro QS_SERIALIZER or override metaObject method and declare some serializable fields.</br>
+### Inherit from QSerializer
+Inherit from QSerializer, use macro QS_SERIALIZABLE or override metaObject method and declare some serializable fields.</br>
 In this case you must use Q_GADGET in your class.
 ```C++
 class User : public QSerializer
 {
 Q_GADGET
-QS_SERIALIZER
+QS_SERIALIZABLE
 // Create data members to be serialized - you can use this members in code
 QS_FIELD(int, age)
 QS_COLLECTION(QVector, QString, parents)
 };
 ```
-### 2. Use macro QS_CLASS
-Also you may create serializable classes without inherit QSerializer. For this use macro QS_CLASS.
-Macro QS_CLASS will generate next methods:</br>
- - QJsonValue toJson()
- - void fromJson(const QJsonValue &)
- - QDomNode toXml()
- - void fromXml(const QDomNode &)
- - const QMetaObject * metaObject() const
-
-In this case you must use Q_GADGET in your class.
-```C++
-class User {
-Q_GADGET
-QS_CLASS
-QS_FIELD(int, age)
-QS_COLLECTION(QVector, QString, parents)
-};
-```
-
-
-### 3. QObject-based class
-#### Requirements
-For this case you need to define the methods into class or base class:</br>
- - QJsonValue toJson()
- - void fromJson(const QJsonValue &)
- - QDomNode toXml()
- - void fromXml(const QDomNode &)
- - const QMetaObject * metaObject() const
- 
-##### NOTE: Method metaObject() already exists if you use QObject-based class, however QObject is a heavier parent
-
-You also need to define an assignment operator and a copy constructor, since QObject forbids copying itself by default. This is the most difficult path.
-
-For example:
-```C++
-class User : public QObject
-{
-Q_OBJECT
-// Create data members to be serialized - you can use this members in code
-QS_FIELD(int, age)
-QS_COLLECTION(QVector, QString, parents)
-public:
-  User() {...}
-  User(const User & u) {...}
-  User & operator=(const User & u) {...}
-  QJsonValue toJson();
-  void fromJson(const QJsonValue &);
-  QDomNode toXml();
-  void fromXml(const QDomNode &);
-};
-```
-
 ## **Serialize**
 Now you can serialize object of this class to JSON or XML.
 For example:
@@ -112,13 +63,27 @@ u.fromJson(userJson);
 QDomNode userXml;
 u.fromXml(userXml);
 ```
-## Detailed description
-| Macro | Description | Restrictions | For example |
-|-|-|-|-|
-| QS_FIELD | Create simple field, generate methods and propertyes | Available types: <li>int</li> <li>QString</li> <li>double</li> <li>bool</li> <li>short</li> <li>unsigned char</li> | create field named "Digit" of int type</br> QS_FIELD(int, Digit) |
-| QS_COLLECTION | Create collection of simple fields, generate methods and propertyes | Available types of collections: <li>QVector</li> <li>QList</li> <li>QStack</li> <li>QQueue</li> | create collection named "MyCollection" of QVector\<int\> type</br> QS_COLLECTION(QVector, int, MyCollection) |
-| QS_OBJECT | Create some class object field, generate methods and propertyes | You may create some object field, if class of this object provide methods: <li>QJsonValue toJson() const</li> <li>void fromJson(const QJsonValue &)</li> <li>QDomNode toXml() const</li> <li>void fromXml(const QDomNode &)</li> <li>const QMetaObject * metaObject() const</li> | create some object "MyObject"  of MyClass type</br> QS_OBJECT(MyClass, MyObject) |
-| QS_COLLECTION_OBJECTS | Create collection of some objects, generate methods and propertyes | You may create collection of objects satisfying restrictions of QS_OBJECT | create collection of some objects</br> named "MyObjectsCollection" of QList\<MyClass\> type QS_COLLECTION_OBJECTS(QList, MyClass, MyObjectsCollection) |
-| QS_CLASS | Generate methods for serialization | Use this macro if you don't inherit from QSerializer and use Q_GADGET | class ClassName { </br>Q_GADGET  </br> QS_CLASS</br>...</br>}; |
-| QS_SERIALIZER | Override method metaObject | Use if you inherits QSerializer class | class ClassName : public QSerializer { </br> Q_GADGET </br> QS_SERIALIZER </br> ... </br> }; |
-| QS_DECLARE_MEMBER | Created new public member of class | Use exists types | create public member class [int Digit]</br> QS_DECLARE_VARIABLE(int, Digit) |
+## Macro description
+| Macro                 | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| QS_FIELD              | Create serializable simple field                             |
+| QS_COLLECTION         | Create serializable collection values of primitive types     |
+| QS_OBJECT             | Create serializable inner custom type object                 |
+| QS_COLLECTION_OBJECTS | Create serializable collection of custom type objects        |
+| QS_QT_DICT            | Create serializable dictionary of primitive type values FOR QT DICTIONARY TYPES |
+| QS_QT_DICT_OBJECTS    | Create serializable dictionary of custom type values FOR QT DICTIONARY TYPES |
+| QS_STL_DICT           | Create serializable dictionary of primitive type values FOR STL DICTIONARY TYPES |
+| QS_STL_DICT_OBJECTS   | Create serializable dictionary of custom type values FOR STL DICTIONARY TYPES |
+| QS_SERIALIZABLE       | Override method metaObject and make class serializable       |
+
+|      |      |
+| ---- | ---- |
+|      |      |
+|      |      |
+|      |      |
+|      |      |
+|      |      |
+|      |      |
+|      |      |
+|      |      |
+|      |      |

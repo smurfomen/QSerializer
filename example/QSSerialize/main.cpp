@@ -158,7 +158,7 @@ void serialize_to_file() {
 // 1. create some statement local Dictionaries object (fill this)
 // 2. emulate receive other json from server for this object (receive new data)
 // 3. update local Dictionaries object (update statement from server)
-void json_dict_ex()
+void json_dict_example()
 {
     // local object
     Dictionaries myDict;
@@ -228,28 +228,6 @@ void json_dict_ex()
 }
 
 
-void foo() {
-    QDomNode node;
-    if(!node.isNull() && node.isElement())
-    {
-        QDomElement root = node.toElement();
-        if(root.tagName() == "qt_map")
-        {
-            QDomElement item = root.firstChildElement();
-
-            QMap<QString,QString> name;
-            name.insert(QVariant(item.attributeNode("key").value()).value<QString>(),
-                        QVariant(item.attributeNode("value").value()).value<QString>());
-            item = root.nextSibling().toElement();
-        }
-
-
-    }
-
-}
-
-
-
 #define SERIALIZE_TO_FILE_EX
 #define XML_EX
 #define JSON_EX
@@ -271,7 +249,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef JSON_DICT_EX
-    json_dict_ex();
+    json_dict_example();
 #endif
     return a.exec();
 }

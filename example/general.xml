@@ -90,8 +90,8 @@
  <Dictionaries>
   <qt_hash type="map"/>
   <qt_map type="map">
-   <item key="abra" value="kadabra"/>
-   <item key="ping" value="pong"/>
+   <item value="kadabra" key="abra"/>
+   <item value="pong" key="ping"/>
   </qt_map>
   <qt_map_objects type="map">
    <item key="+7(909)000-01-00">
@@ -138,8 +138,8 @@
    </item>
   </qt_map_objects>
   <std_map type="map">
-   <item key="1" value="first"/>
-   <item key="2" value="second"/>
+   <item value="first" key="1"/>
+   <item value="second" key="2"/>
   </std_map>
   <std_map_objects type="map">
    <item key="+7(909)000-10-00">

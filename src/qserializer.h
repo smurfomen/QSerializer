@@ -393,10 +393,10 @@ public:
     private:                                                                                \
     QJsonValue GET(json, name)() const {                                                    \
         QJsonObject val;                                                                    \
-        for(auto p = name.begin(); p != name.end(); ++p) {                                  \
+        for(auto p = name.constBegin(); p != name.constEnd(); ++p) {                        \
             val.insert(                                                                     \
-                QVariant::fromValue(p.key()).toString(),                                    \
-                QVariant::fromValue(p.value()).toJsonValue());                              \
+                QVariant(p.key()).toString(),                                               \
+                QJsonValue::fromVariant(QVariant(p.value())));                              \
         }                                                                                   \
         return val;                                                                         \
     }                                                                                       \
@@ -531,7 +531,7 @@ public:
         for(auto p : name){                                                                 \
             val.insert(                                                                     \
                 QVariant::fromValue(p.first).toString(),                                    \
-                QVariant::fromValue(p.second).toJsonValue());                               \
+                QJsonValue::fromVariant(QVariant(p.second)));                               \
         }                                                                                   \
         return val;                                                                         \
     }                                                                                       \

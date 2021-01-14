@@ -213,18 +213,6 @@ void json_dict_example()
     myDict.fromJson(JsonFromServer());
     qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
 
-
-    QDomDocument doc;
-    QDomElement element = doc.createElement("asdasd");
-    element.setAttribute("type", "map");
-    for(auto p = myDict.qt_map.begin(); p != myDict.qt_map.end(); ++p)
-    {
-        QDomElement e = doc.createElement("pair");
-        e.setAttribute("key", p.key());
-        e.appendChild(doc.createTextNode(QVariant(p.value()).toString()));
-        element.appendChild(e);
-    }
-    doc.appendChild(element);
 }
 
 

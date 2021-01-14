@@ -75,15 +75,3 @@ u.fromXml(userXml);
 | QS_STL_DICT           | Create serializable dictionary of primitive type values FOR STL DICTIONARY TYPES |
 | QS_STL_DICT_OBJECTS   | Create serializable dictionary of custom type values FOR STL DICTIONARY TYPES |
 | QS_SERIALIZABLE       | Override method metaObject and make class serializable       |
-
-|      |      |
-| ---- | ---- |
-|      |      |
-|      |      |
-|      |      |
-|      |      |
-|      |      |
-|      |      |
-|      |      |
-|      |      |
-|      |      |

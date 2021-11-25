@@ -89,8 +89,15 @@ public:
         QJsonObject json;
         for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>())) {
                 continue;
+            }
+#else
+            if(metaObject()->property(i).metaType().id() != QMetaType::QJsonValue) {
+                continue;
+            }
+#endif
 
             json.insert(metaObject()->property(i).name(), metaObject()->property(i).readOnGadget(this).toJsonValue());
         }
@@ -106,8 +113,15 @@ public:
             int propCount = metaObject()->propertyCount();
             for(int i = 0; i < propCount; i++)
             {
-                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>()))
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>())) {
                     continue;
+                }
+#else
+                if(metaObject()->property(i).metaType().id() != QMetaType::QJsonValue) {
+                    continue;
+                }
+#endif
 
                 for(auto key : json.keys())
                 {
@@ -127,9 +141,15 @@ public:
         QDomElement el = doc.createElement(metaObject()->className());
         for(int i = 0; i < metaObject()->propertyCount(); i++)
         {
-            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>())) {
                 continue;
-
+            }
+#else
+            if(metaObject()->property(i).metaType().id() != qMetaTypeId<QDomNode>()) {
+                continue;
+            }
+#endif
             el.appendChild(QDomNode(metaObject()->property(i).readOnGadget(this).value<QDomNode>()));
         }
         doc.appendChild(el);
@@ -147,8 +167,15 @@ public:
         {
             for(int i = 0; i < metaObject()->propertyCount(); i++)
             {
-                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>())) {
                     continue;
+                }
+#else
+                if(metaObject()->property(i).metaType().id() != qMetaTypeId<QDomNode>()) {
+                    continue;
+                }
+#endif
 
                 QDomNode fieldNode = doc.firstChild().firstChild();
                 while(!fieldNode.isNull())
@@ -170,9 +197,15 @@ public:
         {
             for(int i = 0; i < metaObject()->propertyCount(); i++)
             {
-                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>()))
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>())) {
                     continue;
-
+                }
+#else
+                if(metaObject()->property(i).metaType().id() != QMetaType::QJsonValue) {
+                    continue;
+                }
+#endif
                 QDomNode fieldNode = doc.firstChild();
                 while(!fieldNode.isNull())
                 {

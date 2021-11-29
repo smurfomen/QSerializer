@@ -61,10 +61,7 @@ class QSerializer {
     Q_GADGET
     QS_SERIALIZABLE
 public:
-    QSerializer(){
-    }
-
-    virtual ~QSerializer() {}
+    virtual ~QSerializer() = default;
 
     ///\brief Convert QJsonValue in QJsonDocument as QByteArray
     static QByteArray toByteArray(const QJsonValue & value){

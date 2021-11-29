@@ -26,14 +26,18 @@
 #define QSERIALIZER_H
 
 /* JSON */
+#ifdef QS_HAS_JSON
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonValue>
+#endif
 
 /* XML */
+#ifdef QS_HAS_XML
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
+#endif
 
 /* META OBJECT SYSTEM */
 #include <QVariant>
@@ -55,8 +59,11 @@
 /* Mark class as serializable */
 #define QS_SERIALIZABLE QS_META_OBJECT_METHOD
 
+#ifdef QS_HAS_XML
 Q_DECLARE_METATYPE(QDomNode)
 Q_DECLARE_METATYPE(QDomElement)
+#endif
+
 class QSerializer {
     Q_GADGET
     QS_SERIALIZABLE
@@ -64,11 +71,16 @@ public:
     QSerializer(){
     }
 
+    virtual ~QSerializer() {}
+
+#ifdef QS_HAS_JSON
     ///\brief Convert QJsonValue in QJsonDocument as QByteArray
     static QByteArray toByteArray(const QJsonValue & value){
         return QJsonDocument(value.toObject()).toJson();
     }
+#endif
 
+#ifdef QS_HAS_XML
     ///\brief Convert QDomNode in QDomDocument as QByteArray
     static QByteArray toByteArray(const QDomNode & value) {
         QDomDocument doc = value.toDocument();
@@ -82,8 +94,10 @@ public:
         doc.insertBefore(xmlNode, doc.firstChild());
         return doc;
     }
+#endif
 
 
+#ifdef QS_HAS_JSON
     ///\brief Serialize all accessed JSON propertyes for this object
     QJsonObject toJson() const {
         QJsonObject json;
@@ -135,6 +149,12 @@ public:
         }
     }
 
+    void fromJson(const QByteArray & data) {
+        fromJson(QJsonDocument::fromJson(data).object());
+    }
+#endif // QS_HAS_JSON
+
+#ifdef QS_HAS_XML
     ///\brief Serialize all accessed XML propertyes for this object
     QDomNode toXml() const {
         QDomDocument doc;
@@ -229,15 +249,11 @@ public:
         d.setContent(data);
         fromXml(d);
     }
-
-    void fromJson(const QByteArray & data) {
-        fromJson(QJsonDocument::fromJson(data).object());
-    }
+#endif // QS_HAS_XML
 };
 
 #define GET(prefix, name) get_##prefix##_##name
 #define SET(prefix, name) set_##prefix##_##name
-
 
 /* Create variable */
 #define QS_DECLARE_MEMBER(type, name)                                                       \
@@ -245,6 +261,7 @@ public:
     type name = type();                                                                     \
 
 /* Create JSON property and methods for primitive type field*/
+#ifdef QS_HAS_JSON
 #define QS_JSON_FIELD(type, name)                                                           \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
@@ -254,10 +271,13 @@ public:
         }                                                                                   \
         void SET(json, name)(const QJsonValue & varname){                                   \
             name = varname.toVariant().value<type>();                                       \
-        }                                                                                   \
-
+        }                                                                                   
+#else
+#define QS_JSON_FIELD(type, name)
+#endif
 
 /* Create XML property and methods for primitive type field*/
+#ifdef QS_HAS_XML
 #define QS_XML_FIELD(type, name)                                                            \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
@@ -276,11 +296,14 @@ public:
             if(domElement.tagName() == #name)                                               \
                 name = QVariant(domElement.text()).value<type>();                           \
         }                                                                                   \
-    }                                                                                       \
-
+    }                                                                                       
+#else
+#define QS_XML_FIELD(type, name)
+#endif
 
 /* Generate JSON-property and methods for primitive type objects */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#ifdef QS_HAS_JSON
 #define QS_JSON_ARRAY(itemType, name)                                                       \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
@@ -300,10 +323,14 @@ public:
                 tmp = item.toVariant().value<itemType>();                                   \
                 name.append(tmp);                                                           \
             }                                                                               \
-        }                                                                                   \
+        }                                                                                
+#else
+#define QS_JSON_ARRAY(itemType, name)
+#endif
 
 /* Generate XML-property and methods for primitive type objects */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#ifdef QS_HAS_XML
 #define QS_XML_ARRAY(itemType, name)                                                        \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
@@ -335,14 +362,15 @@ public:
                 }                                                                           \
                 domNode = domNode.nextSibling();                                            \
             }                                                                               \
-        }                                                                                   \
-
-
-
+        }
+#else
+#define QS_XML_ARRAY(itemType, name)
+#endif
 
 
 /* Generate JSON-property and methods for some custom class */
 /* Custom type must be provide methods fromJson and toJson or inherit from QSerializer */
+#ifdef QS_HAS_JSON
 #define QS_JSON_OBJECT(type, name)                                                          \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
@@ -354,10 +382,14 @@ public:
         if(!varname.isObject())                                                             \
         return;                                                                             \
         name.fromJson(varname);                                                             \
-    }                                                                                       \
+    }
+#else
+#define QS_JSON_OBJECT(type, name)
+#endif
 
 /* Generate XML-property and methods for some custom class */
 /* Custom type must be provide methods fromJson and toJson or inherit from QSerializer */
+#ifdef QS_HAS_XML
 #define QS_XML_OBJECT(type, name)                                                           \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
@@ -366,11 +398,15 @@ public:
         }                                                                                   \
         void SET(xml, name)(const QDomNode & node){                                         \
             name.fromXml(node);                                                             \
-        }                                                                                   \
+        }                                                                                   
+#else
+#define QS_XML_OBJECT(type, name)
+#endif
 
 /* Generate JSON-property and methods for collection of custom type objects */
 /* Custom item type must be provide methods fromJson and toJson or inherit from QSerializer */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#ifdef QS_HAS_JSON
 #define QS_JSON_ARRAY_OBJECTS(itemType, name)                                               \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json, name))                  \
     private:                                                                                \
@@ -390,11 +426,15 @@ public:
                 tmp.fromJson(val.at(i));                                                    \
                 name.append(tmp);                                                           \
             }                                                                               \
-        }                                                                                   \
+        }                                                                                   
+#else
+#define QS_JSON_ARRAY_OBJECTS(itemType, name)
+#endif
 
 /* Generate XML-property and methods for collection of custom type objects  */
 /* Custom type must be provide methods fromXml and toXml or inherit from QSerializer */
 /* This collection must be provide method append(T) (it's can be QList, QVector)    */
+#ifdef QS_HAS_XML
 #define QS_XML_ARRAY_OBJECTS(itemType, name)                                                \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                      \
     private:                                                                                \
@@ -415,12 +455,16 @@ public:
             tmp.fromXml(nodesList.at(i));                                                   \
             name.append(tmp);                                                               \
         }                                                                                   \
-    }                                                                                       \
+    }                                                                                       
+#else
+#define QS_XML_ARRAY_OBJECTS(itemType, name)
+#endif
 
 /* Generate JSON-property and methods for dictionary of simple fields (int, bool, QString, ...)  */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be QMap, QHash)    */
 /* THIS IS FOR QT DICTIONARY TYPES, for example QMap<int, QString>, QMap<int,int>, ...*/
+#ifdef QS_HAS_JSON
 #define QS_JSON_QT_DICT(map, name)                                                          \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json,name))                   \
     private:                                                                                \
@@ -441,12 +485,16 @@ public:
                 QVariant(p.key()).value<map::key_type>(),                                   \
                 QVariant(p.value()).value<map::mapped_type>());                             \
         }                                                                                   \
-    }                                                                                       \
+    }                                                                                       
+#else
+#define QS_JSON_QT_DICT(map, name)
+#endif
 
 /* Generate XML-property and methods for dictionary of simple fields (int, bool, QString, ...)  */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be QMap, QHash)    */
 /* THIS IS FOR QT DICTIONARY TYPES, for example QMap<int, QString>, QMap<int,int>, ...*/
+#ifdef QS_HAS_XML
 #define QS_XML_QT_DICT(map, name)                                                                       \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                                  \
     private:                                                                                            \
@@ -479,13 +527,17 @@ public:
                 }                                                                                       \
             }                                                                                           \
         }                                                                                               \
-    }                                                                                                   \
+    }                                                                                                   
+#else
+#define QS_XML_QT_DICT(map, name)
+#endif
 
 
 /* Generate JSON-property and methods for dictionary of custom type objects  */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method inserv(KeyT, ValueT) (it's can be QMap, QHash)    */
 /* THIS IS FOR QT DICTIONARY TYPES, for example QMap<int, CustomSerializableType> */
+#ifdef QS_HAS_JSON
 #define QS_JSON_QT_DICT_OBJECTS(map, name)                                                  \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json,name))                   \
     private:                                                                                \
@@ -508,13 +560,16 @@ public:
                 QVariant(p.key()).value<map::key_type>(),                                   \
                 tmp);                                                                       \
         }                                                                                   \
-    }                                                                                       \
-
+    }                                                                                       
+#else
+#define QS_JSON_QT_DICT_OBJECTS(map, name)
+#endif
 
 /* Generate XML-property and methods for dictionary of custom type objects  */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be QMap, QHash)    */
 /* THIS IS FOR QT DICTIONARY TYPES, for example QMap<int, CustomSerializableType> */
+#ifdef QS_HAS_XML
 #define QS_XML_QT_DICT_OBJECTS(map, name)                                                               \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                                  \
     private:                                                                                            \
@@ -549,13 +604,16 @@ public:
                 }                                                                                       \
             }                                                                                           \
         }                                                                                               \
-    }                                                                                                   \
-
+    }                                                                                                   
+#else
+#define QS_XML_QT_DICT_OBJECTS(map, name)
+#endif
 
 /* Generate JSON-property and methods for dictionary of simple fields (int, bool, QString, ...)  */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be std::map)    */
 /* THIS IS FOR STL DICTIONARY TYPES, for example std::map<int, QString>, std::map<int,int>, ...*/
+#ifdef QS_HAS_JSON
 #define QS_JSON_STL_DICT(map, name)                                                         \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json,name))                   \
     private:                                                                                \
@@ -576,9 +634,12 @@ public:
                 QVariant(p.key()).value<map::key_type>(),                                   \
                 QVariant(p.value()).value<map::mapped_type>()));                            \
         }                                                                                   \
-    }                                                                                       \
+    }                                                                                       
+#else
+#define QS_JSON_STL_DICT(map, name)
+#endif
 
-
+#ifdef QS_HAS_XML
 #define QS_XML_STL_DICT(map, name)                                                                       \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                                  \
     private:                                                                                            \
@@ -612,13 +673,16 @@ public:
                 }                                                                                       \
             }                                                                                           \
         }                                                                                               \
-    }                                                                                                   \
-
+    }                                                                                                   
+#else
+#define QS_XML_STL_DICT(map, name)                                                                    
+#endif
 
 /* Generate JSON-property and methods for dictionary of custom type objects */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be std::map)    */
 /* THIS IS FOR STL DICTIONARY TYPES, for example std::map<int, CustomSerializableType> */
+#ifdef QS_HAS_JSON
 #define QS_JSON_STL_DICT_OBJECTS(map, name)                                                 \
     Q_PROPERTY(QJsonValue name READ GET(json, name) WRITE SET(json,name))                   \
     private:                                                                                \
@@ -641,12 +705,16 @@ public:
                 QVariant(p.key()).value<map::key_type>(),                                   \
                 tmp));                                                                      \
         }                                                                                   \
-    }                                                                                       \
+    }                                                                                       
+#else
+#define QS_JSON_STL_DICT_OBJECTS(map, name)                               
+#endif
 
 /* Generate XML-property and methods for dictionary of custom type objects */
 /* Custom type must be inherit from QSerializer */
 /* This collection must be provide method insert(KeyT, ValueT) (it's can be std::map)    */
 /* THIS IS FOR STL DICTIONARY TYPES, for example std::map<int, CustomSerializableType> */
+#ifdef QS_HAS_XML
 #define QS_XML_STL_DICT_OBJECTS(map, name)                                                              \
     Q_PROPERTY(QDomNode name READ GET(xml, name) WRITE SET(xml, name))                                  \
     private:                                                                                            \
@@ -682,10 +750,10 @@ public:
                 }                                                                                       \
             }                                                                                           \
         }                                                                                               \
-    }                                                                                                   \
-
-
-
+    }                                                                                                   
+#else
+#define QS_XML_STL_DICT_OBJECTS(map, name)
+#endif
 
 
 /* BIND: */

@@ -64,6 +64,8 @@ public:
     QSerializer(){
     }
 
+    virtual ~QSerializer() {}
+
     ///\brief Convert QJsonValue in QJsonDocument as QByteArray
     static QByteArray toByteArray(const QJsonValue & value){
         return QJsonDocument(value.toObject()).toJson();

@@ -1,4 +1,6 @@
-QT += xml
+contains(DEFINES, QS_HAS_XML) {
+    QT += xml
+}
 
 HEADERS += \
         $$PWD/src/qserializer.h

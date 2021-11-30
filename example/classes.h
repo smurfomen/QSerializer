@@ -1,6 +1,6 @@
 #ifndef CLASSES_H
 #define CLASSES_H
-#include "../../src/qserializer.h"
+#include "../src/qserializer.h"
 #include <QQueue>
 #include <QStack>
 

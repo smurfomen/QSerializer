@@ -28,8 +28,6 @@ DISTFILES += \
         $$PWD/general.json \
         $$PWD/general.xml \
 
-include(base.pri)
-
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

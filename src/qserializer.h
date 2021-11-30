@@ -1,7 +1,8 @@
 ﻿/*
  MIT License
 
- Copyright (c) 2020 Agadzhanov Vladimir
+ Copyright (c) 2020-2021 Agadzhanov Vladimir
+ Portions Copyright (c) 2021 Jerry Jacobs
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

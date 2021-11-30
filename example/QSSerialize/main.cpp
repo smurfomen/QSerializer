@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QDebug>
 
+#ifdef QS_HAS_JSON
 void json_example() {
     qDebug()<<"====================================SERIALIZATION JSON====================================";
     Student stud;
@@ -24,8 +25,9 @@ void json_example() {
     stud.parents.append(father);
     qDebug()<<QSerializer::toByteArray(stud.toJson()).constData();
 }
+#endif
 
-
+#ifdef QS_HAS_XML
 void xml_example(){
     qDebug()<<"====================================SERIALIZATION XML====================================";
     TestXml src;
@@ -44,7 +46,7 @@ void xml_example(){
     dst.fromXml(node);
     qDebug()<<QSerializer::toByteArray(dst.toXml()).constData();
 }
-
+#endif
 
 void serialize_to_file() {
     qDebug()<<"====================================SERIALIZE TO FILE====================================";
@@ -128,12 +130,17 @@ void serialize_to_file() {
     general.collectionObjects = collectionObjects;
     general.dictionaries = dict;
 
+#ifdef QS_HAS_JSON
     qDebug()<<"====================================GENERAL JSON====================================";
     qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+#endif
 
+#ifdef QS_HAS_XML
     qDebug()<<"====================================GENERAL XML====================================";
     qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+#endif
 
+#ifdef QS_HAS_JSON
     QFile json("../general.json");
     if(json.exists())
         json.remove();
@@ -142,7 +149,9 @@ void serialize_to_file() {
         json.write(QSerializer::toByteArray(general.toJson()));
         json.close();
     }
+#endif // QS_HAS_JSON
 
+#ifdef QS_HAS_XML
     QFile xml("../general.xml");
     if(xml.exists())
         xml.remove();
@@ -151,6 +160,7 @@ void serialize_to_file() {
         xml.write(QSerializer::toByteArray(general.toXml()));
         xml.close();
     }
+#endif // QS_HAS_XML
 }
 
 
@@ -158,6 +168,7 @@ void serialize_to_file() {
 // 1. create some statement local Dictionaries object (fill this)
 // 2. emulate receive other json from server for this object (receive new data)
 // 3. update local Dictionaries object (update statement from server)
+#ifdef QS_HAS_JSON
 void json_dict_example()
 {
     // local object
@@ -212,34 +223,27 @@ void json_dict_example()
     // update original local object to equial received json
     myDict.fromJson(JsonFromServer());
     qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
-
 }
+#endif // QS_HAS_JSON
 
-
-#define SERIALIZE_TO_FILE_EX
-#define XML_EX
-#define JSON_EX
-#define JSON_DICT_EX
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     qDebug()<<"====================================SERIALIZE EXAMPLES====================================";
-#ifdef XML_EX
+#ifdef QS_HAS_XML
     xml_example();
 #endif
 
-#ifdef JSON_EX
+#ifdef QS_HAS_JSON
     json_example();
 #endif
 
-#ifdef SERIALIZE_TO_FILE_EX
     serialize_to_file();
-#endif
 
-#ifdef JSON_DICT_EX
+#ifdef QS_HAS_JSON
     json_dict_example();
 #endif
-    return a.exec();
+	return 0;
 }
 
 

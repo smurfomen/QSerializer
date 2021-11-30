@@ -70,8 +70,6 @@ class QSerializer {
 public:
     virtual ~QSerializer() = default;
 
-    virtual ~QSerializer() {}
-
 #ifdef QS_HAS_JSON
     ///\brief Convert QJsonValue in QJsonDocument as QByteArray
     static QByteArray toByteArray(const QJsonValue & value){

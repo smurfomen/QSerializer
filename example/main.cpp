@@ -1,5 +1,5 @@
 #include <QCoreApplication>
-#include "../classes.h"
+#include "classes.h"
 
 #include <QFile>
 #include <QDebug>
@@ -141,7 +141,7 @@ void serialize_to_file() {
 #endif
 
 #ifdef QS_HAS_JSON
-    QFile json("../general.json");
+    QFile json("general.json");
     if(json.exists())
         json.remove();
     if(json.open(QIODevice::WriteOnly))
@@ -152,7 +152,7 @@ void serialize_to_file() {
 #endif // QS_HAS_JSON
 
 #ifdef QS_HAS_XML
-    QFile xml("../general.xml");
+    QFile xml("general.xml");
     if(xml.exists())
         xml.remove();
     if(xml.open(QIODevice::WriteOnly))
@@ -163,6 +163,45 @@ void serialize_to_file() {
 #endif // QS_HAS_XML
 }
 
+void deserialize_from_file(void)
+{
+    qDebug()<<"====================================DESERIALIZE EXAMPLES====================================";
+#ifdef QS_HAS_JSON
+    QFile json ("general.json");
+    if(!json.exists())
+        qWarning()<<"ERROR: general.json is not exist";
+    if(json.open(QIODevice::ReadOnly))
+    {
+        // empty object
+        General general;
+        qDebug()<<"====================================EMPTY====================================";
+        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+
+        general.fromJson(json.readAll());
+        qDebug()<<"====================================FULL SERIALIZED FROM general.json====================================";
+        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+        json.close();
+    }
+#endif
+
+#ifdef QS_HAS_XML
+    QFile xml ("general.xml");
+    if(!xml.exists())
+        qWarning()<<"ERROR: general.xml is not exist";
+    if(xml.open(QIODevice::ReadOnly))
+    {
+        // empty object
+        General general;
+        qDebug()<<"====================================EMPTY====================================";
+        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+
+        general.fromXml(xml.readAll());
+        qDebug()<<"====================================FULL SERIALIZED FROM general.xml====================================";
+        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+        xml.close();
+    }
+#endif
+}
 
 // use case json dictionaries
 // 1. create some statement local Dictionaries object (fill this)
@@ -239,6 +278,7 @@ int main(int argc, char *argv[])
 #endif
 
     serialize_to_file();
+    deserialize_from_file();
 
 #ifdef QS_HAS_JSON
     json_dict_example();

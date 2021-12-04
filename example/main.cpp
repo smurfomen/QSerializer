@@ -6,7 +6,7 @@
 
 #ifdef QS_HAS_JSON
 void json_example() {
-    qDebug()<<"====================================SERIALIZATION JSON====================================";
+    qDebug() << "==================================== json_example ====================================";
     Student stud;
     stud.age = 23;
     stud.name = "Vlad";
@@ -23,13 +23,22 @@ void json_example() {
     father.name = "Alex";
     stud.parents.append(mother);
     stud.parents.append(father);
-    qDebug()<<QSerializer::toByteArray(stud.toJson()).constData();
+
+    qDebug() << "json from object:";
+    QByteArray d = stud.toRawJson();
+    qDebug() << d.constData();
+
+    qDebug() << "creation new object using raw json:";
+    Student copy;
+    copy.fromJson(d);
+    qDebug() << copy.toRawJson().constData();
+    qDebug() << "=============================================================================";
 }
 #endif
 
 #ifdef QS_HAS_XML
 void xml_example(){
-    qDebug()<<"====================================SERIALIZATION XML====================================";
+    qDebug() << "==================================== xml_example ====================================";
     TestXml src;
     src.field = 10;
     for(int i = 0; i < src.field; i ++)
@@ -40,16 +49,18 @@ void xml_example(){
 
     // make hat if need this
     QDomDocument node = QSerializer::appendXmlHat(src.toXml(), "UTF-8");
-    qDebug()<<QSerializer::toByteArray(node).constData();
+    qDebug() << "xml from object:";
+    qDebug() << QSerializer::toByteArray(node).constData();
 
-    TestXml dst;
-    dst.fromXml(node);
-    qDebug()<<QSerializer::toByteArray(dst.toXml()).constData();
+    qDebug() << "creation new object using raw xml:";
+    TestXml copy;
+    copy.fromXml(node);
+    qDebug() << copy.toRawXml().constData();
+    qDebug() << "=============================================================================";
 }
 #endif
 
 void serialize_to_file() {
-    qDebug()<<"====================================SERIALIZE TO FILE====================================";
     /* OBJECT */
     Field field;
     field.flag = false;
@@ -131,144 +142,93 @@ void serialize_to_file() {
     general.dictionaries = dict;
 
 #ifdef QS_HAS_JSON
-    qDebug()<<"====================================GENERAL JSON====================================";
-    qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+    {
+        qDebug() << "==================================== serialize_to_file : general.json ====================================";
+        qDebug() << general.toRawJson().constData();
+
+        QFile json("general.json");
+        if(json.exists())
+            json.remove();
+        if(json.open(QIODevice::WriteOnly))
+        {
+            json.write(general.toRawJson());
+            json.close();
+        }
+        qDebug() << "=============================================================================";
+    }
 #endif
 
 #ifdef QS_HAS_XML
-    qDebug()<<"====================================GENERAL XML====================================";
-    qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+    {
+        qDebug() << "==================================== serialize_to_file : general.xml ====================================";
+        qDebug() << general.toRawXml().constData();
+
+        QFile xml("general.xml");
+        if(xml.exists())
+            xml.remove();
+        if(xml.open(QIODevice::WriteOnly))
+        {
+            xml.write(general.toRawXml());
+            xml.close();
+        }
+        qDebug() << "=============================================================================";
+    }
 #endif
-
-#ifdef QS_HAS_JSON
-    QFile json("general.json");
-    if(json.exists())
-        json.remove();
-    if(json.open(QIODevice::WriteOnly))
-    {
-        json.write(QSerializer::toByteArray(general.toJson()));
-        json.close();
-    }
-#endif // QS_HAS_JSON
-
-#ifdef QS_HAS_XML
-    QFile xml("general.xml");
-    if(xml.exists())
-        xml.remove();
-    if(xml.open(QIODevice::WriteOnly))
-    {
-        xml.write(QSerializer::toByteArray(general.toXml()));
-        xml.close();
-    }
-#endif // QS_HAS_XML
 }
 
-void deserialize_from_file(void)
+void deserialize_from_file()
 {
-    qDebug()<<"====================================DESERIALIZE EXAMPLES====================================";
 #ifdef QS_HAS_JSON
-    QFile json ("general.json");
-    if(!json.exists())
-        qWarning()<<"ERROR: general.json is not exist";
-    if(json.open(QIODevice::ReadOnly))
     {
-        // empty object
-        General general;
-        qDebug()<<"====================================EMPTY====================================";
-        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
+        QFile json ("general.json");
+        if(!json.exists())
+            qWarning() << "ERROR: general.json is not exist";
+        if(json.open(QIODevice::ReadOnly))
+        {
+            // empty object
+            General general;
+            qDebug() << "empty json object:";
+            qDebug() << general.toRawJson().constData();
 
-        general.fromJson(json.readAll());
-        qDebug()<<"====================================FULL SERIALIZED FROM general.json====================================";
-        qDebug()<<QSerializer::toByteArray(general.toJson()).constData();
-        json.close();
+
+            general.fromJson(json.readAll());
+            qDebug() << "serialized json object from file: general.json";
+            qDebug() << general.toRawJson().constData();
+            json.close();
+        }
     }
 #endif
 
 #ifdef QS_HAS_XML
-    QFile xml ("general.xml");
-    if(!xml.exists())
-        qWarning()<<"ERROR: general.xml is not exist";
-    if(xml.open(QIODevice::ReadOnly))
     {
-        // empty object
-        General general;
-        qDebug()<<"====================================EMPTY====================================";
-        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
+        QFile xml ("general.xml");
+        if(!xml.exists())
+            qWarning() << "ERROR: general.xml is not exist";
+        if(xml.open(QIODevice::ReadOnly))
+        {
+            // empty object
+            General general;
+            qDebug() << "empty xml object:";
+            qDebug() << general.toRawXml().constData();
 
-        general.fromXml(xml.readAll());
-        qDebug()<<"====================================FULL SERIALIZED FROM general.xml====================================";
-        qDebug()<<QSerializer::toByteArray(general.toXml()).constData();
-        xml.close();
+            qDebug() << "contains in file: general.xml";
+            QByteArray d = xml.readAll();
+            qDebug() << d << "\n";
+
+            general.fromXml(d);
+            qDebug() << "serialized json object from file: general.xml";
+            qDebug() << general.toRawXml().constData();
+
+            xml.close();
+        }
     }
 #endif
 }
-
-// use case json dictionaries
-// 1. create some statement local Dictionaries object (fill this)
-// 2. emulate receive other json from server for this object (receive new data)
-// 3. update local Dictionaries object (update statement from server)
-#ifdef QS_HAS_JSON
-void json_dict_example()
-{
-    // local object
-    Dictionaries myDict;
-
-    // fill std::map<int, QString>
-    myDict.std_map.insert(std::pair<int, QString>(1,"first"));
-    myDict.std_map.insert(std::pair<int, QString>(2,"second"));
-
-    // create couple students, fill std::map<QString, Student>
-    myDict.std_map_objects.insert(std::pair<QString, Student>("+7(909)001-00-00", Student(22,
-                                                                                "Ken",
-                                                                                QStringList("http://github.com/smurfomen"),
-                                                                                Parent(44, "Olga", false),
-                                                                                Parent(48, "Alex", true))));
-    myDict.std_map_objects.insert(std::pair<QString, Student>("+7(909)000-10-00", Student(21,
-                                                                                "Jane",
-                                                                                QStringList("http://somelink.com"),
-                                                                                Parent(38, "Elie", false),
-                                                                                Parent(48, "John", true))));
-    // fill QMap<QString, QString> with some phrases
-    myDict.qt_map.insert("ping","pong");
-    myDict.qt_map.insert("abra","kadabra");
-
-    qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
-
-    // emulate receive JsonFromServer
-    auto JsonFromServer = []() -> QByteArray {
-        Dictionaries dict;
-        // fill std::map<int, QString>
-        dict.std_map.insert(std::pair<int, QString>(3, "third"));
-
-        // fill QMap<QString, Student>
-        dict.qt_map_objects.insert("+7(909)000-01-00", Student(22,
-                                                        "Kate",
-                                                        QStringList("http://katelink.com"),
-                                                        Parent(44, "Marlin", false),
-                                                        Parent(48, "Jake", true)));
-        dict.qt_map_objects.insert("+7(909)100-00-10", Student(22,
-                                                        "Bob",
-                                                        QStringList("http://bobsite.com"),
-                                                        Parent(44, "Mary", false),
-                                                        Parent(48, "Koul", true)));
-        // fill QMap<QString,QString> with some phrases
-        dict.qt_map.insert("fokus","pokus");
-
-        // serialize dict to QByteArray
-        return QSerializer::toByteArray(dict.toJson());
-    };
-
-
-    // update original local object to equial received json
-    myDict.fromJson(JsonFromServer());
-    qDebug()<<QSerializer::toByteArray(myDict.toJson()).toStdString().c_str();
-}
-#endif // QS_HAS_JSON
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    qDebug()<<"====================================SERIALIZE EXAMPLES====================================";
+    qDebug() << "==================================== SERIALIZE EXAMPLES ====================================";
 #ifdef QS_HAS_XML
     xml_example();
 #endif
@@ -279,10 +239,8 @@ int main(int argc, char *argv[])
 
     serialize_to_file();
     deserialize_from_file();
+    qDebug() << "=============================================================================";
 
-#ifdef QS_HAS_JSON
-    json_dict_example();
-#endif
 	return 0;
 }
 

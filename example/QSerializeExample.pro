@@ -13,7 +13,7 @@ CONFIG -= app_bundle
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 # DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060201    # disables all the APIs deprecated before Qt 6.2.1
-# DEFINES += QS_HAS_JSON
+DEFINES += QS_HAS_JSON
 DEFINES += QS_HAS_XML
 
 include(../qserializer.pri)

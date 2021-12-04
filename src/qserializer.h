@@ -57,6 +57,10 @@
         return &this->staticMetaObject; \
     } \
 
+#define QSERIALIZABLE \
+    Q_GADGET \
+    QS_META_OBJECT_METHOD
+
 /* Mark class as serializable */
 #define QS_SERIALIZABLE QS_META_OBJECT_METHOD
 
@@ -72,21 +76,21 @@ public:
     virtual ~QSerializer() = default;
 
 #ifdef QS_HAS_JSON
-    ///\brief Convert QJsonValue in QJsonDocument as QByteArray
+    /*! \brief  Convert QJsonValue in QJsonDocument as QByteArray. */
     static QByteArray toByteArray(const QJsonValue & value){
         return QJsonDocument(value.toObject()).toJson();
     }
 #endif
 
 #ifdef QS_HAS_XML
-    ///\brief Convert QDomNode in QDomDocument as QByteArray
+    /*! \brief  Convert QDomNode in QDomDocument as QByteArray. */
     static QByteArray toByteArray(const QDomNode & value) {
         QDomDocument doc = value.toDocument();
         return doc.toByteArray();
     }
 
-    ///\brief Make xml processing instruction (hat) and returns new XML QDomDocument. On deserialization procedure all processing instructions will be ignored.
-    static QDomDocument appendXmlHat(const QDomNode &node, QString encoding, QString version = "1.0"){
+    /*! \brief  Make xml processing instruction (hat) and returns new XML QDomDocument. On deserialization procedure all processing instructions will be ignored. */
+    static QDomDocument appendXmlHat(const QDomNode &node, const QString & encoding, const QString & version = "1.0"){
         QDomDocument doc = node.toDocument();
         QDomNode xmlNode = doc.createProcessingInstruction("xml", QString("version=\"%1\" encoding=\"%2\"").arg(version).arg(encoding));
         doc.insertBefore(xmlNode, doc.firstChild());
@@ -96,7 +100,7 @@ public:
 
 
 #ifdef QS_HAS_JSON
-    ///\brief Serialize all accessed JSON propertyes for this object
+    /*! \brief  Serialize all accessed JSON propertyes for this object. */
     QJsonObject toJson() const {
         QJsonObject json;
         for(int i = 0; i < metaObject()->propertyCount(); i++)
@@ -116,7 +120,12 @@ public:
         return json;
     }
 
-    ///\brief Deserialize all accessed JSON propertyes for this object
+    /*! \brief  Returns QByteArray representation this object using json-serialization. */
+    QByteArray toRawJson() const {
+        return toByteArray(toJson());
+    }
+
+    /*! \brief  Deserialize all accessed XML propertyes for this object. */
     void fromJson(const QJsonValue & val) {
         if(val.isObject())
         {
@@ -147,13 +156,14 @@ public:
         }
     }
 
+    /*! \brief  Deserialize all accessed JSON propertyes for this object. */
     void fromJson(const QByteArray & data) {
         fromJson(QJsonDocument::fromJson(data).object());
     }
 #endif // QS_HAS_JSON
 
 #ifdef QS_HAS_XML
-    ///\brief Serialize all accessed XML propertyes for this object
+    /*! \brief  Serialize all accessed XML propertyes for this object. */
     QDomNode toXml() const {
         QDomDocument doc;
         QDomElement el = doc.createElement(metaObject()->className());
@@ -174,74 +184,37 @@ public:
         return doc;
     }
 
-    ///\brief Deserialize all accessed XML propertyes for this object
-    void fromXml(const QDomNode & val){
+    /*! \brief  Returns QByteArray representation this object using xml-serialization. */
+    QByteArray toRawXml() const {
+        return toByteArray(toXml());
+    }
+
+    /*! \brief  Deserialize all accessed XML propertyes for this object. */
+    void fromXml(const QDomNode & val) {
         QDomNode doc = val;
 
-        if(doc.firstChild().isProcessingInstruction())
-               doc.removeChild(doc.firstChild());
+        auto n = doc.firstChildElement(metaObject()->className());
 
-        if(doc.firstChild().nodeName() == metaObject()->className())
-        {
-            for(int i = 0; i < metaObject()->propertyCount(); i++)
-            {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QDomNode>())) {
-                    continue;
-                }
-#else
-                if(metaObject()->property(i).metaType().id() != qMetaTypeId<QDomNode>()) {
-                    continue;
-                }
-#endif
+        if(!n.isNull()) {
+            for(int i = 0; i < metaObject()->propertyCount(); i++) {
+                QString name = metaObject()->property(i).name();
+                QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();
 
-                QDomNode fieldNode = doc.firstChild().firstChild();
-                while(!fieldNode.isNull())
-                {
-                    QDomElement currentElement = fieldNode.toElement();
-
-                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();
-
-                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())
-                    {
-                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));
-                        break;
-                    }
-                    fieldNode = fieldNode.nextSibling();
-                }
+                auto f = n.firstChildElement(tmp.tagName());
+                metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(f));
             }
         }
-        else if (metaObject()->className() == doc.toElement().tagName())
+        else
         {
-            for(int i = 0; i < metaObject()->propertyCount(); i++)
-            {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-                if(QString(metaObject()->property(i).typeName()) != QMetaType::typeName(qMetaTypeId<QJsonValue>())) {
-                    continue;
-                }
-#else
-                if(metaObject()->property(i).metaType().id() != QMetaType::QJsonValue) {
-                    continue;
-                }
-#endif
-                QDomNode fieldNode = doc.firstChild();
-                while(!fieldNode.isNull())
-                {
-                    QDomElement currentElement = fieldNode.toElement();
-
-                    QDomElement tmp = metaObject()->property(i).readOnGadget(this).value<QDomNode>().firstChildElement();
-
-                    if(metaObject()->property(i).name() == currentElement.tagName() || tmp.tagName() == currentElement.tagName())
-                    {
-                        metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(currentElement));
-                        break;
-                    }
-                    fieldNode = fieldNode.nextSibling();
-                }
+            for(int i = 0; i < metaObject()->propertyCount(); i++) {
+                QString name = metaObject()->property(i).name();
+                auto f = doc.firstChildElement(name);
+                metaObject()->property(i).writeOnGadget(this, QVariant::fromValue<QDomNode>(f));
             }
         }
     }
 
+    /*! \brief  Deserialize all accessed XML propertyes for this object. */
     void fromXml(const QByteArray & data) {
         QDomDocument d;
         d.setContent(data);

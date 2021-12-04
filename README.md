@@ -48,9 +48,18 @@ User u;
 u.age = 20;
 u.parents.append("Mary");
 u.parents.append("Jeff");
+
+/* case: json value */
 QJsonObject jsonUser = u.toJson();
-// or
+
+/* case: raw json data */
+QByteArray djson = u.toRawJson();
+
+/* case: xml-dom */
 QDomNode xmlUser = u.toXml();
+
+/* case: raw xml data */
+QByteArray dxml = u.toRawXml();
 ```
 
 ## **Deserialize**
@@ -60,15 +69,27 @@ For example:
 ```C++
 ...
 User u;
-QJsonObject userJson;
-u.fromJson(userJson);
-//or
-QDomNode userXml;
-u.fromXml(userXml);
+
+/* case: json value */
+QJsonObject json;
+u.fromJson(json);
+
+/* case: raw json data */
+QByteArray rawJson;
+u.fromJson(rawJson);
+
+/* case: xml-dom */
+QDomNode xml;
+u.fromXml(xml);
+
+/* case: raw xml data */
+QByteArray rawXml;
+u.fromXml(rawXml);
 ```
 ## Macro description
 | Macro                 | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
+| QSERIALIZABLE         | Make class or struct is serializable to QSerializer (override QMetaObject method and define Q_GADGET macro)                             |
 | QS_FIELD              | Create serializable simple field                             |
 | QS_COLLECTION         | Create serializable collection values of primitive types     |
 | QS_OBJECT             | Create serializable inner custom type object                 |

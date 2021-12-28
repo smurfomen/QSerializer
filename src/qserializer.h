@@ -259,7 +259,7 @@ public:
         QDomText valueOfProp = doc.createTextNode(QVariant(name).toString());               \
         element.appendChild(valueOfProp);                                                   \
         doc.appendChild(element);                                                           \
-        return  QDomNode(element);                                                          \
+        return  QDomNode(doc);                                                              \
     }                                                                                       \
     void SET(xml, name)(const QDomNode &node) {                                             \
         if(!node.isNull() && node.isElement()){                                             \

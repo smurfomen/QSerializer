@@ -1,3 +1,5 @@
+DEFINES += QS_HAS_JSON
+
 contains(DEFINES, QS_HAS_XML) {
     QT += xml
 }

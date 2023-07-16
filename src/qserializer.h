@@ -73,7 +73,7 @@ Q_DECLARE_METATYPE(QDomElement)
 #endif
 
 //enable QJsonDocument::Indented for readability, QJsonDocument::Compact for performance
-#define QS_JSOC_DOC_MODE    QJsonDocument::Compact  //QJsonDocument::Indented
+#define QS_JSON_DOC_MODE    QJsonDocument::Compact  //QJsonDocument::Indented
 
 class QSerializer {
     Q_GADGET
@@ -84,7 +84,7 @@ public:
 #ifdef QS_HAS_JSON
     /*! \brief  Convert QJsonValue in QJsonDocument as QByteArray. */
     static QByteArray toByteArray(const QJsonValue & value){
-        return QJsonDocument(value.toObject()).toJson(QS_JSOC_DOC_MODE);
+        return QJsonDocument(value.toObject()).toJson(QS_JSON_DOC_MODE);
     }
 #endif
 
@@ -390,7 +390,7 @@ public:
         QJsonValue GET(json, name)() const {                                                \
             QJsonArray val;                                                                 \
             for(int i = 0; i < name.size(); i++)                                            \
-                val.push_back(name.at(i).toJson(QS_JSOC_DOC_MODE));                                         \
+                val.push_back(name.at(i).toJson(QS_JSON_DOC_MODE));                                         \
             return QJsonValue::fromVariant(val);                                            \
         }                                                                                   \
         void SET(json, name)(const QJsonValue & varname) {                                  \
@@ -523,7 +523,7 @@ public:
         for(auto p = name.begin(); p != name.end(); ++p) {                                  \
             val.insert(                                                                     \
                 QVariant::fromValue(p.key()).toString(),                                    \
-                p.value().toJson(QS_JSOC_DOC_MODE));                                                        \
+                p.value().toJson(QS_JSON_DOC_MODE));                                                        \
         }                                                                                   \
         return val;                                                                         \
     }                                                                                       \
@@ -668,7 +668,7 @@ public:
         for(auto p : name){                                                                 \
             val.insert(                                                                     \
                 QVariant::fromValue(p.first).toString(),                                    \
-                p.second.toJson(QS_JSOC_DOC_MODE));                                                         \
+                p.second.toJson(QS_JSON_DOC_MODE));                                                         \
         }                                                                                   \
         return val;                                                                         \
     }                                                                                       \
